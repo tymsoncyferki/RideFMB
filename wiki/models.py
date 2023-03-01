@@ -1,9 +1,7 @@
 from django.db import models
 from datetime import datetime
-from django.utils import timezone
 from bs4 import BeautifulSoup
 import requests
-import pandas as pd
 
 
 class Sponsor(models.Model):
@@ -30,6 +28,16 @@ class Rider(models.Model):
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def scrapeSponsors():
+        # TODO: przejść po wszystkich riderach i dodać sponsorów (także dla riderów)
+        pass
+
+    @staticmethod
+    def scrapeRanking():
+        # TODO: przejść po rankingu i zebrać pozycje i punkty
+        pass
 
     @staticmethod
     def scrapeRider(rider_url):
@@ -123,6 +131,11 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.name}, {self.year}"
+
+    @staticmethod
+    def fixEventWebsite():
+        # TODO: wywalić http
+        pass
 
     @staticmethod
     def scrapeEvent(status, date_str, event_url):
