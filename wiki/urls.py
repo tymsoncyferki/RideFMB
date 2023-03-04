@@ -5,5 +5,5 @@ app_name = 'wiki'
 urlpatterns = [
     path('', views.index, name='index'),
     path('search', views.search, name='search'),
-    path('<int:rider_id>', views.rider, name='rider')
+    path('rider/<str:rider_name>/<int:rider_id>', views.rider, name='rider')
 ]

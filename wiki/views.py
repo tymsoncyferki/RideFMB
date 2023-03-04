@@ -16,6 +16,6 @@ def search(request):
     return render(request, 'wiki/search.html', {'results': results})
 
 
-def rider(request, rider_id):
+def rider(request, rider_name, rider_id):
     rider = Rider.objects.get(id=rider_id)
     return render(request, 'wiki/rider.html', {'rider': rider})

@@ -8,5 +8,10 @@
     <a href="{% url 'wiki:index'%}">HOME</a>
     <h1>{{rider.name}}</h1>
     <img src="{{rider.photo}}">
+    <p><strong>Information</strong></p>
+    <div>
+        <p>Nationality: {{rider.nationality}}</p>
+        <p>Rank: {{rider.rank}}</p>
+    </div>
 </body>
 </html>

@@ -15,7 +15,7 @@
     {% if results %}
         <ul>
             {% for rider in results %}
-                <li><a href="{% url 'wiki:rider' rider.id %}">{{rider.name}}</a></li>
+                <li><a href="{% url 'wiki:rider' rider.name rider.id %}">{{rider.name}}</a></li>
             {% endfor %}
         </ul>
     {% else %}
