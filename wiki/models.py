@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
+from django.utils.text import slugify
 
 
 class Sponsor(models.Model):
@@ -14,7 +15,7 @@ class Sponsor(models.Model):
 
 class Rider(models.Model):
     name = models.CharField(max_length=100, blank=True)
-    slug = models.SlugField(max_length=50, default=name)
+    slug = models.SlugField(max_length=50, default='event_name')
     nationality = models.CharField(max_length=50, blank=True)
     birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=10, default='Unknown', blank=True)
@@ -29,6 +30,10 @@ class Rider(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Rider, self).save(*args, **kwargs)
 
     @staticmethod
     def scrapeSponsors():
@@ -118,6 +123,7 @@ class Rider(models.Model):
 
 class Event(models.Model):
     name = models.CharField(max_length=100, blank=True)
+    slug = models.SlugField(max_length=50, default='event_name')
     date = models.DateField(null=True)
     year = models.IntegerField(null=True)
     city = models.CharField(max_length=100, blank=True)
@@ -132,6 +138,10 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.name}, {self.year}"
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Event, self).save(*args, **kwargs)
 
     @staticmethod
     def fixEventWebsite():

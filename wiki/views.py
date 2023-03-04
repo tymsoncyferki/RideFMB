@@ -16,6 +16,13 @@ def search(request):
     return render(request, 'wiki/search.html', {'results': results})
 
 
-def rider(request, rider_name, rider_id):
-    rider = Rider.objects.get(id=rider_id)
-    return render(request, 'wiki/rider.html', {'rider': rider})
+def rider(request, rider_id, slug):
+    main_rider = Rider.objects.get(id=rider_id)
+    parts = main_rider.participation_set.all()
+    return render(request, 'wiki/rider.html', {'rider': main_rider, 'participations': parts})
+
+
+def event(request, event_id, slug):
+    main_event = Event.objects.get(id=event_id)
+    parts = main_event.participation_set.all()
+    return render(request, 'wiki/event.html', {'event': main_event, 'participations': parts})

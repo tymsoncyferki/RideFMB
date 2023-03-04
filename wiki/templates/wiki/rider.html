@@ -12,6 +12,15 @@
     <div>
         <p>Nationality: {{rider.nationality}}</p>
         <p>FMB World Tour Rank: {{rider.rank}}</p>
+        <p>Date of Birth: {{rider.birth}}</p>
+        <p>Sponsors: </p>
+        <a href={{rider.instagram}} target="_blank">Instagram</a>
     </div>
+    <h2>Event History</h2>
+    <ul>
+    {% for part in participations %}
+        <li>{{part.event.year}} <a href="{% url 'wiki:event' part.event.id part.event.slug %}">{{part.event.name}}</a>, {{part.rank}}. place</li>
+    {% endfor %}
+    </ul>
 </body>
 </html>
