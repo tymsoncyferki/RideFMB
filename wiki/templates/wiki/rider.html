@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{rider.name}} - Info</title>
+    <title>{{rider.name}} - History and Information | RideFMB</title>
 </head>
 <body>
     <a href="{% url 'wiki:index'%}">HOME</a>
     <h1>{{rider.name}}</h1>
     <img src="{{rider.photo}}">
-    <p><strong>Information</strong></p>
+    <h2>Information</h2>
     <div>
         <p>Nationality: {{rider.nationality}}</p>
-        <p>Rank: {{rider.rank}}</p>
+        <p>FMB World Tour Rank: {{rider.rank}}</p>
     </div>
 </body>
 </html>

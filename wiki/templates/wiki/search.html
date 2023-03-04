@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Search Page</title>
+    <title>Slopestyle and Dirt Jumping Riders | RideFMB</title>
 </head>
 <body>
     <a href="{% url 'wiki:index'%}">HOME</a>
     <br>
     <br>
     <form method="GET">
-        <input type="text" name="searched_name" placeholder="Search riders">
+        <input type="text" name="q" placeholder="Search riders">
         <button type="submit">Search</button>
     </form>
     {% if results %}

@@ -7,7 +7,7 @@ def index(request):
 
 
 def search(request):
-    query = request.GET.get('searched_name')
+    query = request.GET.get('q')
     if query:
         results = Rider.objects.filter(name__icontains=query)
     else:

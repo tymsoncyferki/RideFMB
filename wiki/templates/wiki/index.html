@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Homepage</title>
+    <title>Slopestyle and Dirt Jumping Database | RideFMB</title>
 </head>
 <body>
     <h1>Welcome to my fmb worldtour webpage</h1>
     <p><a href="/admin">Admin panel</a></p>
     <form method="GET" action="{% url 'wiki:search' %}">
-        <input type="text" name="searched_name" placeholder="Search riders">
+        <input type="text" name="q" placeholder="Search riders">
         <button type="submit">Search</button>
     </form>
 </body>

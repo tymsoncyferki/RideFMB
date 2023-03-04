@@ -14,6 +14,7 @@ class Sponsor(models.Model):
 
 class Rider(models.Model):
     name = models.CharField(max_length=100, blank=True)
+    slug = models.SlugField(max_length=50, default=name)
     nationality = models.CharField(max_length=50, blank=True)
     birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=10, default='Unknown', blank=True)
