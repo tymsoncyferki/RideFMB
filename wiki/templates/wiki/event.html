@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{event.name}} {{event.year}} - Standings and Information | RideFMB</title>
+</head>
+<body>
+    <a href="{% url 'wiki:index'%}">HOME</a>
+    <h1>{{event.name}}</h1>
+    <span>{{event.year}}</span>
+    <div>
+        <h2>Information</h2>
+        <p>Place: {{event.city}}, {{event.country}}</p>
+        <p>Category: {{event.category}}</p>
+        <p>Discipline: {{event.discipline}}</p>
+    </div>
+    <div>
+        <h2>Standings</h2>
+        <ul>
+        {% for part in participations %}
+            <li>{{part.rank}}. <a href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{part.rider.name}}</a>, {{part.points}} Points</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
