@@ -1,6 +1,6 @@
 # ridefmb
 
---- currently under development! ---
+--- currently under development ---
 
 Website where you can easily access all
 information about FMB World Tour riders, events and rankings.
