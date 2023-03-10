@@ -6,7 +6,7 @@ from django.utils.text import slugify
 
 
 class Sponsor(models.Model):
-    name = models.CharField(max_length=50, blank=True)
+    name = models.CharField(max_length=150, blank=True)
 
     def __str__(self):
         name = str(self.name)
@@ -14,15 +14,15 @@ class Sponsor(models.Model):
 
 
 class Rider(models.Model):
-    name = models.CharField(max_length=100, blank=True)
-    slug = models.SlugField(max_length=50, default='event_name')
+    name = models.CharField(max_length=150, blank=True)
+    slug = models.SlugField(max_length=150, default='event_name')
     nationality = models.CharField(max_length=50, blank=True)
     birth = models.DateField(null=True, blank=True)
-    sex = models.CharField(max_length=10, default='Unknown', blank=True)
+    sex = models.CharField(max_length=20, default='Unknown', blank=True)
     description = models.TextField(blank=True)
     sponsors = models.ManyToManyField(Sponsor)
-    photo = models.CharField(max_length=200, blank=True)
-    instagram = models.CharField(max_length=200, blank=True)
+    photo = models.CharField(max_length=255, blank=True)
+    instagram = models.CharField(max_length=255, blank=True)
     active = models.BooleanField(default=False)
     rank = models.IntegerField(default=0, null=True)
     points = models.IntegerField(default=0)
@@ -122,8 +122,8 @@ class Rider(models.Model):
 
 
 class Event(models.Model):
-    name = models.CharField(max_length=100, blank=True)
-    slug = models.SlugField(max_length=50, default='event_name')
+    name = models.CharField(max_length=150, blank=True)
+    slug = models.SlugField(max_length=150, default='event_name')
     date = models.DateField(null=True)
     year = models.IntegerField(null=True)
     city = models.CharField(max_length=100, blank=True)
@@ -131,9 +131,9 @@ class Event(models.Model):
     category = models.CharField(max_length=100, blank=True)
     discipline = models.CharField(max_length=100, blank=True)
     completed = models.BooleanField(default=True)
-    prize = models.CharField(max_length=100, blank=True)
-    website = models.CharField(max_length=100, blank=True)
-    partners = models.CharField(max_length=100, blank=True)
+    prize = models.CharField(max_length=255, blank=True)
+    website = models.CharField(max_length=255, blank=True)
+    partners = models.TextField(blank=True)
     riders = models.ManyToManyField('Rider', through='Participation')
 
     def __str__(self):
