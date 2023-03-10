@@ -26,3 +26,10 @@ def event(request, event_id, slug):
     main_event = Event.objects.get(id=event_id)
     parts = main_event.participation_set.all()
     return render(request, 'wiki/event.html', {'event': main_event, 'participations': parts})
+
+
+def ranking(request, page_idx):
+    start_idx = (page_idx - 1) * 10
+    last_idx = start_idx + 10
+    riders = Rider.objects.filter(active=True).filter(rank__gt=0).order_by('rank')[start_idx:last_idx]
+    return render(request, 'wiki/ranking.html', {'riders': riders})
