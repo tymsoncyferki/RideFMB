@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-e%x=_!t*q0z7%s2s#*23p4_$405ts)l2+!9@bbn+z*0@i@rtk6"
+#SECRET_KEY = "django-insecure-e%x=_!t*q0z7%s2s#*23p4_$405ts)l2+!9@bbn+z*0@i@rtk6"
 
 # todo: As far as best practices here:
 # The original suggestion of leveraging python-dotenv to programmatically call
