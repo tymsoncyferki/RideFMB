@@ -12,6 +12,7 @@ class Rider(models.Model):
     birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=20, default='Unknown', blank=True)
     description = models.TextField(blank=True)
+    sponsors = models.ManyToManyField('Sponsor', through='Sponsorship')
     photo = models.CharField(max_length=255, blank=True)
     instagram = models.CharField(max_length=255, blank=True)
     active = models.BooleanField(default=False)
@@ -253,12 +254,14 @@ class Participation(models.Model):
 class Sponsorship(models.Model):
     rider = models.ForeignKey('Rider', on_delete=models.CASCADE)
     sponsor = models.ForeignKey('Sponsor', on_delete=models.CASCADE)
+    main = models.BooleanField(default=False)
 
     def __str__(self):
         return self.rider.name + ', ' + self.sponsor.name
 
     @staticmethod
-    def scrapeSponsors(rider_url):
+    def scrapeSponsors(rider_id):
+        rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(rider_id)
         rider_page = requests.get(rider_url)
         rider_soup = BeautifulSoup(rider_page.text, 'lxml')
         try:
@@ -266,7 +269,12 @@ class Sponsorship(models.Model):
         except:
             return
         sponsors = [sponsor.strip() for sponsor in rider_sponsors.split('|')]
+        main = True
         for sponsor_name in sponsors:
-            #Sponsor(sponsor_name).save()
-            print(Sponsor(name=sponsor_name))
+            if not Sponsor.objects.filter(name=sponsor_name).exists():
+                s = Sponsor(name=sponsor_name)
+                s.save()
+            Sponsorship(rider=Rider.objects.get(pk=rider_id), sponsor=Sponsor.objects.get(name=sponsor_name), main=main).save()
+            if main:
+                main = False
 
