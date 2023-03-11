@@ -5,14 +5,6 @@ import requests
 from django.utils.text import slugify
 
 
-class Sponsor(models.Model):
-    name = models.CharField(max_length=150, blank=True)
-
-    def __str__(self):
-        name = str(self.name)
-        return name
-
-
 class Rider(models.Model):
     name = models.CharField(max_length=150, blank=True)
     slug = models.SlugField(max_length=150, default='event_name')
@@ -20,7 +12,6 @@ class Rider(models.Model):
     birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=20, default='Unknown', blank=True)
     description = models.TextField(blank=True)
-    sponsors = models.ManyToManyField(Sponsor)
     photo = models.CharField(max_length=255, blank=True)
     instagram = models.CharField(max_length=255, blank=True)
     active = models.BooleanField(default=False)
@@ -35,10 +26,7 @@ class Rider(models.Model):
         self.slug = slugify(self.name)
         super(Rider, self).save(*args, **kwargs)
 
-    @staticmethod
-    def scrapeSponsors():
-        # TODO: przejść po wszystkich riderach i dodać sponsorów (także dla riderów)
-        pass
+
 
     @staticmethod
     def scrapeRanking():
@@ -216,6 +204,14 @@ class Event(models.Model):
         print("SUCCESS!")
 
 
+class Sponsor(models.Model):
+    name = models.CharField(max_length=150, blank=True)
+
+    def __str__(self):
+        name = str(self.name)
+        return name
+
+
 class Participation(models.Model):
     rider = models.ForeignKey('Rider', on_delete=models.CASCADE)
     event = models.ForeignKey('Event', on_delete=models.CASCADE)
@@ -252,3 +248,25 @@ class Participation(models.Model):
             p = Participation(rider=Rider.objects.get(id=rider_id), event=Event.objects.get(id=event_id),
                               rank=rank, points=points)
             p.save()
+
+
+class Sponsorship(models.Model):
+    rider = models.ForeignKey('Rider', on_delete=models.CASCADE)
+    sponsor = models.ForeignKey('Sponsor', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.rider.name + ', ' + self.sponsor.name
+
+    @staticmethod
+    def scrapeSponsors(rider_url):
+        rider_page = requests.get(rider_url)
+        rider_soup = BeautifulSoup(rider_page.text, 'lxml')
+        try:
+            rider_sponsors = rider_soup.find('p', {'class':'athlete-profile-sponsors'}).text.strip()
+        except:
+            return
+        sponsors = [sponsor.strip() for sponsor in rider_sponsors.split('|')]
+        for sponsor_name in sponsors:
+            #Sponsor(sponsor_name).save()
+            print(Sponsor(name=sponsor_name))
+
