@@ -7,7 +7,7 @@ from django.utils.text import slugify
 
 class Rider(models.Model):
     name = models.CharField(max_length=150, blank=True)
-    slug = models.SlugField(max_length=150, default='event_name')
+    slug = models.SlugField(max_length=150, default='rider_name')
     nationality = models.CharField(max_length=50, blank=True)
     birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=20, default='Unknown', blank=True)
