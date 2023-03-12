@@ -27,8 +27,6 @@ class Rider(models.Model):
         self.slug = slugify(self.name)
         super(Rider, self).save(*args, **kwargs)
 
-
-
     @staticmethod
     def scrapeRanking():
         # TODO: przejść po rankingu i zebrać pozycje i punkty
@@ -207,6 +205,7 @@ class Event(models.Model):
 
 class Sponsor(models.Model):
     name = models.CharField(max_length=150, blank=True)
+    riders = models.ManyToManyField('Rider', through='Sponsorship')
 
     def __str__(self):
         name = str(self.name)
@@ -270,6 +269,7 @@ class Sponsorship(models.Model):
             return
         sponsors = [sponsor.strip() for sponsor in rider_sponsors.split('|')]
         main = True
+        print('Scraping rider sponsors...')
         for sponsor_name in sponsors:
             if not Sponsor.objects.filter(name=sponsor_name).exists():
                 s = Sponsor(name=sponsor_name)
@@ -277,4 +277,14 @@ class Sponsorship(models.Model):
             Sponsorship(rider=Rider.objects.get(pk=rider_id), sponsor=Sponsor.objects.get(name=sponsor_name), main=main).save()
             if main:
                 main = False
+
+    @staticmethod
+    def scrapeAllSponsors():
+        riders = Rider.objects.all()
+        n = riders.count()
+        for rider in riders:
+            print('-----')
+            print(f'Scraping {n}th rider:', rider.name)
+            rider_id = rider.id
+            Sponsorship.scrapeSponsors(rider_id)
 
