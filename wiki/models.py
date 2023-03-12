@@ -18,6 +18,10 @@ class Rider(models.Model):
     active = models.BooleanField(default=False)
     rank = models.IntegerField(default=0, null=True)
     points = models.IntegerField(default=0)
+    alltime_points = models.FloatField(default=0)
+    gold = models.IntegerField(default=0)
+    silver = models.IntegerField(default=0)
+    bronze = models.IntegerField(default=0)
     events = models.ManyToManyField('Event', through='Participation')
 
     def __str__(self):
@@ -44,6 +48,24 @@ class Rider(models.Model):
         for rider in riders:
             print(n, rider.name)
             rider.name = rider.slug.replace("-", " ").title()
+            rider.save()
+            n -= 1
+
+    @staticmethod
+    def countMedals():
+        riders = Rider.objects.all()
+        n = riders.count()
+        for rider in riders:
+            print(n, rider.name)
+            parts = rider.participation_set.all()
+            for part in parts:
+                if part.rank == 1:
+                    rider.gold += 1
+                elif part.rank == 2:
+                    rider.silver += 1
+                elif part.rank == 3:
+                    rider.bronze += 1
+                rider.alltime_points += part.points
             rider.save()
             n -= 1
 

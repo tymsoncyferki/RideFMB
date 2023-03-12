@@ -4,11 +4,11 @@
 
 {% block content %}
     <div class="container-xxl">
-        <h1>Results</h1>
+        <h1>FMB World Tour Athletes</h1>
         {% if results %}
             <ul>
                 {% for rider in results %}
-                    <li><a href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}</a></li>
+                    <li><a href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}, {{rider.nationality}}</a></li>
                 {% endfor %}
             </ul>
         {% else %}
