@@ -28,6 +28,16 @@ class Rider(models.Model):
         super(Rider, self).save(*args, **kwargs)
 
     @staticmethod
+    def fixSlugs():
+        riders = Rider.objects.all()
+        n = riders.count()
+        for rider in riders:
+            print(n, rider.name)
+            rider.slug = slugify(rider.name)
+            rider.save()
+            n -= 1
+
+    @staticmethod
     def scrapeRanking():
         # TODO: przejść po rankingu i zebrać pozycje i punkty
         pass
