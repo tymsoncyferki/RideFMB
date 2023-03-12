@@ -38,6 +38,16 @@ class Rider(models.Model):
             n -= 1
 
     @staticmethod
+    def fixNames():
+        riders = Rider.objects.all()
+        n = riders.count()
+        for rider in riders:
+            print(n, rider.name)
+            rider.name = rider.slug.replace("-", " ").title()
+            rider.save()
+            n -= 1
+
+    @staticmethod
     def scrapeRanking():
         # TODO: przejść po rankingu i zebrać pozycje i punkty
         pass
