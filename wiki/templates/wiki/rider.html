@@ -13,6 +13,11 @@
                 <p>FMB World Tour Rank: {{rider.rank}}</p>
                 <p>Date of Birth: {{rider.birth}}</p>
                 <p>Sponsors: </p>
+                <ul>
+                {% for spon in sponsorships %}
+                    <li>{{spon.sponsor.name}}</li>
+                {% endfor %}
+                </ul>
                 <a href={{rider.instagram}} target="_blank">Instagram</a>
             </div>
             <h2>Event History</h2>

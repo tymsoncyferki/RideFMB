@@ -9,7 +9,8 @@ def index(request):
 def rider(request, rider_id, slug):
     main_rider = Rider.objects.get(id=rider_id)
     parts = main_rider.participation_set.all()
-    return render(request, 'wiki/rider.html', {'rider': main_rider, 'participations': parts})
+    spons = main_rider.sponsorship_set.all()
+    return render(request, 'wiki/rider.html', {'rider': main_rider, 'participations': parts, 'sponsorships': spons})
 
 
 def search(request):
@@ -28,7 +29,7 @@ def riders(request):
 
 def event(request, event_id, slug):
     main_event = Event.objects.get(id=event_id)
-    parts = main_event.participation_set.all()
+    parts = main_event.participation_set.all().order_by('rank')
     return render(request, 'wiki/event.html', {'event': main_event, 'participations': parts})
 
 
