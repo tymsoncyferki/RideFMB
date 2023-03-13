@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load wiki_extras %}
+{% load static %}
+<link href="{% static 'wiki/ranking.css' %}" rel="stylesheet">
 {% block title %}FMB World Tour Ranking 2023 | RideFMB{% endblock %}
 
 {% block content %}
@@ -19,7 +21,7 @@
                         <img src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="50" height="50">
                     </div>
                     <div class="col">
-                        <h6 style="margin: 0;">{{rider.name}}</h6>
+                        <h6 style="margin: 0;"><a class="stretched-link" id="special-link" style="text-decoration: none;" href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}</a></h6>
                         <small>{{rider.nationality}}</small>
                     </div>
                     <div class="col-2 d-flex justify-content-center">

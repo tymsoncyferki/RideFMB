@@ -88,7 +88,7 @@ class Rider(models.Model):
             instagram = rider_info.find('svg', {'class': 'icon-instagram'}).parent.get('href')
         except:
             instagram = ''
-        rider_history = rider_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
+        rider_history = rider_soup.find('table', {'class': 'series-ranking.css-table'}).find('tbody')
         try:
             rank = rider_history.find('a', {'href': "https://www.fmbworldtour.com/ranking?series=70"}). \
                 previous.previous_sibling.find('sup').previous_sibling
@@ -106,7 +106,7 @@ class Rider(models.Model):
         event_page = requests.get(event_url)
         event_soup = BeautifulSoup(event_page.text, 'lxml')
         try:
-            rider_table = event_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
+            rider_table = event_soup.find('table', {'class': 'series-ranking.css-table'}).find('tbody')
         except:
             print('not data about event')
             return
@@ -140,7 +140,7 @@ class Rider(models.Model):
                 continue
             year_page = requests.get(year_url)
             year_soup = BeautifulSoup(year_page.text, 'lxml')
-            event_table = year_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
+            event_table = year_soup.find('table', {'class': 'series-ranking.css-table'}).find('tbody')
             for event in event_table.find_all('tr'):
                 event_url = event.find('a').get('href')
                 print("------")
@@ -216,7 +216,7 @@ class Event(models.Model):
     def scrapeEventsYear(year_url):
         year_page = requests.get(year_url)
         year_soup = BeautifulSoup(year_page.text, 'lxml')
-        event_table = year_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
+        event_table = year_soup.find('table', {'class': 'series-ranking.css-table'}).find('tbody')
         for event in event_table.find_all('tr'):
             cells = event.find_all('td')
             date = cells[0].text.strip()
