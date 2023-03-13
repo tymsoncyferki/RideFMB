@@ -4,16 +4,29 @@
 
 {% block content %}
     <div class="container-xxl">
-        <h1>Results</h1>
-        {% if results %}
+        {% if not riders and not events %}
+            <h4>No results found :(</h4>
+            <p>Tip: try not to use national characters</p>
+        {% else %}
+            <h1>Results</h1>
+        {% endif %}
+        {% if riders %}
+        <h4>Riders:</h4>
             <ul>
-                {% for rider in results %}
-                    <li><a href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}</a></li>
+                {% for rider in riders %}
+                    <li><a href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}</a>, {{rider.nationality}}</li>
                 {% endfor %}
             </ul>
-        {% else %}
-            <p>No results found :(</p>
         {% endif %}
+        {% if events %}
+        <h4>Events:</h4>
+            <ul>
+                {% for event in events %}
+                    <li><a href="{% url 'wiki:event' event.id event.slug %}">{{event.name}}</a>, {{event.year}}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
     </div>
 {% endblock %}
 
