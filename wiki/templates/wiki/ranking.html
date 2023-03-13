@@ -3,11 +3,32 @@
 {% block title %}FMB World Tour Ranking 2023 | RideFMB{% endblock %}
 
 {% block content %}
-    <div class="container-xxl">
+    <div class="container-lg" style="max-width: 960px">
         <h1>FMB Ranking 2023</h1>
-        <ul>
+        <ul class="list-group list-group-table rounded-4" style="background-color: #272c32;">
         {% for rider in riders %}
-            <li>{{rider.rank}}. <a href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}</a>, {{rider.nationality}}</li>
+            <li class="list-group-item" style="background-color: transparent;">
+                <div class="row align-items-center text-white">
+                    <div class="col-1 d-flex justify-content-center">
+                        <br>
+                        <h6>{{rider.rank}}</h6>
+                        <br>
+                    </div>
+                    <div class="col-2">
+                        <img src="{{rider.photo}}" class="d-none d-md-block rounded-circle border border-3 border-white" width="100" height="100">
+                        <img src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="50" height="50">
+                    </div>
+                    <div class="col">
+                        <h6 style="margin: 0;">{{rider.name}}</h6>
+                        <small>{{rider.nationality}}</small>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center">
+                        <br>
+                        <h6>1500</h6>
+                        <br>
+                    </div>
+                </div>
+            </li>
         {% endfor %}
         </ul>
         {% with previous_index=page_index|sub:1 %}
@@ -15,7 +36,7 @@
                 <a href="{% url 'wiki:ranking' previous_index %}">Previous</a>
             {% else %}
                 <a>Previous</a>
-            {% endif %}
+             {% endif %}
         {% endwith %}
         {% with next_index=page_index|add:1 %}
             {% if next_index < 31 %}

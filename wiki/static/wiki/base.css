@@ -12,3 +12,7 @@ body {
     color: #727af7;
 }
 
+.container-lg {
+    max-width: 960px;
+}
+

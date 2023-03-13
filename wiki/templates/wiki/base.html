@@ -10,10 +10,10 @@
     <link href="{% static 'wiki/base.css' %}" rel="stylesheet">
 </head>
 <body class="text-light">
-    <nav class="navbar fixed-top navbar-expand-sm navbar-dark">
+    <nav class="navbar fixed-top navbar-expand-md navbar-dark">
         <div class="container-xxl">
             <a class="navbar-brand" href="{% url 'wiki:index' %}"><strong>RideFMB</strong></a>
-            <div class="col d-sm-none" style="padding-right: 10px">
+            <div class="col d-md-none" style="padding-right: 10px">
                 <form class="d-flex" method="GET" action="{% url 'wiki:search' %}">
                     <div class="input-group">
                       <input type="text" name="q" class="form-control" placeholder="Search">
@@ -42,7 +42,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-auto d-none d-sm-block">
+            <div class="col-auto d-none d-md-block">
                 <form class="d-flex" method="GET" action="{% url 'wiki:search' %}">
                     <div class="input-group">
                       <input type="text" name="q" class="form-control" placeholder="Search">
