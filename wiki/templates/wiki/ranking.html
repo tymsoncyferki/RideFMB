@@ -1,15 +1,45 @@
 {% extends 'base.html' %}
-{% load wiki_extras %}
-{% load static %}
-<link href="{% static 'wiki/ranking.css' %}" rel="stylesheet">
+
+
 {% block title %}FMB World Tour Ranking 2023 | RideFMB{% endblock %}
+{% block head %}
+    {% load wiki_extras %}
+    {% load static %}
+    <style>
+        #main-container {
+            max-width: 960px;
+        }
+        #rider-ranking {background-color: transparent;}
+        #rider-ranking:hover {background-color: #4e545c;}
+        #rider-link {
+            color: white;
+            text-decoration: none;
+        }
+        #rider-points {
+            color: #272c32;
+            background-color: #727af7;
+            padding: 4px;
+        }
+        .ranking-link {
+            color: #727af7;
+            text-decoration: none;
+            padding-top: 10px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .disabled-link {
+            color: lightgrey;
+            pointer-events: none;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-    <div class="container-lg" style="max-width: 960px">
+    <div class="container-lg" id="main-container">
         <h1>FMB Ranking 2023</h1>
         <ul class="list-group list-group-table rounded-4" style="background-color: #272c32;">
         {% for rider in riders %}
-            <li class="list-group-item" style="background-color: transparent;">
+            <li class="list-group-item" id="rider-ranking">
                 <div class="row align-items-center text-white">
                     <div class="col-1 d-flex justify-content-center">
                         <br>
@@ -21,31 +51,37 @@
                         <img src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="50" height="50">
                     </div>
                     <div class="col">
-                        <h6 style="margin: 0;"><a class="stretched-link" id="special-link" style="text-decoration: none;" href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}</a></h6>
+                        <h6 style="margin: 0;"><a class="stretched-link" id="rider-link" href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}</a></h6>
                         <small>{{rider.nationality}}</small>
                     </div>
                     <div class="col-2 d-flex justify-content-center">
                         <br>
-                        <h6>1500</h6>
+                        <h6 id="rider-points" class="rounded-2">{{rider.points}}</h6>
                         <br>
                     </div>
                 </div>
             </li>
         {% endfor %}
         </ul>
+        <div class="row" id="ranking-navigation">
         {% with previous_index=page_index|sub:1 %}
+            <div class="col-6 text-end">
             {% if previous_index > 0 %}
-                <a href="{% url 'wiki:ranking' previous_index %}">Previous</a>
+                <h2><a class="ranking-link" href="{% url 'wiki:ranking' previous_index %}"><<</a></h2>
             {% else %}
-                <a>Previous</a>
+                <h2><a class="ranking-link disabled-link"><<</a></h2>
              {% endif %}
+            </div>
         {% endwith %}
         {% with next_index=page_index|add:1 %}
+            <div class="col-6 text-start">
             {% if next_index < 31 %}
-                <a href="{% url 'wiki:ranking' next_index %}">Next</a>
+                <h2><a class="ranking-link" href="{% url 'wiki:ranking' next_index %}">>></a></h2>
             {% else %}
-                <a>Next</a>
+                <h2><a class="ranking-link disabled-link disabled">>></a></h2>
             {% endif %}
+            </div>
+        </div>
         {% endwith %}
     </div>
 {% endblock %}
