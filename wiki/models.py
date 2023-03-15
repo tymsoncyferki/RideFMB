@@ -32,6 +32,35 @@ class Rider(models.Model):
         super(Rider, self).save(*args, **kwargs)
 
     @staticmethod
+    def scrapeRanking():
+        Rider.objects.all().update(active=False)
+        main_url = "https://www.fmbworldtour.com/ranking/?series=70"
+        main_page = requests.get(main_url)
+        main_soup = BeautifulSoup(main_page.text, 'lxml')
+        pages = main_soup.find('div', {'class': 'page-counter'})
+        for page in pages.find_all('a', {'class': 'page-counter-link'}):
+            print('-----------')
+            print('scraping page...')
+            ranking_url = page.get('href')
+            ranking_page = requests.get(ranking_url)
+            ranking_soup = BeautifulSoup(ranking_page.text, 'lxml')
+            ranking_table = ranking_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
+            for rider_row in ranking_table.find_all('tr'):
+                rider_url = rider_row.find('a').get('href')
+                id_start_index = rider_url.index('=') + 1
+                rider_id = rider_url[id_start_index:]
+                rider = Rider.objects.get(pk=rider_id)
+                row_data = rider_row.find_all('td')
+                print('-----')
+                print('scraping rider:', rider.name)
+                rider.rank = row_data[0].text.strip()
+                rider.points = row_data[-2].text.strip()
+                rider.active = True
+                rider.save()
+                print('rank', row_data[0].text.strip(), 'points', row_data[-2].text.strip())
+
+
+    @staticmethod
     def fixSlugs():
         riders = Rider.objects.all()
         n = riders.count()
@@ -70,11 +99,6 @@ class Rider(models.Model):
             n -= 1
 
     @staticmethod
-    def scrapeRanking():
-        # TODO: przejść po rankingu i zebrać pozycje i punkty
-        pass
-
-    @staticmethod
     def scrapeRider(rider_url):
         id_start_index = rider_url.index('=') + 1
         newid = rider_url[id_start_index:]
@@ -88,7 +112,7 @@ class Rider(models.Model):
             instagram = rider_info.find('svg', {'class': 'icon-instagram'}).parent.get('href')
         except:
             instagram = ''
-        rider_history = rider_soup.find('table', {'class': 'series-ranking.css-table'}).find('tbody')
+        rider_history = rider_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
         try:
             rank = rider_history.find('a', {'href': "https://www.fmbworldtour.com/ranking?series=70"}). \
                 previous.previous_sibling.find('sup').previous_sibling
@@ -106,7 +130,7 @@ class Rider(models.Model):
         event_page = requests.get(event_url)
         event_soup = BeautifulSoup(event_page.text, 'lxml')
         try:
-            rider_table = event_soup.find('table', {'class': 'series-ranking.css-table'}).find('tbody')
+            rider_table = event_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
         except:
             print('not data about event')
             return
@@ -140,7 +164,7 @@ class Rider(models.Model):
                 continue
             year_page = requests.get(year_url)
             year_soup = BeautifulSoup(year_page.text, 'lxml')
-            event_table = year_soup.find('table', {'class': 'series-ranking.css-table'}).find('tbody')
+            event_table = year_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
             for event in event_table.find_all('tr'):
                 event_url = event.find('a').get('href')
                 print("------")
@@ -216,7 +240,7 @@ class Event(models.Model):
     def scrapeEventsYear(year_url):
         year_page = requests.get(year_url)
         year_soup = BeautifulSoup(year_page.text, 'lxml')
-        event_table = year_soup.find('table', {'class': 'series-ranking.css-table'}).find('tbody')
+        event_table = year_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
         for event in event_table.find_all('tr'):
             cells = event.find_all('td')
             date = cells[0].text.strip()
