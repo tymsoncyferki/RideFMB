@@ -12,6 +12,7 @@ class Rider(models.Model):
     birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=20, default='Unknown', blank=True)
     description = models.TextField(blank=True)
+    mainsponsor = models.CharField(max_length=50, blank=True)
     sponsors = models.ManyToManyField('Sponsor', through='Sponsorship')
     photo = models.CharField(max_length=255, blank=True)
     instagram = models.CharField(max_length=255, blank=True)
@@ -30,6 +31,12 @@ class Rider(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Rider, self).save(*args, **kwargs)
+
+    @staticmethod
+    def setMainSponsor():
+        for rider in Rider.objects.all():
+            rider.mainsponsor = rider.sponsorship_set.filter(main=True)[0].sponsor.name
+            rider.save()
 
     @staticmethod
     def scrapeRanking():
