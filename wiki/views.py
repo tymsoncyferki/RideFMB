@@ -40,7 +40,8 @@ def event(request, event_id, slug):
 def events(request, page_idx=1):
     start_idx = (page_idx - 1) * 10
     last_idx = start_idx + 30
-    events = Event.objects.all().order_by('-date')[start_idx:last_idx]
+    # events = Event.objects.all().order_by('-date')[start_idx:last_idx]
+    events = Event.objects.all().order_by('-date')
     return render(request, 'wiki/events.html', {'events': events})
 
 

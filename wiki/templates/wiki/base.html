@@ -8,6 +8,28 @@
     {% load wiki_extras %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link href="{% static 'wiki/base.css' %}" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 70px;
+            background-color: #181818;
+        }
+        .navbar {
+            background-color: #181818;
+            border-bottom: 1px solid lightgrey;
+        }
+        .navbar-brand {
+            color: #727af7;
+        }
+        .container-lg {
+            max-width: 960px;
+        }
+        a.nav-link:hover {
+            color: #727af7 !important;
+        }
+        #my-footer {
+            border-bottom: 1px solid #6c757d;
+        }
+    </style>
     {% block head %}
     {% endblock %}
 </head>
@@ -60,7 +82,7 @@
     </main>
     <div class="container-xxl">
       <footer class="py-3 my-4">
-        <ul class="nav justify-content-center pb-3 mb-3" style="border-bottom: 1px solid #9a9a9a;">
+        <ul class="nav justify-content-center pb-3 mb-3" id="my-footer">
           <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Help</a></li>
           <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Contact</a></li>
           <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>

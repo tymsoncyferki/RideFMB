@@ -78,7 +78,7 @@ WSGI_APPLICATION = "ridefmb.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'old': {
         'ENGINE': 'django.db.backends.oracle',
         'NAME': os.getenv('DATABASE_NAME'),
         'USER': 'admin',
@@ -87,6 +87,14 @@ DATABASES = {
     "backup": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+    },
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': 'tymsoncyferki',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': 'db.bit.io',
+        'PORT': '5432'
     }
 }
 

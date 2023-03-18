@@ -3,6 +3,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
 from django.utils.text import slugify
+from unidecode import unidecode
 
 
 class Rider(models.Model):
@@ -65,7 +66,6 @@ class Rider(models.Model):
                 rider.active = True
                 rider.save()
                 print('rank', row_data[0].text.strip(), 'points', row_data[-2].text.strip())
-
 
     @staticmethod
     def fixSlugs():
@@ -202,6 +202,26 @@ class Event(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Event, self).save(*args, **kwargs)
+
+    @staticmethod
+    def fixSlugs():
+        events = Event.objects.all()
+        n = events.count()
+        for event in events:
+            print(n, event.name)
+            event.slug = slugify(event.name)
+            event.save()
+            n -= 1
+
+    @staticmethod
+    def fixNames():
+        riders = Event.objects.all()
+        n = riders.count()
+        for rider in riders:
+            print(n, rider.name)
+            rider.name = rider.slug.replace("-", " ").title()
+            rider.save()
+            n -= 1
 
     @staticmethod
     def fixEventWebsite():
