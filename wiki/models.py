@@ -3,13 +3,36 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
 from django.utils.text import slugify
-from unidecode import unidecode
+from wiki.scripts.countries import *
+import pycountry
+
+class Country(models.Model):
+    name = models.CharField(max_length=50, blank=True)
+    shortname = models.CharField(max_length=5, blank=True)
+    isocode = models.CharField(max_length=3, blank=True)
+    photo = models.CharField(max_length=150, blank=True)
+
+    def __str__(self):
+        return self.name + ', ' + self.isocode
+
+    @staticmethod
+    def createCountries():
+        countries = Country.objects.all()
+        for country in countries:
+            isocode = country_codes[country.shortname]
+            country.isocode = isocode
+            c = pycountry.countries.get(alpha_2=isocode)
+            country.name = c.name
+            photo = "https://www.countryflagicons.com/FLAT/20/" + isocode + ".png"
+            country.photo = photo
+            print(country)
+            country.save()
 
 
 class Rider(models.Model):
     name = models.CharField(max_length=150, blank=True)
     slug = models.SlugField(max_length=150, default='rider_name')
-    nationality = models.CharField(max_length=50, blank=True)
+    country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True)
     birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=20, default='Unknown', blank=True)
     description = models.TextField(blank=True)
@@ -187,7 +210,8 @@ class Event(models.Model):
     date = models.DateField(null=True)
     year = models.IntegerField(null=True)
     city = models.CharField(max_length=100, blank=True)
-    country = models.CharField(max_length=100, blank=True)
+    nation = models.CharField(max_length=100, blank=True)
+    country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True)
     category = models.CharField(max_length=100, blank=True)
     discipline = models.CharField(max_length=100, blank=True)
     completed = models.BooleanField(default=True)
@@ -380,4 +404,3 @@ class Sponsorship(models.Model):
             print(f'Scraping {n}th rider:', rider.name)
             rider_id = rider.id
             Sponsorship.scrapeSponsors(rider_id)
-
