@@ -28,6 +28,16 @@ class Country(models.Model):
             print(country)
             country.save()
 
+    @staticmethod
+    def fixCountries():
+        countries = Country.objects.all()
+        for country in countries:
+            isocode = country.isocode
+            photo = "https://www.countryflagicons.com/FLAT/24/" + isocode + ".png"
+            country.photo = photo
+            print(country)
+            country.save()
+
 
 class Rider(models.Model):
     name = models.CharField(max_length=150, blank=True)
