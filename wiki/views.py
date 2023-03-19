@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from wiki.models import *
+import threading
 
 
 def index(request):

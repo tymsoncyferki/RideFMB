@@ -2,14 +2,155 @@
 
 {% block title %}{{year}} Events and Competition | RideFMB{% endblock %}
 
+<!--{% for event in events %}-->
+<!--    <li><a href="{% url 'wiki:event' event.id event.slug %}">{{event.name}}</a>{% if event.completed %} - Completed{% else %} - Upcoming{% endif %}</li>-->
+<!--{% endfor %}-->
+
+{% block head %}
+    {% load wiki_extras %}
+    {% load static %}
+    <style>
+        #main-container {
+            max-width: 960px;
+        }
+        #schedule-header {background-color: #4e545c;}
+        #event-schedule {
+            background-color: transparent;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        #event-schedule:hover {background-color: #4e545c;}
+        #event-link {
+            color: white;
+            text-decoration: none;
+        }
+        #event-points {
+            color: #272c32;
+            background-color: #727af7;
+            padding: 4px;
+        }
+        .schedule-link {
+            color: #727af7;
+            text-decoration: none;
+            padding-top: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .disabled-link {
+            color: lightgrey;
+            pointer-events: none;
+        }
+        #dropdownMenuLink {
+            color: #727af7;
+            padding: 5px 5px 0px 0px;
+        }
+        #dropdown-navigation {
+            height: auto;
+            max-height: 200px;
+            max-width: 50px;
+            overflow-x: hidden;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <div class="container-xxl">
-        <h1>{{year}} Events and Competitions</h1>
-        <ul>
+    <div class="container-lg" id="main-container">
+        <h1 class="d-none d-sm-block">{{year}} Events and Competitions</h1>
+        <h1 class="d-sm-none">{{year}} Competitions</h1>
+        <ul class="list-group list-group-table rounded-4" style="background-color: #272c32;">
+            <li class="list-group-item" id="schedule-header">
+                <div class="row align-items-center text-white">
+                    <div class="col-2">
+                        Date
+                    </div>
+                    <div class="col">
+                        Name
+                    </div>
+                    <div class="col-2" style="width: 12.5%">
+                        Country
+                    </div>
+                    <div class="col-2 d-none d-md-block" style="width: 12.5%">
+                        Category
+                    </div>
+                    <div class="col-1 justify-content-center">
+                        Status
+                    </div>
+                </div>
+            </li>
         {% for event in events %}
-            <li><a href="{% url 'wiki:event' event.id event.slug %}">{{event.name}}</a>{% if event.completed %} - Completed{% else %} - Upcoming{% endif %}</li>
+            <li class="list-group-item" id="event-schedule">
+                <div class="row align-items-center text-white">
+                    <div class="col-2 d-flex">
+                        {{event.date|date:"d F"}}
+                    </div>
+                    <div class="col">
+                        <h6 style="margin: 0;"><a class="stretched-link" id="event-link" href="{% url 'wiki:event' event.id event.slug %}">{{event.name}}</a></h6>
+                    </div>
+                    <div class="col-2" style="width: 12.5%">
+                        {{event.country}}
+                    </div>
+                    <div class="col-2 d-none d-md-block" style="width: 12.5%">
+                        {{event.category}}
+                    </div>
+<!--                    <div class="col-2 d-flex">-->
+<!--                        <h6 id="event-points" class="rounded-2">{% if event.completed %}Completed{% else %}Upcoming{% endif %}</h6>-->
+<!--                    </div>-->
+                    <div class="col-1 d-flex justify-content-center">
+                        {% if event.completed %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#198754" class="bi bi-check-circle" viewBox="0 0 16 16">
+                          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                          <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                        </svg>
+                        {% else %}
+                            {% if event.year == 2023 %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffc107" class="bi bi-clock" viewBox="0 0 16 16">
+                              <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                            </svg>
+                            {% else %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#dc3545" class="bi bi-x-circle" viewBox="0 0 16 16">
+                              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
         {% endfor %}
         </ul>
+        <div class="row" id="schedule-navigation">
+        {% with next_year=year|add:1 %}
+            <div class="col-5 text-end">
+            {% if next_year < 2024 %}
+                <h2><a class="schedule-link" href="{% url 'wiki:schedule' next_year %}"><<</a></h2>
+            {% else %}
+                <h2><a class="schedule-link disabled-link disabled"><<</a></h2>
+            {% endif %}
+            </div>
+        {% endwith %}
+            <div class="col-2">
+                <div class="dropdown text-center" style="margin-left: -5px;">
+                    <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    YEAR
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-center" id="dropdown-navigation" aria-labelledby="dropdownMenuLink">
+                    {% for i_year in 2010|years %}
+                        <li><a class="dropdown-item" href="{% url 'wiki:schedule' i_year %}">{{i_year}}</a></li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% with previous_year=year|sub:1 %}
+            <div class="col-5 text-start">
+            {% if previous_year > 2009 %}
+                <h2><a class="schedule-link" href="{% url 'wiki:schedule' previous_year %}">>></a></h2>
+            {% else %}
+                <h2><a class="schedule-link disabled-link">>></a></h2>
+             {% endif %}
+            </div>
+        {% endwith %}
+        </div>
     </div>
 {% endblock %}
 
