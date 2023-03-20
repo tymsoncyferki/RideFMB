@@ -17,3 +17,8 @@ def times(number):
 def yearIterate(year):
     return range(2023, year-1, -1)
 
+
+@register.filter(name='asint')
+def asInt(number):
+    return int(number)
+

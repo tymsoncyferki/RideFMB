@@ -2,15 +2,139 @@
 
 {% block title %}Slopestyle and Dirt Jumping Riders | RideFMB{% endblock %}
 
+{% block head %}
+    {% load wiki_extras %}
+    {% load static %}
+    <style>
+        #main-container {
+            max-width: 960px;
+        }
+        #riders-header {background-color: #4e545c;}
+        #rider-riders {background-color: transparent;}
+        #rider-riders:hover {background-color: #4e545c;}
+        #rider-link {
+            color: white;
+            text-decoration: none;
+        }
+        #rider-points {
+            color: #272c32;
+            background-color: #727af7;
+            padding: 4px;
+        }
+        .riders-link {
+            color: #727af7;
+            text-decoration: none;
+            padding-top: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .disabled-link {
+            color: lightgrey;
+            pointer-events: none;
+        }
+        #dropdownMenuLink {
+            color: #727af7;
+            padding: 5px 5px 0px 0px;
+        }
+        #dropdown-navigation {
+            height: auto;
+            max-height: 200px;
+            max-width: 50px;
+            overflow-x: hidden;
+        }
+    </style>
+{% endblock %}
 {% block content %}
-    <div class="container-xxl">
+    <div class="container-lg">
         <h1>FMB World Tour Athletes</h1>
-        {% if results %}
-            <ul>
-                {% for rider in results %}
-                    <li><a href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}</a>, {{rider.nationality}}</li>
-                {% endfor %}
-            </ul>
+        {% if riders %}
+            <ul class="list-group list-group-table rounded-4" style="background-color: #272c32;">
+            <li class="list-group-item" id="riders-header">
+                <div class="row align-items-center text-white">
+                    <div class="col-1 text-center">
+                        Rank AT
+                    </div>
+                    <div class="col-2 d-none d-sm-block"></div>
+                    <div class="col d-sm-none"></div>
+                    <div class="col">
+                        Name
+                    </div>
+                    <div class="col-3 d-none d-sm-block">
+                        Sponsor
+                    </div>
+<!--                    <div class="col-2 text-center d-none d-sm-block">-->
+<!--                        Points-->
+<!--                    </div>-->
+                    <div class="col-2 d-flex justify-content-center">
+                        Points AT
+                    </div>
+                </div>
+            </li>
+        {% for rider in riders %}
+            <li class="list-group-item" id="rider-riders">
+                <div class="row align-items-center text-white">
+                    <div class="col-1 d-flex justify-content-center">
+                        <br>
+                        <h6>{{rider.rank}}</h6>
+                        <br>
+                    </div>
+                    <div class="col-2 py-1 d-none d-md-block ">
+                        <img src="{{rider.photo}}" class="rounded-circle border border-3 border-white" width="90" height="90">
+                    </div>
+                    <div class="col-2 d-none d-sm-block d-md-none">
+                        <img src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="70" height="70">
+                    </div>
+                    <div class="col d-sm-none" style="max-width: 60px;">
+                        <img src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="50" height="50">
+                    </div>
+                    <div class="col">
+                        <h6 style="margin: 0;"><a class="stretched-link" id="rider-link" href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}</a></h6>
+                        <small>{{rider.country.shortname}}</small>
+                    </div>
+                    <div class="col-3 d-none d-sm-block">
+                        <h6>{{rider.mainsponsor}}</h6>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center">
+                        <br>
+                        <h6 id="rider-points" class="rounded-2">{{rider.alltime_points|asint}}</h6>
+                        <br>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+        <div class="row" id="riders-navigation">
+        {% with previous_index=page_index|sub:1 %}
+            <div class="col-5 text-end">
+            {% if previous_index > 0 %}
+                <h2><a class="riders-link" href="{% url 'wiki:riders' previous_index %}"><<</a></h2>
+            {% else %}
+                <h2><a class="riders-link disabled-link"><<</a></h2>
+             {% endif %}
+            </div>
+        {% endwith %}
+            <div class="col-2">
+                <div class="dropdown text-center" style="margin-left: -5px;">
+                      <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        PAGE
+                      </a>
+                      <ul class="dropdown-menu dropdown-menu-center" id="dropdown-navigation" aria-labelledby="dropdownMenuLink">
+                      {% for i in pages_count|times %}
+                          <li><a class="dropdown-item" href="{% url 'wiki:riders' i %}">{{i}}</a></li>
+                      {% endfor %}
+                  </ul>
+                </div>
+            </div>
+        {% with next_index=page_index|add:1 %}
+            <div class="col-5 text-start">
+            {% if next_index < 31 %}
+                <h2><a class="riders-link" href="{% url 'wiki:riders' next_index %}">>></a></h2>
+            {% else %}
+                <h2><a class="riders-link disabled-link disabled">>></a></h2>
+            {% endif %}
+            </div>
+        </div>
+        {% endwith %}
         {% else %}
             <p>No results found :(</p>
         {% endif %}

@@ -20,16 +20,18 @@ def search(request):
         riders = Rider.objects.filter(name__icontains=query)
         events = Event.objects.filter(name__icontains=query)
     else:
-        riders = Rider.objects.all()
-        events = Event.objects.all()
+        riders = False
+        events = False
     return render(request, 'wiki/search.html', {'riders': riders, 'events': events})
 
 
 def riders(request, page_idx=1):
     start_idx = (page_idx - 1) * 10
-    last_idx = start_idx + 30
-    riders = Rider.objects.all().order_by('-alltime_points')[start_idx:last_idx]
-    return render(request, 'wiki/riders.html', {'results': riders})
+    last_idx = start_idx + 20
+    all_riders = Rider.objects.all().order_by('-alltime_points')
+    riders = all_riders[start_idx:last_idx]
+    pages_count = (all_riders.count() // 20) + 1
+    return render(request, 'wiki/riders.html', {'riders': riders, 'page_index': page_idx, 'pages_count': pages_count})
 
 
 def event(request, event_id, slug):
