@@ -42,17 +42,38 @@
             max-width: 50px;
             overflow-x: hidden;
         }
+        #filterModal {
+        }
     </style>
 {% endblock %}
 {% block content %}
     <div class="container-lg">
         <h1>FMB World Tour Athletes</h1>
+        <p>All-time points and rank</p>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">Filter</button>
+        <div class="modal fade text-dark" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="filterModalLabel">Rider Filters</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                some options to choose from
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
         {% if riders %}
             <ul class="list-group list-group-table rounded-4" style="background-color: #272c32;">
             <li class="list-group-item" id="riders-header">
                 <div class="row align-items-center text-white">
                     <div class="col-1 text-center">
-                        Rank AT
+                        Rank
                     </div>
                     <div class="col-2 d-none d-sm-block"></div>
                     <div class="col d-sm-none"></div>
@@ -62,11 +83,8 @@
                     <div class="col-3 d-none d-sm-block">
                         Sponsor
                     </div>
-<!--                    <div class="col-2 text-center d-none d-sm-block">-->
-<!--                        Points-->
-<!--                    </div>-->
                     <div class="col-2 d-flex justify-content-center">
-                        Points AT
+                        Points
                     </div>
                 </div>
             </li>
@@ -75,7 +93,7 @@
                 <div class="row align-items-center text-white">
                     <div class="col-1 d-flex justify-content-center">
                         <br>
-                        <h6>{{rider.rank}}</h6>
+                        <h6>{{rider.alltime_rank}}</h6>
                         <br>
                     </div>
                     <div class="col-2 py-1 d-none d-md-block ">

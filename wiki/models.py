@@ -53,6 +53,7 @@ class Rider(models.Model):
     active = models.BooleanField(default=False)
     rank = models.IntegerField(default=0, null=True)
     points = models.IntegerField(default=0)
+    alltime_rank = models.IntegerField(default=0, null=True)
     alltime_points = models.FloatField(default=0)
     gold = models.IntegerField(default=0)
     silver = models.IntegerField(default=0)
@@ -65,6 +66,15 @@ class Rider(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Rider, self).save(*args, **kwargs)
+
+    @staticmethod
+    def setRankAT():
+        riders = Rider.objects.all().order_by('-alltime_points')
+        i = 1
+        for rider in riders:
+            rider.alltime_rank = i
+            rider.save()
+            i += 1
 
     @staticmethod
     def setMainSponsor():
