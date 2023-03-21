@@ -31,7 +31,9 @@ def riders(request, page_idx=1):
     all_riders = Rider.objects.all().order_by('alltime_rank')
     riders = all_riders[start_idx:last_idx]
     pages_count = (all_riders.count() // 20) + 1
-    return render(request, 'wiki/riders.html', {'riders': riders, 'page_index': page_idx, 'pages_count': pages_count})
+    sortLabels = ['Points ASC', 'Points DESC', 'Name ASC', 'Name DESC']
+    return render(request, 'wiki/riders.html', {'riders': riders, 'page_index': page_idx, 'pages_count': pages_count,
+                                                'sortLabels': sortLabels})
 
 
 def event(request, event_id, slug):

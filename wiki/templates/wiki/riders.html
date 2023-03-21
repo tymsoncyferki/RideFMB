@@ -42,7 +42,18 @@
             max-width: 50px;
             overflow-x: hidden;
         }
-        #filterModal {
+        .btn-menu {
+            width: 100%;
+            background-color: #727af7;
+            color: white;
+        }
+        .btn-menu:hover {
+            background-color: #8087ff;
+        }
+        #sortLabel:hover {
+            background-color: #b1b1b3;
+        }
+        #sortModal {
         }
     </style>
 {% endblock %}
@@ -50,16 +61,27 @@
     <div class="container-lg">
         <h1>FMB World Tour Athletes</h1>
         <p>All-time points and rank</p>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">Filter</button>
-        <div class="modal fade text-dark" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="row py-3">
+            <div class="col-6" style="padding-right: 6px;">
+                <button type="button" class="btn btn-menu rounded-3" data-bs-toggle="modal" data-bs-target="#filterModal">Filter</button>
+            </div>
+            <div class="col-6" style="padding-left: 6px;">
+                <button type="button" class="btn btn-menu rounded-3" data-bs-toggle="modal" data-bs-target="#sortModal">Sort</button>
+            </div>
+        </div>
+        <div class="modal fade text-dark" id="sortModal" tabindex="-1" aria-labelledby="sortModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="filterModalLabel">Rider Filters</h1>
+                <h1 class="modal-title fs-5" id="sortModalLabel">Sort by:</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body">
-                some options to choose from
+              <div class="modal-body p-0 m-0">
+                  {% for label in sortLabels %}
+                  <ul class="list-group list-group-flush p-0">
+                      <li class="list-group-item" id="sortLabel"><a class="stretched-link" href=""></a>{{label}}</li>
+                  </ul>
+                  {% endfor %}
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -69,14 +91,14 @@
           </div>
         </div>
         {% if riders %}
-            <ul class="list-group list-group-table rounded-4" style="background-color: #272c32;">
+        <ul class="list-group list-group-table rounded-4" style="background-color: #272c32;">
             <li class="list-group-item" id="riders-header">
                 <div class="row align-items-center text-white">
                     <div class="col-1 text-center">
                         Rank
                     </div>
                     <div class="col-2 d-none d-sm-block"></div>
-                    <div class="col d-sm-none"></div>
+                    <div class="col d-sm-none" style="max-width: 60px;"></div>
                     <div class="col">
                         Name
                     </div>
@@ -88,7 +110,7 @@
                     </div>
                 </div>
             </li>
-        {% for rider in riders %}
+            {% for rider in riders %}
             <li class="list-group-item" id="rider-riders">
                 <div class="row align-items-center text-white">
                     <div class="col-1 d-flex justify-content-center">
