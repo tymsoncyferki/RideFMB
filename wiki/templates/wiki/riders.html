@@ -50,8 +50,11 @@
         .btn-menu:hover {
             background-color: #8087ff;
         }
+        #sortLabel {
+            border-top: 1px solid #e0e0e0;
+        }
         #sortLabel:hover {
-            background-color: #b1b1b3;
+            background-color: #e0e0e0;
         }
         #sortModal {
         }
@@ -72,7 +75,7 @@
         <div class="modal fade text-dark" id="sortModal" tabindex="-1" aria-labelledby="sortModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">
+              <div class="modal-header" style="border-bottom: none;">
                 <h1 class="modal-title fs-5" id="sortModalLabel">Sort by:</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
@@ -80,6 +83,24 @@
                   {% for label in sortLabels %}
                   <ul class="list-group list-group-flush p-0">
                       <li class="list-group-item" id="sortLabel"><a class="stretched-link" href=""></a>{{label}}</li>
+                  </ul>
+                  {% endfor %}
+              </div>
+              <div class="modal-footer"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade text-dark" id="filterModal" tabindex="-1" aria-labelledby="sortModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="filterModalLabel">Select filter:</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body p-0 m-0">
+                  {% for label in sortLabels %}
+                  <ul class="list-group list-group-flush p-0">
+                      <li class="list-group-item" id="filterLabel"><a class="stretched-link" href=""></a>{{label}}</li>
                   </ul>
                   {% endfor %}
               </div>
