@@ -25,15 +25,35 @@ def search(request):
     return render(request, 'wiki/search.html', {'riders': riders, 'events': events})
 
 
-def riders(request, page_idx=1):
+def riders(request):
+    # default
+    page_idx = request.GET.get('page')
+    if page_idx:
+        page_idx = int(page_idx)
+    else:
+        page_idx = 1
     start_idx = (page_idx - 1) * 20
     last_idx = start_idx + 20
-    all_riders = Rider.objects.all().order_by('alltime_rank')
+    all_riders = Rider.objects.all()
+
+    # sorting
+    sortOption = request.GET.get('sort')
+    if sortOption:
+        all_riders = all_riders.order_by(sortOption)
+    else:
+        all_riders = Rider.objects.all().order_by('alltime_rank')
+
+    # arguments
+    sortLabels = ['Most all-time points', 'Least all-time points', 'Rank ascending',
+                  'Rank descending', 'Most medals', 'Least medals']
+    sortQueries = ['-alltime_points', 'alltime_points', 'rank', '-rank', 'medals-asc', 'medals-desc']
+    sortOptions = list(zip(sortLabels, sortQueries))
+    filterLabels = ['Name', 'Country', 'Sponsors', 'Ranked']
+    # page
     riders = all_riders[start_idx:last_idx]
     pages_count = (all_riders.count() // 20) + 1
-    sortLabels = ['Points ASC', 'Points DESC', 'Name ASC', 'Name DESC']
     return render(request, 'wiki/riders.html', {'riders': riders, 'page_index': page_idx, 'pages_count': pages_count,
-                                                'sortLabels': sortLabels})
+                                                'sortOptions': sortOptions, 'filterLabels': filterLabels})
 
 
 def event(request, event_id, slug):

@@ -51,19 +51,28 @@
             background-color: #8087ff;
         }
         #sortLabel {
-            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
         }
         #sortLabel:hover {
             background-color: #e0e0e0;
         }
-        #sortModal {
+        #filterLabel {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        #filterLabel:hover {
+            background-color: #e0e0e0;
+        }
+        #sortOption {
+            width: 100%;
+        }
+        #sortOption:hover {
+            background-color: #e0e0e0;
         }
     </style>
 {% endblock %}
 {% block content %}
     <div class="container-lg">
         <h1>FMB World Tour Athletes</h1>
-        <p>All-time points and rank</p>
         <div class="row py-3">
             <div class="col-6" style="padding-right: 6px;">
                 <button type="button" class="btn btn-menu rounded-3" data-bs-toggle="modal" data-bs-target="#filterModal">Filter</button>
@@ -72,24 +81,7 @@
                 <button type="button" class="btn btn-menu rounded-3" data-bs-toggle="modal" data-bs-target="#sortModal">Sort</button>
             </div>
         </div>
-        <div class="modal fade text-dark" id="sortModal" tabindex="-1" aria-labelledby="sortModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header" style="border-bottom: none;">
-                <h1 class="modal-title fs-5" id="sortModalLabel">Sort by:</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body p-0 m-0">
-                  {% for label in sortLabels %}
-                  <ul class="list-group list-group-flush p-0">
-                      <li class="list-group-item" id="sortLabel"><a class="stretched-link" href=""></a>{{label}}</li>
-                  </ul>
-                  {% endfor %}
-              </div>
-              <div class="modal-footer"></div>
-            </div>
-          </div>
-        </div>
+<!--filter modal-->
         <div class="modal fade text-dark" id="filterModal" tabindex="-1" aria-labelledby="sortModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -98,19 +90,44 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body p-0 m-0">
-                  {% for label in sortLabels %}
+                  {% for label in filterLabels %}
                   <ul class="list-group list-group-flush p-0">
                       <li class="list-group-item" id="filterLabel"><a class="stretched-link" href=""></a>{{label}}</li>
                   </ul>
                   {% endfor %}
               </div>
-              <div class="modal-footer">
+              <div class="modal-footer" style="border-top: none;">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Save changes</button>
               </div>
             </div>
           </div>
         </div>
+<!--sort Modal-->
+        <div class="modal fade text-dark" id="sortModal" tabindex="-1" aria-labelledby="sortModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2 class="modal-title fs-5" id="sortModalLabel">Sort by:</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body p-0 m-0">
+                  <ul class="list-group list-group-flush p-0">
+                      {% for label in sortOptions %}
+                      <li class="list-group-item p-0 m-0">
+                          <form action="{% url 'wiki:riders' %}" method="get">
+                            <input type="hidden" name="sort" value="{{label.1}}">
+                            <button type="submit" id="sortOption" class="btn rounded-0">{{label.0}}</button>
+                          </form>
+                      </li>
+                      {% endfor %}
+                  </ul>
+              </div>
+              <div class="modal-footer"></div>
+            </div>
+          </div>
+        </div>
+<!--riders table-->
         {% if riders %}
         <ul class="list-group list-group-table rounded-4" style="background-color: #272c32;">
             <li class="list-group-item" id="riders-header">
@@ -136,7 +153,7 @@
                 <div class="row align-items-center text-white">
                     <div class="col-1 d-flex justify-content-center">
                         <br>
-                        <h6>{{rider.alltime_rank}}</h6>
+                        <h6>{% if rider.rank %}{{rider.rank}}{% else %}-{% endif %}</h6>
                         <br>
                     </div>
                     <div class="col-2 py-1 d-none d-md-block ">
@@ -168,7 +185,7 @@
         {% with previous_index=page_index|sub:1 %}
             <div class="col-5 text-end">
             {% if previous_index > 0 %}
-                <h2><a class="riders-link" href="{% url 'wiki:riders' previous_index %}"><<</a></h2>
+                <h2><a class="riders-link" href="?page={{previous_index}}"><<</a></h2>
             {% else %}
                 <h2><a class="riders-link disabled-link"><<</a></h2>
              {% endif %}
@@ -181,7 +198,7 @@
                       </a>
                       <ul class="dropdown-menu dropdown-menu-center" id="dropdown-navigation" aria-labelledby="dropdownMenuLink">
                       {% for i in pages_count|times %}
-                          <li><a class="dropdown-item" href="{% url 'wiki:riders' i %}">{{i}}</a></li>
+                          <li><a class="dropdown-item" href="?page={{i}}">{{i}}</a></li>
                       {% endfor %}
                   </ul>
                 </div>
@@ -189,7 +206,7 @@
         {% with next_index=page_index|add:1 %}
             <div class="col-5 text-start">
             {% if next_index < 31 %}
-                <h2><a class="riders-link" href="{% url 'wiki:riders' next_index %}">>></a></h2>
+                <h2><a class="riders-link" href="?page={{next_index}}">>></a></h2>
             {% else %}
                 <h2><a class="riders-link disabled-link disabled">>></a></h2>
             {% endif %}
