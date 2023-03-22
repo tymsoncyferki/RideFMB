@@ -217,7 +217,7 @@
             <div class="col-5 text-start">
             {% if next_index <= pages_count %}
                 <form action="{% url 'wiki:riders' %}" method="get">
-                    {% if requests.GET.sort %}<input type="hidden" name="sort" value="{{ request.GET.sort }}">{% endif %}
+                    {% if request.GET.sort %}<input type="hidden" name="sort" value="{{ request.GET.sort }}">{% endif %}
                     <input type="hidden" name="page" value="{{next_index}}">
                     <button type="submit" class="btn btn-link riders-link"><h2>>></h2></button>
                 </form>
