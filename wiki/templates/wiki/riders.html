@@ -24,7 +24,7 @@
         .riders-link {
             color: #727af7;
             text-decoration: none;
-            padding-top: 10px;
+            padding-top: 0px;
             padding-left: 10px;
             padding-right: 10px;
         }
@@ -185,9 +185,13 @@
         {% with previous_index=page_index|sub:1 %}
             <div class="col-5 text-end">
             {% if previous_index > 0 %}
-                <h2><a class="riders-link" href="?page={{previous_index}}"><<</a></h2>
+                <form action="{% url 'wiki:riders' %}" method="get">
+                    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                    <input type="hidden" name="page" value="{{previous_index}}">
+                    <button type="submit" class="btn btn-link riders-link"><h2><<</h2></button>
+                </form>
             {% else %}
-                <h2><a class="riders-link disabled-link"><<</a></h2>
+                <button class="btn btn-link disabled-link riders-link"><h2><<</h2></button>
              {% endif %}
             </div>
         {% endwith %}
@@ -198,17 +202,27 @@
                       </a>
                       <ul class="dropdown-menu dropdown-menu-center" id="dropdown-navigation" aria-labelledby="dropdownMenuLink">
                       {% for i in pages_count|times %}
-                          <li><a class="dropdown-item" href="?page={{i}}">{{i}}</a></li>
+                          <li>
+                               <form action="{% url 'wiki:riders' %}" method="get">
+                                   <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                                   <input type="hidden" name="page" value="{{i}}">
+                                   <button type="submit" class="dropdown-item">{{i}}</button>
+                               </form>
+                          </li>
                       {% endfor %}
-                  </ul>
+                      </ul>
                 </div>
             </div>
         {% with next_index=page_index|add:1 %}
             <div class="col-5 text-start">
-            {% if next_index < 31 %}
-                <h2><a class="riders-link" href="?page={{next_index}}">>></a></h2>
+            {% if next_index <= pages_count %}
+                <form action="{% url 'wiki:riders' %}" method="get">
+                    {% if requests.GET.sort %}<input type="hidden" name="sort" value="{{ request.GET.sort }}">{% endif %}
+                    <input type="hidden" name="page" value="{{next_index}}">
+                    <button type="submit" class="btn btn-link riders-link"><h2>>></h2></button>
+                </form>
             {% else %}
-                <h2><a class="riders-link disabled-link disabled">>></a></h2>
+                <button class="btn btn-link disabled-link riders-link"><h2>>></h2></button>
             {% endif %}
             </div>
         </div>

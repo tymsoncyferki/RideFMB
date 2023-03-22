@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from wiki.models import *
 import threading
+from django.shortcuts import redirect
 
 
 def index(request):
@@ -49,11 +50,13 @@ def riders(request):
     sortQueries = ['-alltime_points', 'alltime_points', 'rank', '-rank', 'medals-asc', 'medals-desc']
     sortOptions = list(zip(sortLabels, sortQueries))
     filterLabels = ['Name', 'Country', 'Sponsors', 'Ranked']
+    urlParams = ['sort']
     # page
     riders = all_riders[start_idx:last_idx]
     pages_count = (all_riders.count() // 20) + 1
     return render(request, 'wiki/riders.html', {'riders': riders, 'page_index': page_idx, 'pages_count': pages_count,
-                                                'sortOptions': sortOptions, 'filterLabels': filterLabels})
+                                                'sortOptions': sortOptions, 'filterLabels': filterLabels,
+                                                'urlParams': urlParams})
 
 
 def event(request, event_id, slug):
