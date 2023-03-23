@@ -1,0 +1,20 @@
+body {
+    padding-top: 70px;
+    background-color: #181818;
+}
+.navbar {
+    background-color: #181818;
+    /*border-bottom: 1px solid #6c757d;*/
+}
+.navbar-brand {
+    color: #727af7;
+}
+.container-lg {
+    max-width: 960px;
+}
+a.nav-link:hover {
+    color: #727af7 !important;
+}
+#my-footer {
+    border-bottom: 1px solid #6c757d;
+}

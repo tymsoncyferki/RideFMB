@@ -1,0 +1,36 @@
+#main-container {
+    max-width: 960px;
+}
+#ranking-header {background-color: #4e545c;}
+#rider-ranking {background-color: transparent;}
+#rider-ranking:hover {background-color: #4e545c;}
+#rider-link {
+    color: white;
+    text-decoration: none;
+}
+#rider-points {
+    color: #272c32;
+    background-color: #727af7;
+    padding: 4px;
+}
+.ranking-link {
+    color: #727af7;
+    text-decoration: none;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.disabled-link {
+    color: lightgrey;
+    pointer-events: none;
+}
+#dropdownMenuLink {
+    color: #727af7;
+    padding: 5px 5px 0px 0px;
+}
+#dropdown-navigation {
+    height: auto;
+    max-height: 200px;
+    max-width: 50px;
+    overflow-x: hidden;
+}
