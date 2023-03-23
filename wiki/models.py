@@ -6,6 +6,7 @@ from django.utils.text import slugify
 from wiki.scripts.countries import *
 import pycountry
 
+
 class Country(models.Model):
     name = models.CharField(max_length=50, blank=True)
     shortname = models.CharField(max_length=5, blank=True)
@@ -160,14 +161,14 @@ class Rider(models.Model):
         photo = rider_info.find('img').get('src')
         try:
             instagram = rider_info.find('svg', {'class': 'icon-instagram'}).parent.get('href')
-        except:
+        except Exception:
             instagram = ''
         rider_history = rider_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
         try:
             rank = rider_history.find('a', {'href': "https://www.fmbworldtour.com/ranking?series=70"}). \
                 previous.previous_sibling.find('sup').previous_sibling
             active = True
-        except:
+        except Exception:
             rank = None
             active = False
 
@@ -181,7 +182,7 @@ class Rider(models.Model):
         event_soup = BeautifulSoup(event_page.text, 'lxml')
         try:
             rider_table = event_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
-        except:
+        except Exception:
             print('not data about event')
             return
         for rider in rider_table.find_all('tr'):
@@ -255,16 +256,6 @@ class Event(models.Model):
             print(n, event.name)
             event.slug = slugify(event.name)
             event.save()
-            n -= 1
-
-    @staticmethod
-    def fixNames():
-        riders = Event.objects.all()
-        n = riders.count()
-        for rider in riders:
-            print(n, rider.name)
-            rider.name = rider.slug.replace("-", " ").title()
-            rider.save()
             n -= 1
 
     @staticmethod
@@ -375,7 +366,7 @@ class Participation(models.Model):
             event_id = comp_url[compid_start_index:]
             try:
                 rank = row.find('a').previous.previous_sibling.find('sup').previous_sibling
-            except:
+            except Exception:
                 rank = None
             if Participation.objects.filter(rider__pk=rider_id, event__pk=event_id).exists():
                 continue
@@ -401,8 +392,8 @@ class Sponsorship(models.Model):
         rider_page = requests.get(rider_url)
         rider_soup = BeautifulSoup(rider_page.text, 'lxml')
         try:
-            rider_sponsors = rider_soup.find('p', {'class':'athlete-profile-sponsors'}).text.strip()
-        except:
+            rider_sponsors = rider_soup.find('p', {'class': 'athlete-profile-sponsors'}).text.strip()
+        except Exception:
             return
         sponsors = [sponsor.strip() for sponsor in rider_sponsors.split('|')]
         main = True
@@ -411,7 +402,8 @@ class Sponsorship(models.Model):
             if not Sponsor.objects.filter(name=sponsor_name).exists():
                 s = Sponsor(name=sponsor_name)
                 s.save()
-            Sponsorship(rider=Rider.objects.get(pk=rider_id), sponsor=Sponsor.objects.get(name=sponsor_name), main=main).save()
+            Sponsorship(rider=Rider.objects.get(pk=rider_id), sponsor=Sponsor.objects.get(name=sponsor_name),
+                        main=main).save()
             if main:
                 main = False
 
