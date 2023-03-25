@@ -81,7 +81,7 @@ WSGI_APPLICATION = "ridefmb.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "wiki/static/wiki/db.sqlite3",
+        "NAME": os.getenv('DB_PATH_LOCAL'),
     },
     'backup': {
         'ENGINE': 'django.db.backends.postgresql',
