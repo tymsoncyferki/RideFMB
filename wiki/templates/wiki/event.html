@@ -16,7 +16,7 @@
             <h2>Standings</h2>
             <ul>
             {% for part in participations %}
-                <li>{{part.rank}}. <a href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{part.rider.name}}</a>, {{part.points}} Points</a></li>
+                <li>{{part.rank}}. <a href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{part.rider.name}}</a>, {{part.points}} Points</li>
             {% endfor %}
             </ul>
         </div>

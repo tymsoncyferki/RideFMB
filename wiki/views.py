@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from wiki.models import *
-import threading
-from django.shortcuts import redirect
+from django.db.models import F
 
 
 def index(request):
@@ -18,12 +17,12 @@ def rider(request, rider_id, slug):
 def search(request):
     query = request.GET.get('q')
     if query:
-        riders = Rider.objects.filter(name__icontains=query)
-        events = Event.objects.filter(name__icontains=query)
+        riders_html = Rider.objects.filter(name__icontains=query)
+        events_html = Event.objects.filter(name__icontains=query)
     else:
-        riders = False
-        events = False
-    return render(request, 'wiki/search.html', {'riders': riders, 'events': events})
+        riders_html = False
+        events_html = False
+    return render(request, 'wiki/search.html', {'riders': riders_html, 'events': events_html})
 
 
 def riders(request):
@@ -38,25 +37,29 @@ def riders(request):
     all_riders = Rider.objects.all()
 
     # sorting
-    sortOption = request.GET.get('sort')
-    if sortOption:
-        all_riders = all_riders.order_by(sortOption)
+    sort_option = request.GET.get('sort')
+    if sort_option:
+        if sort_option[0] == '-':
+            sort = sort_option[1:]
+            all_riders = all_riders.order_by(F(sort).desc(nulls_last=True))
+        else:
+            all_riders = all_riders.order_by(F(sort_option).asc(nulls_last=True))
     else:
         all_riders = Rider.objects.all().order_by('alltime_rank')
 
     # arguments
-    sortLabels = ['Most all-time points', 'Least all-time points', 'Rank ascending',
-                  'Rank descending', 'Most medals', 'Least medals']
-    sortQueries = ['-alltime_points', 'alltime_points', 'rank', '-rank', 'medals-asc', 'medals-desc']
-    sortOptions = list(zip(sortLabels, sortQueries))
-    filterLabels = ['Name', 'Country', 'Sponsors', 'Ranked']
-    urlParams = ['sort']
+    sort_labels = ['Most all-time points', 'Least all-time points', 'Rank ascending', 'Rank descending', 'Gold medals',
+                   'Silver medals', 'Bronze medals']
+    sort_queries = ['-alltime_points', 'alltime_points', 'rank', '-rank', 'gold', 'silver', 'bronze']
+    sort_options = list(zip(sort_labels, sort_queries))
+    filter_labels = ['Name', 'Country', 'Sponsors', 'Ranked']
+    url_params = ['sort']
     # page
-    riders = all_riders[start_idx:last_idx]
+    riders_html = all_riders[start_idx:last_idx]
     pages_count = (all_riders.count() // 20) + 1
-    return render(request, 'wiki/riders.html', {'riders': riders, 'page_index': page_idx, 'pages_count': pages_count,
-                                                'sortOptions': sortOptions, 'filterLabels': filterLabels,
-                                                'urlParams': urlParams})
+    return render(request, 'wiki/riders.html', {'riders': riders_html, 'page_index': page_idx,
+                                                'pages_count': pages_count, 'sortOptions': sort_options,
+                                                'filterLabels': filter_labels, 'urlParams': url_params})
 
 
 def event(request, event_id, slug):
@@ -69,17 +72,17 @@ def events(request, page_idx=1):
     start_idx = (page_idx - 1) * 10
     last_idx = start_idx + 30
     # events = Event.objects.all().order_by('-date')[start_idx:last_idx]
-    events = Event.objects.all().order_by('-date')
-    return render(request, 'wiki/events.html', {'events': events})
+    events_html = Event.objects.all().order_by('-date')
+    return render(request, 'wiki/events.html', {'events': events_html})
 
 
 def schedule(request, year):
-    events = Event.objects.filter(year=year).order_by('date')
-    return render(request, 'wiki/schedule.html', {'events': events, 'year': year})
+    events_html = Event.objects.filter(year=year).order_by('date')
+    return render(request, 'wiki/schedule.html', {'events': events_html, 'year': year})
 
 
 def ranking(request, page_idx):
     start_idx = (page_idx - 1) * 10
     last_idx = start_idx + 10
-    riders = Rider.objects.filter(active=True).filter(rank__gt=0).order_by('rank')[start_idx:last_idx]
-    return render(request, 'wiki/ranking.html', {'riders': riders, 'page_index': page_idx})
+    riders_html = Rider.objects.filter(active=True).filter(rank__gt=0).order_by('rank')[start_idx:last_idx]
+    return render(request, 'wiki/ranking.html', {'riders': riders_html, 'page_index': page_idx})

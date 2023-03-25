@@ -43,13 +43,13 @@
                         <br>
                     </div>
                     <div class="col-2 py-1 d-none d-md-block ">
-                        <img src="{{rider.photo}}" class="rounded-circle border border-3 border-white" width="90" height="90">
+                        <img alt="Rider photo" src="{{rider.photo}}" class="rounded-circle border border-3 border-white" width="90" height="90">
                     </div>
                     <div class="col-2 d-none d-sm-block d-md-none">
-                        <img src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="70" height="70">
+                        <img alt="Rider photo" src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="70" height="70">
                     </div>
                     <div class="col d-sm-none" style="max-width: 60px;">
-                        <img src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="50" height="50">
+                        <img alt="Rider photo" src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="50" height="50">
                     </div>
                     <div class="col">
                         <h6 style="margin: 0;"><a class="stretched-link" id="rider-link" href="{% url 'wiki:rider' rider.id rider.slug %}">{{rider.name}}</a></h6>

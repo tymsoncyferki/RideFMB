@@ -266,7 +266,7 @@ class Event(models.Model):
     @staticmethod
     def scrapeEvent(status, date_str, event_url):
         id_start_index = event_url.index('=') + 1
-        newid = event_url[id_start_index:]
+        new_id = event_url[id_start_index:]
         date = datetime.strptime(date_str, '%d %b %Y').date()
         year = date.year
         completed = True
@@ -293,7 +293,7 @@ class Event(models.Model):
         event_partners = event_details.find('strong', text='Partners: ')
         partners = event_partners.next_sibling.text.strip()
 
-        event = Event(id=newid, name=name, date=date, year=year, city=city, country=country,
+        event = Event(id=new_id, name=name, date=date, year=year, city=city, country=country,
                       category=category, discipline=discipline, completed=completed,
                       prize=prize, website=website, partners=partners)
         return event
