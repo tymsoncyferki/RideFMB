@@ -54,7 +54,9 @@
                       <li class="list-group-item p-0 m-0">
                           <form action="{% url 'wiki:riders' %}" method="get">
                             <input type="hidden" name="sort" value="{{label.1}}">
-                            <button type="submit" id="sortOption" class="btn rounded-0">{{label.0}}</button>
+                            <button type="submit" id="sortOption" class="btn rounded-0">
+                                {% if request.GET.sort == label.1 %}<strong>{{label.0}}</strong>{% else %}{{label.0}}{% endif %}
+                            </button>
                           </form>
                       </li>
                       {% endfor %}
