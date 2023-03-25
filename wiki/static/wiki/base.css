@@ -18,3 +18,38 @@ a.nav-link:hover {
 #my-footer {
     border-bottom: 1px solid #6c757d;
 }
+input.search-bar,
+input.search-bar:active,
+input.search-bar:focus,
+input.search-bar:checked {
+    color: #c9c9c9;
+    background-color: #272c32;
+    border: none transparent;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
+
+button.search-btn {
+    color: #6c757d;
+    background-color: #272c32;
+    border-color: transparent;
+}
+
+button.search-btn:hover {
+    color: white;
+    background-color: #272c32;
+    border-color: transparent;
+}
+.menu-btn {
+    color: white;
+    border: none;
+}
+.logo-btn {
+    padding: 6px;
+    background-color: #727af7;
+    max-width: 60px;
+    max-height: 60px;
+}
