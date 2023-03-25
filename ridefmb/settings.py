@@ -26,10 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.getenv("DEBUG"))
 
 ALLOWED_HOSTS = ['*']
 
+# Deployment settings
+CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE")
+SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE")
 
 # Application definition
 
@@ -81,7 +84,7 @@ WSGI_APPLICATION = "ridefmb.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.getenv('DB_PATH_LOCAL'),
+        "NAME": os.getenv('DB_PATH'),
     },
     'backup': {
         'ENGINE': 'django.db.backends.postgresql',
