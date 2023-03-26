@@ -9,6 +9,17 @@ body {
 .navbar-brand {
     color: #727af7;
 }
+
+.navbar-brand img:last-child {
+  display: none;
+}
+.navbar-brand:hover img:last-child {
+    display: inline;
+}
+.navbar-brand:hover img:first-child {
+  display: none;
+}
+
 .container-lg {
     max-width: 960px;
 }
