@@ -39,5 +39,7 @@ def printMedal(rider, s):
         return rider.gold
     elif s == '-silver':
         return rider.silver
-    else:
+    elif s == '-bronze':
         return rider.bronze
+    else:
+        return rider.medal

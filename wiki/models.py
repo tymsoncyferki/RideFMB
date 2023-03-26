@@ -56,6 +56,7 @@ class Rider(models.Model):
     points = models.IntegerField(default=0)
     alltime_rank = models.IntegerField(default=0, null=True)
     alltime_points = models.FloatField(default=0)
+    medal = models.IntegerField(default=0)
     gold = models.IntegerField(default=0)
     silver = models.IntegerField(default=0)
     bronze = models.IntegerField(default=0)
@@ -63,33 +64,6 @@ class Rider(models.Model):
 
     def __str__(self):
         return self.name
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(Rider, self).save(*args, **kwargs)
-
-    @staticmethod
-    def countMedals():
-        riders = Rider.objects.all()
-        n = 0
-        for rider in riders:
-            print(n, 'scraping', rider.name)
-            n += 1
-            gold = 0
-            silver = 0
-            bronze = 0
-            parts = rider.participation_set
-            for part in parts:
-                if part.rank == 1:
-                    gold += 1
-                elif part.rank == 2:
-                    silver += 1
-                elif part.rank == 3:
-                    bronze += 1
-            rider.gold = gold
-            rider.silver = silver
-            rider.bronze = bronze
-            rider.save()
 
     @staticmethod
     def setRankAT():
@@ -157,20 +131,30 @@ class Rider(models.Model):
     @staticmethod
     def countMedals():
         riders = Rider.objects.all()
-        n = riders.count()
+        n = 0
         for rider in riders:
-            print(n, rider.name)
+            print(n, 'scraping', rider.name)
+            n += 1
+            golds = 0
+            silvers = 0
+            bronzes = 0
             parts = rider.participation_set.all()
+            rider.alltime_points = 0
+            points = 0
             for part in parts:
                 if part.rank == 1:
-                    rider.gold += 1
+                    golds += 1
                 elif part.rank == 2:
-                    rider.silver += 1
+                    silvers += 1
                 elif part.rank == 3:
-                    rider.bronze += 1
-                rider.alltime_points += part.points
+                    bronzes += 1
+                points += part.points
+            rider.alltime_points = points
+            rider.gold = golds
+            rider.silver = silvers
+            rider.bronze = bronzes
+            rider.medal = golds + silvers + bronzes
             rider.save()
-            n -= 1
 
     @staticmethod
     def scrapeRider(rider_url):

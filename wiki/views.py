@@ -36,6 +36,11 @@ def riders(request):
     last_idx = start_idx + 20
     all_riders = Rider.objects.all()
 
+    # filtering
+    country = request.GET.get('country')
+    if country:
+        all_riders = all_riders.filter(country__isocode=country)
+
     # sorting
     sort_option = request.GET.get('sort')
     if sort_option:
@@ -48,14 +53,16 @@ def riders(request):
         all_riders = Rider.objects.all().order_by('alltime_rank')
 
     # arguments
-    sort_labels = ['Most all-time points', 'Least all-time points', 'Rank ascending', 'Rank descending', 'Gold medals',
-                   'Silver medals', 'Bronze medals', 'Name']
-    sort_queries = ['-alltime_points', 'alltime_points', 'rank', '-rank', '-gold', '-silver', '-bronze', 'name']
+    sort_labels = ['Most all-time points', 'Least all-time points', 'Rank ascending', 'Rank descending', 'Medals',
+                   'Gold medals', 'Silver medals', 'Bronze medals', 'Name']
+    sort_queries = ['-alltime_points', 'alltime_points', 'rank', '-rank', '-medal', '-gold', '-silver', '-bronze',
+                    'name']
     sort_options = list(zip(sort_labels, sort_queries))
     filter_labels = ['Name', 'Country', 'Sponsors', 'Ranked']
     url_params = ['sort']
-    medals = ['-gold', '-silver', '-bronze']
-    countries = Country.objects.all()
+    medals = ['-medal', '-gold', '-silver', '-bronze']
+    countries = Country.objects.all().order_by('name')
+
     # page
     riders_html = all_riders[start_idx:last_idx]
     pages_count = (all_riders.count() // 20) + 1

@@ -1,6 +1,54 @@
+/*General*/
 #main-container {
     max-width: 960px;
 }
+.btn-menu {
+    width: 100%;
+    background-color: #727af7;
+    color: white;
+}
+.btn-menu:hover {
+    background-color: #8087ff;
+}
+
+/*Filter Modal*/
+#dropdownMenuCountry {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #e0e0e0
+}
+
+#dropdown-countries {
+    height: auto;
+    max-height: 200px;
+    max-width: 200px;
+    overflow-x: hidden;
+}
+#filterLabel,
+#filterDropdown{
+    border-bottom: 1px solid #e0e0e0;
+}
+#filterLabel:hover,
+#filterDropdown:hover {
+    background-color: #e0e0e0;
+}
+
+/*Sort Modal*/
+#sortLabel {
+    border-bottom: 1px solid #e0e0e0;
+}
+#sortLabel:hover {
+    background-color: #e0e0e0;
+}
+
+#sortOption {
+    width: 100%;
+}
+#sortOption:hover {
+    background-color: #e0e0e0;
+}
+
+/*Riders table*/
 #riders-header {background-color: #4e545c;}
 #rider-riders {background-color: transparent;}
 #rider-riders:hover {background-color: #4e545c;}
@@ -13,6 +61,7 @@
     background-color: #727af7;
     padding: 4px;
 }
+/*Navigation*/
 .riders-link {
     color: #727af7;
     text-decoration: none;
@@ -35,38 +84,6 @@
     overflow-x: hidden;
 }
 
-#dropdown-countries {
-    height: auto;
-    max-height: 200px;
-    max-width: 200px;
-    overflow-x: hidden;
-}
 
-.btn-menu {
-    width: 100%;
-    background-color: #727af7;
-    color: white;
-}
-.btn-menu:hover {
-    background-color: #8087ff;
-}
-#sortLabel {
-    border-bottom: 1px solid #e0e0e0;
-}
-#sortLabel:hover {
-    background-color: #e0e0e0;
-}
-#filterLabel,
-#filterDropdown{
-    border-bottom: 1px solid #e0e0e0;
-}
-#filterLabel:hover,
-#filterDropdown:hover {
-    background-color: #e0e0e0;
-}
-#sortOption {
-    width: 100%;
-}
-#sortOption:hover {
-    background-color: #e0e0e0;
-}
+
+
