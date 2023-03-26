@@ -32,31 +32,36 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-0 m-0">
-                    <!-- filter body -->
-                        <ul class="list-group list-group-flush p-0">
-                            <li class="list-group-item">
-                                <a class="btn rounded-0 dropdown-toggle" href="#" role="button" id="dropdownMenuCountry"
-                                   data-bs-toggle="dropdown" aria-expanded="false">COUNTRY</a>
-                                <ul class="dropdown-menu" id="dropdown-countries"
-                                    aria-labelledby="dropdownMenuCountry">
+                    <!--filter body-->
+                        <form id="filters" action="{% url 'wiki:riders' %}" method="get">
+                            <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="country" id="country">
+                                    {% if not request.GET.country %}
+                                    <option value="all" selected>Select country</option>
+                                    {% endif %}
+                                    <option value="all">All</option>
                                     {% for country in countries %}
-                                        <li>
-                                            <form action="{% url 'wiki:riders' %}" method="get">
-                                                {% if request.GET.sort %}
-                                                    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
-                                                {% endif %}
-                                                <input type="hidden" name="country" value="{{ country.isocode }}">
-                                                <button type="submit" class="dropdown-item">{{ country.name }}</button>
-                                            </form>
-                                        </li>
+                                    <option value="{{ country.isocode }}"{% if request.GET.country == country.isocode %} selected {% endif %}>{{ country.name }}</option>
                                     {% endfor %}
-                                </ul>
-                            </li>
-                        </ul>
+                                </select>
+                            </div>
+                            <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="ranked" id="ranked">
+                                    {% if not request.GET.ranked %}
+                                    <option value="all" selected>Select status</option>
+                                    {% endif %}
+                                    <option value="all" {% if request.GET.ranked == 'all' %} selected {% endif %}>All</option>
+                                    <option value="yes" {% if request.GET.ranked == 'yes' %} selected {% endif %}>Ranked</option>
+                                    <option value="no" {% if request.GET.ranked == 'no' %} selected {% endif %}>Not ranked</option>
+                                </select>
+                            </div>
+                            {% if request.GET.sort %}
+                                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                            {% endif %}
+                        </form>
                     </div>
                     <div class="modal-footer" style="border-top: none;">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="submit" form="filters" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>

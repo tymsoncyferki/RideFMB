@@ -38,8 +38,15 @@ def riders(request):
 
     # filtering
     country = request.GET.get('country')
-    if country:
+    if country and country != 'all':
         all_riders = all_riders.filter(country__isocode=country)
+
+    ranked = request.GET.get('ranked')
+    if ranked and ranked != 'all':
+        if ranked == 'yes':
+            all_riders = all_riders.filter(active=True)
+        else:
+            all_riders = all_riders.filter(active=False)
 
     # sorting
     sort_option = request.GET.get('sort')
@@ -50,7 +57,7 @@ def riders(request):
         else:
             all_riders = all_riders.order_by(F(sort_option).asc(nulls_last=True))
     else:
-        all_riders = Rider.objects.all().order_by('alltime_rank')
+        all_riders = all_riders.order_by('alltime_rank')
 
     # arguments
     sort_labels = ['Most all-time points', 'Least all-time points', 'Rank ascending', 'Rank descending', 'Medals',
