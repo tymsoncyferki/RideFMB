@@ -41,6 +41,8 @@ class Country(models.Model):
 
 
 class Rider(models.Model):
+    firstname = models.CharField(max_length=100, blank=True)
+    lastname = models.CharField(max_length=100, blank=True)
     name = models.CharField(max_length=150, blank=True)
     slug = models.SlugField(max_length=150, default='rider_name')
     country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True)
@@ -64,6 +66,17 @@ class Rider(models.Model):
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def splitNames():
+        n = 0
+        for rider in Rider.objects.all():
+            print(n, rider)
+            n += 1
+            namelist = rider.name.split(' ')
+            rider.firstname = namelist[0]
+            rider.lastname = ' '.join(namelist[1:])
+            rider.save()
 
     @staticmethod
     def setRankAT():

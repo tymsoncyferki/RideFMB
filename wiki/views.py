@@ -56,7 +56,7 @@ def riders(request):
     sort_labels = ['Most all-time points', 'Least all-time points', 'Rank ascending', 'Rank descending', 'Medals',
                    'Gold medals', 'Silver medals', 'Bronze medals', 'Name']
     sort_queries = ['-alltime_points', 'alltime_points', 'rank', '-rank', '-medal', '-gold', '-silver', '-bronze',
-                    'name']
+                    'lastname']
     sort_options = list(zip(sort_labels, sort_queries))
     filter_labels = ['Name', 'Country', 'Sponsors', 'Ranked']
     url_params = ['sort']
