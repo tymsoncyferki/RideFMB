@@ -22,3 +22,22 @@ def yearIterate(year):
 def asInt(number):
     return int(number)
 
+
+@register.filter(name='path')
+def getPath(path):
+    return path.split('/')[1]
+
+
+@register.filter(name='label')
+def makeLabel(s):
+    return s[1].upper() + s[2:] + 's'
+
+
+@register.filter(name='medal')
+def printMedal(rider, s):
+    if s == '-gold':
+        return rider.gold
+    elif s == '-silver':
+        return rider.silver
+    else:
+        return rider.bronze

@@ -69,6 +69,29 @@ class Rider(models.Model):
         super(Rider, self).save(*args, **kwargs)
 
     @staticmethod
+    def countMedals():
+        riders = Rider.objects.all()
+        n = 0
+        for rider in riders:
+            print(n, 'scraping', rider.name)
+            n += 1
+            gold = 0
+            silver = 0
+            bronze = 0
+            parts = rider.participation_set
+            for part in parts:
+                if part.rank == 1:
+                    gold += 1
+                elif part.rank == 2:
+                    silver += 1
+                elif part.rank == 3:
+                    bronze += 1
+            rider.gold = gold
+            rider.silver = silver
+            rider.bronze = bronze
+            rider.save()
+
+    @staticmethod
     def setRankAT():
         riders = Rider.objects.all().order_by('-alltime_points')
         i = 1

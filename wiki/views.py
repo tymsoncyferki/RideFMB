@@ -49,17 +49,19 @@ def riders(request):
 
     # arguments
     sort_labels = ['Most all-time points', 'Least all-time points', 'Rank ascending', 'Rank descending', 'Gold medals',
-                   'Silver medals', 'Bronze medals']
-    sort_queries = ['-alltime_points', 'alltime_points', 'rank', '-rank', 'gold', 'silver', 'bronze']
+                   'Silver medals', 'Bronze medals', 'Name']
+    sort_queries = ['-alltime_points', 'alltime_points', 'rank', '-rank', '-gold', '-silver', '-bronze', 'name']
     sort_options = list(zip(sort_labels, sort_queries))
     filter_labels = ['Name', 'Country', 'Sponsors', 'Ranked']
     url_params = ['sort']
+    medals = ['-gold', '-silver', '-bronze']
     # page
     riders_html = all_riders[start_idx:last_idx]
     pages_count = (all_riders.count() // 20) + 1
     return render(request, 'wiki/riders.html', {'riders': riders_html, 'page_index': page_idx,
                                                 'pages_count': pages_count, 'sortOptions': sort_options,
-                                                'filterLabels': filter_labels, 'urlParams': url_params})
+                                                'filterLabels': filter_labels, 'urlParams': url_params,
+                                                'medals': medals})
 
 
 def event(request, event_id, slug):

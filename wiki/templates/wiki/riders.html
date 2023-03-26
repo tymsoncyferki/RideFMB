@@ -82,9 +82,15 @@
                     <div class="col-3 d-none d-sm-block">
                         Sponsor
                     </div>
+                    {% if request.GET.sort in medals %}
+                    <div class="col-2 d-flex justify-content-center">
+                        {{ request.GET.sort|label }}
+                    </div>
+                    {% else %}
                     <div class="col-2 d-flex justify-content-center">
                         Points
                     </div>
+                    {% endif %}
                 </div>
             </li>
             {% for rider in riders %}
@@ -113,7 +119,11 @@
                     </div>
                     <div class="col-2 d-flex justify-content-center">
                         <br>
+                        {% if request.GET.sort in medals %}
+                        <h6 id="rider-points" class="rounded-2">{{ rider|medal:request.GET.sort }}</h6>
+                        {% else %}
                         <h6 id="rider-points" class="rounded-2">{{rider.alltime_points|asint}}</h6>
+                        {% endif %}
                         <br>
                     </div>
                 </div>
