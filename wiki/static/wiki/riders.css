@@ -34,6 +34,14 @@
     max-width: 50px;
     overflow-x: hidden;
 }
+
+#dropdown-countries {
+    height: auto;
+    max-height: 200px;
+    max-width: 200px;
+    overflow-x: hidden;
+}
+
 .btn-menu {
     width: 100%;
     background-color: #727af7;
@@ -48,10 +56,12 @@
 #sortLabel:hover {
     background-color: #e0e0e0;
 }
-#filterLabel {
+#filterLabel,
+#filterDropdown{
     border-bottom: 1px solid #e0e0e0;
 }
-#filterLabel:hover {
+#filterLabel:hover,
+#filterDropdown:hover {
     background-color: #e0e0e0;
 }
 #sortOption {

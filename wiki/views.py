@@ -55,13 +55,14 @@ def riders(request):
     filter_labels = ['Name', 'Country', 'Sponsors', 'Ranked']
     url_params = ['sort']
     medals = ['-gold', '-silver', '-bronze']
+    countries = Country.objects.all()
     # page
     riders_html = all_riders[start_idx:last_idx]
     pages_count = (all_riders.count() // 20) + 1
     return render(request, 'wiki/riders.html', {'riders': riders_html, 'page_index': page_idx,
                                                 'pages_count': pages_count, 'sortOptions': sort_options,
                                                 'filterLabels': filter_labels, 'urlParams': url_params,
-                                                'medals': medals})
+                                                'medals': medals, 'countries': countries})
 
 
 def event(request, event_id, slug):

@@ -27,11 +27,23 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body p-0 m-0">
-                  {% for label in filterLabels %}
                   <ul class="list-group list-group-flush p-0">
+                  {% for label in filterLabels %}
                       <li class="list-group-item" id="filterLabel"><a class="stretched-link" href=""></a>{{label}}</li>
-                  </ul>
                   {% endfor %}
+                    <li class="list-group-item">
+                      <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuCountry" data-bs-toggle="dropdown" aria-expanded="false">
+                        COUNTRY
+                      </a>
+                        <ul class="dropdown-menu dropdown-menu-center" id="dropdown-countries" aria-labelledby="dropdownMenuCountry">
+                        {% for country in countries %}
+                        <li>
+                            <button type="submit" class="dropdown-item" id="filterDropdown">{{ country.name }}</button>
+                        </li>
+                        {% endfor %}
+                        </ul>
+                    </li>
+                  </ul>
               </div>
               <div class="modal-footer" style="border-top: none;">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
