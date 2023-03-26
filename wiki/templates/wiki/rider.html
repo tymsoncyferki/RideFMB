@@ -1,30 +1,33 @@
 {% extends 'wiki/base.html' %}
 
-{% block title %}{{rider.name}} - History and Information | RideFMB{% endblock %}
+{% block title %}{{ rider.name }} - History and Information | RideFMB{% endblock %}
 
 {% block content %}
     <div class="container-xxl">
         <div class="container-lg" style="max-width: 960px">
-            <h1>{{rider.name}}</h1>
-            <img alt="Rider photo" src="{{rider.photo}}">
+            <h1>{{ rider.name }}</h1>
+            <img alt="Rider photo" src="{{ rider.photo }}">
             <h2>Information</h2>
             <div>
-                <p>Nationality: {{rider.nationality}}</p>
-                <p>FMB World Tour Rank: {{rider.rank}}</p>
-                <p>Date of Birth: {{rider.birth}}</p>
+                <p>Nationality: {{ rider.nationality }}</p>
+                <p>FMB World Tour Rank: {{ rider.rank }}</p>
+                <p>Date of Birth: {{ rider.birth }}</p>
                 <p>Sponsors: </p>
                 <ul>
-                {% for spon in sponsorships %}
-                    <li>{{spon.sponsor.name}}</li>
-                {% endfor %}
+                    {% for spon in sponsorships %}
+                        <li>{{ spon.sponsor.name }}</li>
+                    {% endfor %}
                 </ul>
-                <a href={{rider.instagram}} target="_blank">Instagram</a>
+                <a href={{ rider.instagram }} target="_blank">Instagram</a>
             </div>
             <h2>Event History</h2>
             <ul>
-            {% for part in participations %}
-                <li>{{part.event.year}} <a href="{% url 'wiki:event' part.event.id part.event.slug %}">{{part.event.name}}</a>, {{part.rank}}. place</li>
-            {% endfor %}
+                {% for part in participations %}
+                    <li>{{ part.event.year }} <a
+                            href="{% url 'wiki:event' part.event.id part.event.slug %}">{{ part.event.name }}</a>, {{ part.rank }}.
+                        place
+                    </li>
+                {% endfor %}
             </ul>
         </div>
     </div>

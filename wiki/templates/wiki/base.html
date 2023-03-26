@@ -6,81 +6,96 @@
     <title>{% block title %}{% endblock %}</title>
     {% load static %}
     {% load wiki_extras %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link href="{% static 'wiki/base.css' %}" rel="stylesheet">
     {% block head %}
     {% endblock %}
 </head>
 <body class="text-light">
-    <nav class="navbar fixed-top navbar-expand-md navbar-dark">
-        <div class="container-xxl">
-            <a class="navbar-brand" href="{% url 'wiki:index' %}">
-                <img class="logo-btn rounded-2" src="https://see.fontimg.com/api/renderfont4/jEr99/eyJyIjoiZnMiLCJoIjo2NSwidyI6MTAwMCwiZnMiOjY1LCJmZ2MiOiIjMjYyNjI2IiwiYmdjIjoiIzBGODBFRiIsInQiOjF9/UkY/excludeditalic.png" alt="Bold fonts">
-                <img class="logo-btn rounded-2" src="https://see.fontimg.com/api/renderfont4/jEr99/eyJyIjoiZnMiLCJoIjo2NCwidyI6MTAwMCwiZnMiOjY0LCJmZ2MiOiIjRkZGRkZGIiwiYmdjIjoiI0ZGRkZGRiIsInQiOjF9/UkY/excludeditalic.png" alt="Bold fonts">
-            </a>
-            <div class="col d-md-none" style="padding-right: 10px">
-                <form class="d-flex" method="GET" action="{% url 'wiki:search' %}">
-                    <div class="input-group">
-                        <input type="text" name="q" class="search-bar form-control" placeholder="Search">
-                        <button class="btn btn-outline-light search-btn" type="submit">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-auto">
-                <button class="navbar-toggler menu-btn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'wiki:ranking' 1 %}" {% if request.path|path == 'ranking' %}style="color: #727af7;"{% endif %}><strong>Ranking</strong></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'wiki:schedule' 2023 %}" {% if request.path|path == 'schedule' %}style="color: #727af7;"{% endif %}><strong>Schedule</strong></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'wiki:riders' %}?sort=-alltime_points" {% if request.path|path == 'riders' %}style="color: #727af7;"{% endif %}><strong>Riders</strong></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'wiki:events' %}" {% if request.path|path == 'events' %}style="color: #727af7;"{% endif %}><strong>Events</strong></a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-auto d-none d-md-block">
-                <form class="d-flex" method="GET" action="{% url 'wiki:search' %}">
-                    <div class="input-group">
-                      <input type="text" name="q" class="search-bar form-control" placeholder="Search">
-                      <button class="btn btn-outline-light search-btn" type="submit">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
-                          </svg>
-                      </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </nav>
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+<nav class="navbar fixed-top navbar-expand-md navbar-dark">
     <div class="container-xxl">
-      <footer class="py-3 my-4">
+        <a class="navbar-brand" href="{% url 'wiki:index' %}">
+            <img class="logo-btn rounded-2"
+                 src="https://see.fontimg.com/api/renderfont4/jEr99/eyJyIjoiZnMiLCJoIjo2NSwidyI6MTAwMCwiZnMiOjY1LCJmZ2MiOiIjMjYyNjI2IiwiYmdjIjoiIzBGODBFRiIsInQiOjF9/UkY/excludeditalic.png"
+                 alt="Bold fonts">
+            <img class="logo-btn rounded-2"
+                 src="https://see.fontimg.com/api/renderfont4/jEr99/eyJyIjoiZnMiLCJoIjo2NCwidyI6MTAwMCwiZnMiOjY0LCJmZ2MiOiIjRkZGRkZGIiwiYmdjIjoiI0ZGRkZGRiIsInQiOjF9/UkY/excludeditalic.png"
+                 alt="Bold fonts">
+        </a>
+        <div class="col d-md-none" style="padding-right: 10px">
+            <form class="d-flex" method="GET" action="{% url 'wiki:search' %}">
+                <div class="input-group">
+                    <input type="text" name="q" class="search-bar form-control" placeholder="Search">
+                    <button class="btn btn-outline-light search-btn" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-auto">
+            <button class="navbar-toggler menu-btn" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'wiki:ranking' 1 %}"
+                       {% if request.path|path == 'ranking' %}style="color: #727af7;"{% endif %}><strong>Ranking</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'wiki:schedule' 2023 %}"
+                       {% if request.path|path == 'schedule' %}style="color: #727af7;"{% endif %}><strong>Schedule</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'wiki:riders' %}?sort=-alltime_points"
+                       {% if request.path|path == 'riders' %}style="color: #727af7;"{% endif %}><strong>Riders</strong></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'wiki:events' %}"
+                       {% if request.path|path == 'events' %}style="color: #727af7;"{% endif %}><strong>Events</strong></a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-auto d-none d-md-block">
+            <form class="d-flex" method="GET" action="{% url 'wiki:search' %}">
+                <div class="input-group">
+                    <input type="text" name="q" class="search-bar form-control" placeholder="Search">
+                    <button class="btn btn-outline-light search-btn" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+<div class="container-xxl">
+    <footer class="py-3 my-4">
         <ul class="nav justify-content-center pb-3 mb-3" id="my-footer">
-          <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Help</a></li>
-          <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Contact</a></li>
-          <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Help</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Contact</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
         </ul>
         <p class="text-center text-muted">© 2023 RideFMB Team</p>
-      </footer>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    {% block scripts %}
-    {% endblock %}
+    </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+{% block scripts %}
+{% endblock %}
 </body>
 </html>

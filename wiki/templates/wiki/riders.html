@@ -142,10 +142,12 @@
                                      height="50">
                             </div>
                             <div class="col">
-                                <h6 style="margin: 0;"><a class="stretched-link" id="rider-link"
-                                                          href="{% url 'wiki:rider' rider.id rider.slug %}">{{ rider.name }}</a>
+                                <h6 style="margin: 0;">
+                                    <a class="stretched-link" id="rider-link" href="{% url 'wiki:rider' rider.id rider.slug %}">
+                                        {{ rider.name }}
+                                    </a>
                                 </h6>
-                                <small>{{ rider.country.shortname }}</small>
+                                <img alt="Rider country flag" src="{{ rider.country.photo }}">
                             </div>
                             <div class="col-3 d-none d-sm-block">
                                 <h6>{{ rider.mainsponsor }}</h6>

@@ -6,9 +6,10 @@
     <div class="container-xxl">
         <h1>Competitions</h1>
         <ul>
-        {% for event in events %}
-            <li>{{event.date}} <a href="{% url 'wiki:event' event.id event.slug %}">{{event.name}}</a>{% if event.completed %} - Completed{% else %} - Upcoming{% endif %}</li>
-        {% endfor %}
+            {% for event in events %}
+                <li>{{ event.date }} <a href="{% url 'wiki:event' event.id event.slug %}">{{ event.name }}</a>
+                    {% if event.completed %} - Completed{% else %} - Upcoming{% endif %}</li>
+            {% endfor %}
         </ul>
     </div>
 {% endblock %}

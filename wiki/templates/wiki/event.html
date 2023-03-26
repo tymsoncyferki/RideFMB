@@ -1,23 +1,26 @@
 {% extends 'wiki/base.html' %}
 
-{% block title %}{{event.name}} {{event.year}} - Standings and Information | RideFMB{% endblock %}
+{% block title %}{{ event.name }} {{ event.year }} - Standings and Information | RideFMB{% endblock %}
 
 {% block content %}
     <div class="container-xxl">
-        <h1>{{event.name}}</h1>
-        <span>{{event.year}}</span>
+        <h1>{{ event.name }}</h1>
+        <span>{{ event.year }}</span>
         <div>
             <h2>Information</h2>
-            <p>Place: {{event.city}}, {{event.country}}</p>
-            <p>Category: {{event.category}}</p>
-            <p>Discipline: {{event.discipline}}</p>
+            <p>Place: {{ event.city }}, {{ event.country }}</p>
+            <p>Category: {{ event.category }}</p>
+            <p>Discipline: {{ event.discipline }}</p>
         </div>
         <div>
             <h2>Standings</h2>
             <ul>
-            {% for part in participations %}
-                <li>{{part.rank}}. <a href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{part.rider.name}}</a>, {{part.points}} Points</li>
-            {% endfor %}
+                {% for part in participations %}
+                    <li>{{ part.rank }}. <a
+                            href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>, {{ part.points }}
+                        Points
+                    </li>
+                {% endfor %}
             </ul>
         </div>
     </div>
