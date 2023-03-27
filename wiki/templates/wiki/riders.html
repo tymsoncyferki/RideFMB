@@ -47,7 +47,7 @@
                             <div class="filter-element">
                                 <select class="form-select filter-select rounded-0" name="ranked" id="ranked">
                                     {% if not request.GET.ranked %}
-                                    <option value="all" selected>Select status</option>
+                                        <option value="all" selected>Select status</option>
                                     {% endif %}
                                     <option value="all" {% if request.GET.ranked == 'all' %} selected {% endif %}>All</option>
                                     <option value="yes" {% if request.GET.ranked == 'yes' %} selected {% endif %}>Ranked</option>
@@ -81,6 +81,9 @@
                                     <form action="{% url 'wiki:riders' %}" method="get">
                                         {% if request.GET.country %}
                                             <input type="hidden" name="country" value="{{ request.GET.country }}">
+                                        {% endif %}
+                                        {% if request.GET.ranked %}
+                                            <input type="hidden" name="ranked" value="{{ request.GET.ranked }}">
                                         {% endif %}
                                         <input type="hidden" name="sort" value="{{ label.1 }}">
                                         <button type="submit" class="btn sort-option rounded-0">
@@ -127,9 +130,7 @@
                     <li class="list-group-item rf-table-item">
                         <div class="row align-items-center text-white">
                             <div class="col-1 d-flex justify-content-center">
-                                <br>
                                 <h6>{% if rider.rank %}{{ rider.rank }}{% else %}-{% endif %}</h6>
-                                <br>
                             </div>
                             <div class="col-2 py-1 d-none d-md-block ">
                                 <img alt="Rider photo" src="{{ rider.photo }}"
@@ -137,13 +138,11 @@
                             </div>
                             <div class="col-2 d-none d-sm-block d-md-none">
                                 <img alt="Rider photo" src="{{ rider.photo }}"
-                                     class="d-md-none rounded-circle border border-2 border-white" width="70"
-                                     height="70">
+                                     class="rounded-circle border border-2 border-white" width="70" height="70">
                             </div>
                             <div class="col d-sm-none rf-table-rider-photo">
                                 <img alt="Rider photo" src="{{ rider.photo }}"
-                                     class="d-md-none rounded-circle border border-2 border-white" width="50"
-                                     height="50">
+                                     class="rounded-circle border border-2 border-white" width="50" height="50">
                             </div>
                             <div class="col">
                                 <h6 class="rf-table-item-name">
@@ -157,13 +156,11 @@
                                 <h6>{{ rider.mainsponsor }}</h6>
                             </div>
                             <div class="col-2 d-flex justify-content-center">
-                                <br>
                                 {% if request.GET.sort in medals %}
                                     <h6 class="rf-table-item-points rounded-2">{{ rider|medal:request.GET.sort }}</h6>
                                 {% else %}
                                     <h6 class="rf-table-item-points rounded-2">{{ rider.alltime_points|asint }}</h6>
                                 {% endif %}
-                                <br>
                             </div>
                         </div>
                     </li>
@@ -174,12 +171,7 @@
                     <div class="col-5 text-end">
                         {% if previous_index > 0 %}
                             <form action="{% url 'wiki:riders' %}" method="get">
-                                {% if request.GET.sort %}
-                                    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
-                                {% endif %}
-                                {% if request.GET.country %}
-                                    <input type="hidden" name="country" value="{{ request.GET.country }}">
-                                {% endif %}
+                                {% include "riders_parameters.html" %}
                                 <input type="hidden" name="page" value="{{ previous_index }}">
                                 <button type="submit" class="btn btn-link rf-nav-link"><h2><<</h2></button>
                             </form>
@@ -199,12 +191,7 @@
                             {% for i in pages_count|times %}
                                 <li>
                                     <form action="{% url 'wiki:riders' %}" method="get">
-                                        {% if request.GET.sort %}
-                                            <input type="hidden" name="sort" value="{{ request.GET.sort }}">
-                                        {% endif %}
-                                        {% if request.GET.country %}
-                                            <input type="hidden" name="country" value="{{ request.GET.country }}">
-                                        {% endif %}
+                                        {% include "riders_parameters.html" %}
                                         <input type="hidden" name="page" value="{{ i }}">
                                         <button type="submit" class="dropdown-item">{{ i }}</button>
                                     </form>
@@ -217,12 +204,7 @@
                     <div class="col-5 text-start">
                         {% if next_index <= pages_count %}
                             <form action="{% url 'wiki:riders' %}" method="get">
-                                {% if request.GET.sort %}
-                                    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
-                                {% endif %}
-                                {% if request.GET.country %}
-                                    <input type="hidden" name="country" value="{{ request.GET.country }}">
-                                {% endif %}
+                                {% include "riders_parameters.html" %}
                                 <input type="hidden" name="page" value="{{ next_index }}">
                                 <button type="submit" class="btn btn-link rf-nav-link"><h2>>></h2></button>
                             </form>

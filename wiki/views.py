@@ -75,7 +75,7 @@ def riders(request):
     pages_count = (all_riders.count() // 20) + 1
     return render(request, 'wiki/riders.html', {'riders': riders_html, 'page_index': page_idx,
                                                 'pages_count': pages_count, 'sortOptions': sort_options,
-                                                'filterLabels': filter_labels, 'urlParams': url_params,
+                                                'filterLabels': filter_labels, 'url_params': url_params,
                                                 'medals': medals, 'countries': countries})
 
 

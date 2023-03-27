@@ -1,0 +1,9 @@
+{% if request.GET.sort %}
+    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+{% endif %}
+{% if request.GET.country %}
+    <input type="hidden" name="country" value="{{ request.GET.country }}">
+{% endif %}
+{% if request.GET.ranked %}
+    <input type="hidden" name="ranked" value="{{ request.GET.ranked }}">
+{% endif %}

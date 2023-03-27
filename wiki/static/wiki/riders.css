@@ -10,10 +10,13 @@
 #filterModalFooter {
     border-top: none;
 }
-.filter-select {
+.filter-select,
+.filter-select:focus {
     border: none;
-    border-bottom: 1px solid #e0e0e0;
-    padding: 8px;
+    border-bottom: 1px solid var(--rf-lightgrey);
+    padding: 10px;
+    outline: none;
+    box-shadow: none;
 }
 .filter-element {
     padding: 8px 5px 0 5px;
@@ -24,12 +27,15 @@
     width: 100%;
 }
 .sort-option:hover {
-    background-color: #e0e0e0;
+    background-color: var(--rf-lightgrey);
 }
 
 /*Table*/
 .rf-table-rider-photo {
     max-width: 60px;
+}
+.rf-nav-link {
+    padding-top: 0;
 }
 
 
