@@ -66,7 +66,7 @@ def riders(request):
                     'lastname']
     sort_options = list(zip(sort_labels, sort_queries))
     filter_labels = ['Name', 'Country', 'Sponsors', 'Ranked']
-    url_params = ['sort']
+    url_params = ['sort', 'country', 'ranked']
     medals = ['-medal', '-gold', '-silver', '-bronze']
     countries = Country.objects.all().order_by('name')
 

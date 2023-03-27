@@ -1,40 +1,6 @@
-#main-container {
-    max-width: 960px;
+.eighth-div {
+    width: 12.5%;
 }
-#schedule-header {background-color: #4e545c;}
-#event-schedule {
-    background-color: transparent;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-#event-schedule:hover {background-color: #4e545c;}
-#event-link {
-    color: white;
-    text-decoration: none;
-}
-#event-points {
-    color: #272c32;
-    background-color: #727af7;
-    padding: 4px;
-}
-.schedule-link {
-    color: #727af7;
-    text-decoration: none;
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-.disabled-link {
-    color: lightgrey;
-    pointer-events: none;
-}
-#dropdownMenuLink {
-    color: #727af7;
-    padding: 5px 5px 0px 0px;
-}
-#dropdown-navigation {
-    height: auto;
-    max-height: 200px;
-    max-width: 50px;
-    overflow-x: hidden;
+.status-icon {
+    padding-left: 0;
 }

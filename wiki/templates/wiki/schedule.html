@@ -9,11 +9,11 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-lg" id="main-container">
+    <div class="container-lg">
         <h1 class="d-none d-sm-block">{{ year }} Events and Competitions</h1>
         <h1 class="d-sm-none">{{ year }} Competitions</h1>
-        <ul class="list-group list-group-table rounded-4" style="background-color: #272c32;">
-            <li class="list-group-item" id="schedule-header">
+        <ul class="list-group list-group-table rounded-4 rf-table">
+            <li class="list-group-item rf-table-header">
                 <div class="row align-items-center text-white">
                     <div class="col-2">
                         Date
@@ -21,13 +21,13 @@
                     <div class="col">
                         Name
                     </div>
-                    <div class="col-2 d-none d-md-block" style="width: 12.5%">
+                    <div class="col-2 d-none d-md-block eighth-div">
                         Country
                     </div>
                     <div class="col d-md-none text-end">
                         Status
                     </div>
-                    <div class="col-2 d-none d-md-block" style="width: 12.5%">
+                    <div class="col-2 d-none d-md-block eighth-div">
                         Category
                     </div>
                     <div class="col-1 d-none d-md-block justify-content-center">
@@ -36,7 +36,7 @@
                 </div>
             </li>
             {% for event in events %}
-                <li class="list-group-item" id="event-schedule">
+                <li class="list-group-item rf-table-item">
                     <div class="row align-items-center text-white">
                         <div class="col-2 d-none d-md-block">
                             {{ event.date|date:"d F" }}
@@ -45,19 +45,19 @@
                             {{ event.date|date:"d.m" }}
                         </div>
                         <div class="col">
-                            <h6 style="margin: 0;">
-                                <a class="stretched-link" id="event-link" href="{% url 'wiki:event' event.id event.slug %}">
+                            <h6 class="rf-table-item-name">
+                                <a class="stretched-link rf-table-item-link" href="{% url 'wiki:event' event.id event.slug %}">
                                     {{ event.name }}
                                 </a>
                             </h6>
                         </div>
-                        <div class="col-2 d-none d-sm-block" style="width: 12.5%">
+                        <div class="col-2 d-none d-sm-block eighth-div">
                             <img alt="Country flag" src={{ event.country.photo }}>
                         </div>
                         <div class="col-2 d-sm-none">
                             <img alt="Country flag" src={{ event.country.photo }}>
                         </div>
-                        <div class="col-2 d-none d-md-block" style="width: 12.5%">
+                        <div class="col-2 d-none d-md-block eighth-div">
                             {{ event.category }}
                         </div>
                         <div class="col-1 align-content-center d-none d-sm-block">
@@ -83,7 +83,7 @@
                                 {% endif %}
                             {% endif %}
                         </div>
-                        <div class="col-1 align-content-center d-sm-none" style="padding-left: 0;">
+                        <div class="col-1 align-content-center d-sm-none status-icon">
                             {% if event.completed %}
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#198754"
                                      class="bi bi-check-circle" viewBox="0 0 16 16">
@@ -110,23 +110,23 @@
                 </li>
             {% endfor %}
         </ul>
-        <div class="row" id="schedule-navigation">
+        <div class="row">
             {% with next_year=year|add:1 %}
                 <div class="col-5 text-end">
                     {% if next_year < 2024 %}
-                        <h2><a class="schedule-link" href="{% url 'wiki:schedule' next_year %}"><<</a></h2>
+                        <h2><a class="rf-nav-link" href="{% url 'wiki:schedule' next_year %}"><<</a></h2>
                     {% else %}
-                        <h2><a class="schedule-link disabled-link disabled"><<</a></h2>
+                        <h2><a class="rf-nav-link link-disabled disabled"><<</a></h2>
                     {% endif %}
                 </div>
             {% endwith %}
             <div class="col-2">
-                <div class="dropdown text-center" style="margin-left: -5px;">
+                <div class="dropdown text-center rf-nav-dropdown">
                     <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                        data-bs-toggle="dropdown" aria-expanded="false">
                         YEAR
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-center" id="dropdown-navigation"
+                    <ul class="dropdown-menu dropdown-menu-center" id="dropdownMenuList"
                         aria-labelledby="dropdownMenuLink">
                         {% for i_year in 2010|years %}
                             <li><a class="dropdown-item" href="{% url 'wiki:schedule' i_year %}">{{ i_year }}</a></li>
@@ -137,9 +137,9 @@
             {% with previous_year=year|sub:1 %}
                 <div class="col-5 text-start">
                     {% if previous_year > 2009 %}
-                        <h2><a class="schedule-link" href="{% url 'wiki:schedule' previous_year %}">>></a></h2>
+                        <h2><a class="rf-nav-link" href="{% url 'wiki:schedule' previous_year %}">>></a></h2>
                     {% else %}
-                        <h2><a class="schedule-link disabled-link">>></a></h2>
+                        <h2><a class="rf-nav-link link-disabled">>></a></h2>
                     {% endif %}
                 </div>
             {% endwith %}
