@@ -171,7 +171,7 @@
                     <div class="col-5 text-end">
                         {% if previous_index > 0 %}
                             <form action="{% url 'wiki:riders' %}" method="get">
-                                {% include "riders_parameters.html" %}
+                                {% include "wiki/riders_parameters.html" %}
                                 <input type="hidden" name="page" value="{{ previous_index }}">
                                 <button type="submit" class="btn btn-link rf-nav-link"><h2><<</h2></button>
                             </form>
@@ -191,7 +191,7 @@
                             {% for i in pages_count|times %}
                                 <li>
                                     <form action="{% url 'wiki:riders' %}" method="get">
-                                        {% include "riders_parameters.html" %}
+                                        {% include "wiki/riders_parameters.html" %}
                                         <input type="hidden" name="page" value="{{ i }}">
                                         <button type="submit" class="dropdown-item">{{ i }}</button>
                                     </form>
@@ -204,7 +204,7 @@
                     <div class="col-5 text-start">
                         {% if next_index <= pages_count %}
                             <form action="{% url 'wiki:riders' %}" method="get">
-                                {% include "riders_parameters.html" %}
+                                {% include "wiki/riders_parameters.html" %}
                                 <input type="hidden" name="page" value="{{ next_index }}">
                                 <button type="submit" class="btn btn-link rf-nav-link"><h2>>></h2></button>
                             </form>
