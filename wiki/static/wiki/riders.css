@@ -16,7 +16,7 @@
     border-bottom: 1px solid var(--rf-lightgrey);
     padding: 10px;
     outline: none;
-    box-shadow: none;
+    /*box-shadow: none;*/
 }
 .filter-element {
     padding: 8px 5px 0 5px;
@@ -26,7 +26,8 @@
 .sort-option {
     width: 100%;
 }
-.sort-option:hover {
+.sort-option:hover,
+.sort-option:focus {
     background-color: var(--rf-lightgrey);
 }
 
