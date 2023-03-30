@@ -67,7 +67,8 @@ a.nav-link:hover {
     background-color: var(--rf-table);
     border-color: transparent;
 }
-.btn-search:hover {
+.btn-search:hover,
+.btn-search:focus {
     color: white;
     background-color: var(--rf-table);
     border-color: transparent;
@@ -78,8 +79,12 @@ a.nav-link:hover {
     background-color: var(--rf-primary);
     color: white;
 }
-.btn-settings-menu:hover {
+.btn-settings-menu:hover,
+.btn-settings-menu:focus {
     background-color: #8087ff;
+}
+.btn-settings-menu:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, .5);
 }
 
 /*Table*/
