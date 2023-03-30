@@ -24,16 +24,6 @@ class Country(models.Model):
             country.isocode = isocode
             c = pycountry.countries.get(alpha_2=isocode)
             country.name = c.name
-            photo = "https://www.countryflagicons.com/FLAT/20/" + isocode + ".png"
-            country.photo = photo
-            print(country)
-            country.save()
-
-    @staticmethod
-    def fixCountries():
-        countries = Country.objects.all()
-        for country in countries:
-            isocode = country.isocode
             photo = "https://www.countryflagicons.com/FLAT/24/" + isocode + ".png"
             country.photo = photo
             print(country)
@@ -49,14 +39,12 @@ class Rider(models.Model):
     birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=20, default='Unknown', blank=True)
     description = models.TextField(blank=True)
-    mainsponsor = models.CharField(max_length=50, blank=True)
     sponsors = models.ManyToManyField('Sponsor', through='Sponsorship')
     photo = models.CharField(max_length=255, blank=True)
     instagram = models.CharField(max_length=255, blank=True)
     active = models.BooleanField(default=False)
     rank = models.IntegerField(default=0, null=True)
     points = models.IntegerField(default=0)
-    alltime_rank = models.IntegerField(default=0, null=True)
     alltime_points = models.FloatField(default=0)
     medal = models.IntegerField(default=0)
     gold = models.IntegerField(default=0)
@@ -66,6 +54,9 @@ class Rider(models.Model):
 
     def __str__(self):
         return self.name
+
+    def getMainSponsor(self):
+        return self.sponsorship_set.filter(main=True)[0].sponsor.name
 
     @staticmethod
     def splitNames():
@@ -249,9 +240,7 @@ class Event(models.Model):
     name = models.CharField(max_length=150, blank=True)
     slug = models.SlugField(max_length=150, default='event_name')
     date = models.DateField(null=True)
-    year = models.IntegerField(null=True)
     city = models.CharField(max_length=100, blank=True)
-    nation = models.CharField(max_length=100, blank=True)
     country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True)
     category = models.CharField(max_length=100, blank=True)
     discipline = models.CharField(max_length=100, blank=True)
@@ -262,7 +251,7 @@ class Event(models.Model):
     riders = models.ManyToManyField('Rider', through='Participation')
 
     def __str__(self):
-        return f"{self.name}, {self.year}"
+        return f"{self.name}, {self.date.year}"
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)

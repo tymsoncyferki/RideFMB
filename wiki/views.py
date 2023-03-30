@@ -57,7 +57,7 @@ def riders(request):
         else:
             all_riders = all_riders.order_by(F(sort_option).asc(nulls_last=True))
     else:
-        all_riders = all_riders.order_by('alltime_rank')
+        all_riders = all_riders.order_by('-alltime_points')
 
     # arguments
     sort_labels = ['Most all-time points', 'Least all-time points', 'Rank ascending', 'Rank descending', 'Medals',
@@ -94,7 +94,7 @@ def events(request, page_idx=1):
 
 
 def schedule(request, year):
-    events_html = Event.objects.filter(year=year).order_by('date')
+    events_html = Event.objects.filter(date__year=year).order_by('date')
     return render(request, 'wiki/schedule.html', {'events': events_html, 'year': year})
 
 

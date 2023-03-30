@@ -46,7 +46,6 @@ a.nav-link:hover {
 }
 .navbar-toggler-icon {
     color: var(--rf-primary);
-    /*background-color: var(--rf-primary);*/
 }
 
 /*Search*/
