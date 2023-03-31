@@ -7,29 +7,6 @@ from wiki.scripts.countries import *
 import pycountry
 
 
-class Country(models.Model):
-    name = models.CharField(max_length=50, blank=True)
-    shortname = models.CharField(max_length=5, blank=True)
-    isocode = models.CharField(max_length=3, blank=True)
-    photo = models.CharField(max_length=150, blank=True)
-
-    def __str__(self):
-        return self.name + ', ' + self.isocode
-
-    @staticmethod
-    def createCountries():
-        countries = Country.objects.all()
-        for country in countries:
-            isocode = country_codes[country.shortname]
-            country.isocode = isocode
-            c = pycountry.countries.get(alpha_2=isocode)
-            country.name = c.name
-            photo = "https://www.countryflagicons.com/FLAT/24/" + isocode + ".png"
-            country.photo = photo
-            print(country)
-            country.save()
-
-
 class Rider(models.Model):
     firstname = models.CharField(max_length=100, blank=True)
     lastname = models.CharField(max_length=100, blank=True)
@@ -39,7 +16,6 @@ class Rider(models.Model):
     birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=20, default='Unknown', blank=True)
     description = models.TextField(blank=True)
-    sponsors = models.ManyToManyField('Sponsor', through='Sponsorship')
     photo = models.CharField(max_length=255, blank=True)
     instagram = models.CharField(max_length=255, blank=True)
     active = models.BooleanField(default=False)
@@ -50,6 +26,7 @@ class Rider(models.Model):
     gold = models.IntegerField(default=0)
     silver = models.IntegerField(default=0)
     bronze = models.IntegerField(default=0)
+    sponsors = models.ManyToManyField('Sponsor', through='Sponsorship')
     events = models.ManyToManyField('Event', through='Participation')
 
     def __str__(self):
@@ -59,33 +36,72 @@ class Rider(models.Model):
         return self.sponsorship_set.filter(main=True)[0].sponsor.name
 
     @staticmethod
-    def splitNames():
-        n = 0
-        for rider in Rider.objects.all():
-            print(n, rider)
-            n += 1
-            namelist = rider.name.split(' ')
-            rider.firstname = namelist[0]
-            rider.lastname = ' '.join(namelist[1:])
-            rider.save()
+    def scrapeRider(rider_url=None, new_id=None):
+        # get id
+        assert rider_url or new_id, 'specify rider_url or new_id'
+        if not new_id:
+            id_start_idx = rider_url.index('=') + 1
+            new_id = rider_url[id_start_idx:]
+        # information
+        print('1. Rider information')
+        rider = Rider.scrapeRiderInfo(new_id=new_id)
+        # sponsors
+        print('2. Rider sponsors')
+        rider.scrapeSponsors()
+        # participations
+        print('3. Rider participations')
+        rider.scrapeParticipations()
+        # medals
+        print('4. Rider medals')
+        rider.updateMedals()
 
+    # Scrapes basic information about rider (without sponsors, events, medals)
     @staticmethod
-    def setRankAT():
-        riders = Rider.objects.all().order_by('-alltime_points')
-        i = 1
-        for rider in riders:
-            rider.alltime_rank = i
-            rider.save()
-            i += 1
+    def scrapeRiderInfo(rider_url=None, new_id=None):
+        # getting id
+        assert rider_url or new_id, 'specify rider_url or new_id'
+        if not new_id:
+            id_start_idx = rider_url.index('=') + 1
+            new_id = rider_url[id_start_idx:]
 
-    @staticmethod
-    def setMainSponsor():
-        for rider in Rider.objects.all():
-            rider.mainsponsor = rider.sponsorship_set.filter(main=True)[0].sponsor.name
-            rider.save()
+        # getting page content
+        rider_page = requests.get(rider_url)
+        rider_soup = BeautifulSoup(rider_page.text, 'lxml')
+        rider_info = rider_soup.find('div', {'class': 'athelte-profile'})
 
+        # scraping basic info
+        name = rider_info.find('h1').text.strip()
+        namelist = name.split(' ')
+        firstname = namelist[0]
+        lastname = ' '.join(namelist[1:])
+        slug = slugify(name)
+        country_name = rider_info.find('small').text.strip()
+        country = Country.objects.get(shortname=country_name)
+        photo = rider_info.find('img').get('src')
+        try:
+            instagram = rider_info.find('svg', {'class': 'icon-instagram'}).parent.get('href')
+        except Exception:
+            instagram = ''
+
+        # scraping rank
+        rider_history = rider_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
+        try:
+            rank = rider_history.find('a', {'href': "https://www.fmbworldtour.com/ranking?series=70"}).\
+                previous.previous_sibling.find('sup').previous_sibling
+            active = True
+        except Exception:
+            rank = None
+            active = False
+
+        # saving rider
+        rider = Rider(id=new_id, firstname=firstname, lastname=lastname, name=name, slug=slug, country=country, phoyo=photo,
+                      instagram=instagram, active=active, rank=rank)
+        rider.save()
+        return rider
+
+    # Updates ranking points, rank, active field
     @staticmethod
-    def scrapeRanking():
+    def updateRanking():
         Rider.objects.all().update(active=False)
         main_url = "https://www.fmbworldtour.com/ranking/?series=70"
         main_page = requests.get(main_url)
@@ -112,80 +128,38 @@ class Rider(models.Model):
                 rider.save()
                 print('rank', row_data[0].text.strip(), 'points', row_data[-2].text.strip())
 
-    @staticmethod
-    def fixSlugs():
-        riders = Rider.objects.all()
-        n = riders.count()
-        for rider in riders:
-            print(n, rider.name)
-            rider.slug = slugify(rider.name)
-            rider.save()
-            n -= 1
+    # Count rider medals
+    def updateMedals(self):
+        golds = 0
+        silvers = 0
+        bronzes = 0
+        parts = self.participation_set.all()
+        self.alltime_points = 0
+        points = 0
+        for part in parts:
+            if part.rank == 1:
+                golds += 1
+            elif part.rank == 2:
+                silvers += 1
+            elif part.rank == 3:
+                bronzes += 1
+            points += part.points
+        self.alltime_points = points
+        self.gold = golds
+        self.silver = silvers
+        self.bronze = bronzes
+        self.medal = golds + silvers + bronzes
+        self.save()
 
-    @staticmethod
-    def fixNames():
-        riders = Rider.objects.all()
-        n = riders.count()
-        for rider in riders:
-            print(n, rider.name)
-            rider.name = rider.slug.replace("-", " ").title()
-            rider.save()
-            n -= 1
-
+    # Counts medals for all riders
     @staticmethod
     def countMedals():
         riders = Rider.objects.all()
         n = 0
         for rider in riders:
-            print(n, 'scraping', rider.name)
+            print(n, 'counting', rider.name)
             n += 1
-            golds = 0
-            silvers = 0
-            bronzes = 0
-            parts = rider.participation_set.all()
-            rider.alltime_points = 0
-            points = 0
-            for part in parts:
-                if part.rank == 1:
-                    golds += 1
-                elif part.rank == 2:
-                    silvers += 1
-                elif part.rank == 3:
-                    bronzes += 1
-                points += part.points
-            rider.alltime_points = points
-            rider.gold = golds
-            rider.silver = silvers
-            rider.bronze = bronzes
-            rider.medal = golds + silvers + bronzes
-            rider.save()
-
-    @staticmethod
-    def scrapeRider(rider_url):
-        id_start_index = rider_url.index('=') + 1
-        newid = rider_url[id_start_index:]
-        rider_page = requests.get(rider_url)
-        rider_soup = BeautifulSoup(rider_page.text, 'lxml')
-        rider_info = rider_soup.find('div', {'class': 'athelte-profile'})
-        name = rider_info.find('h1').text.strip()
-        nationality = rider_info.find('small').text.strip()
-        photo = rider_info.find('img').get('src')
-        try:
-            instagram = rider_info.find('svg', {'class': 'icon-instagram'}).parent.get('href')
-        except Exception:
-            instagram = ''
-        rider_history = rider_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
-        try:
-            rank = rider_history.find('a', {'href': "https://www.fmbworldtour.com/ranking?series=70"}). \
-                previous.previous_sibling.find('sup').previous_sibling
-            active = True
-        except Exception:
-            rank = None
-            active = False
-
-        rider = Rider(id=newid, name=name, nationality=nationality, photo=photo,
-                      instagram=instagram, active=active, rank=rank)
-        return rider
+            rider.updateMedals()
 
     @staticmethod
     def scrapeRidersEvent(event_url):
@@ -194,7 +168,7 @@ class Rider(models.Model):
         try:
             rider_table = event_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
         except Exception:
-            print('not data about event')
+            print('no data about event')
             return
         for rider in rider_table.find_all('tr'):
             rider_url = rider.find('a').get('href')
@@ -221,9 +195,6 @@ class Rider(models.Model):
             print("----------")
             print("Scraping year:", year_url)
             print("----------")
-            if year_url == "https://www.fmbworldtour.com/events/?yr=2023":
-                print('ommiting year...')
-                continue
             year_page = requests.get(year_url)
             year_soup = BeautifulSoup(year_page.text, 'lxml')
             event_table = year_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
@@ -234,6 +205,54 @@ class Rider(models.Model):
                 Rider.scrapeRidersEvent(event_url)
             print("Year scraped succesfully!")
         print("SUCCESS!")
+
+    def scrapeSponsors(self):
+        rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(self.id)
+        rider_page = requests.get(rider_url)
+        rider_soup = BeautifulSoup(rider_page.text, 'lxml')
+        try:
+            rider_sponsors = rider_soup.find('p', {'class': 'athlete-profile-sponsors'}).text.strip()
+        except Exception:
+            print('No sponsors')
+            return
+        sponsors = [sponsor.strip() for sponsor in rider_sponsors.split('|')]
+        main = True
+        print('Scraping rider sponsors...')
+        for sponsor_name in sponsors:
+            if not Sponsor.objects.filter(name=sponsor_name).exists():
+                s = Sponsor(name=sponsor_name)
+                s.save()
+            Sponsorship(rider=self, sponsor=Sponsor.objects.get(name=sponsor_name),
+                        main=main).save()
+            if main:
+                main = False
+
+    def scrapeParticipations(self):
+        rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(self.id)
+        rider_page = requests.get(rider_url)
+        rider_soup = BeautifulSoup(rider_page.text, 'lxml')
+        rider_results = rider_soup.find('h2', text="Previous Results").find_next_sibling()
+        rider_parts = rider_results.find('tbody')
+        for row in rider_parts.find_all('tr'):
+            cells = row.find_all('td')
+            points = cells[-1].text.strip()
+            comp_url = row.find('a').get('href')
+            compid_start_index = comp_url.index('=') + 1
+            event_id = comp_url[compid_start_index:]
+            try:
+                rank = row.find('a').previous.previous_sibling.find('sup').previous_sibling
+            except Exception:
+                rank = None
+            if Participation.objects.filter(rider__pk=self.id, event__pk=event_id).exists():
+                print('Participation exists')
+                continue
+            print('Scraping rider participations...')
+            if not Event.objects.filter(pk=event_id).exists():
+                e = Event.scrapeEvent(status='Completed', date_str='01 Jan 2000', event_url=comp_url)
+                e.save()
+            p = Participation(rider=Rider.objects.get(id=self.id), event=Event.objects.get(id=event_id),
+                              rank=rank, points=points)
+            p.save()
 
 
 class Event(models.Model):
@@ -357,34 +376,7 @@ class Participation(models.Model):
 
     def __str__(self):
         return str(self.rank) + '. ' + self.rider.name + ', ' + \
-            self.event.name + ' ' + str(self.event.year)
-
-    @staticmethod
-    def scrapeParticipations(rider_url):
-        id_start_index = rider_url.index('=') + 1
-        rider_id = rider_url[id_start_index:]
-        rider_page = requests.get(rider_url)
-        rider_soup = BeautifulSoup(rider_page.text, 'lxml')
-        rider_results = rider_soup.find('h2', text="Previous Results").find_next_sibling()
-        rider_parts = rider_results.find('tbody')
-        for row in rider_parts.find_all('tr'):
-            cells = row.find_all('td')
-            points = cells[-1].text.strip()
-            comp_url = row.find('a').get('href')
-            compid_start_index = comp_url.index('=') + 1
-            event_id = comp_url[compid_start_index:]
-            try:
-                rank = row.find('a').previous.previous_sibling.find('sup').previous_sibling
-            except Exception:
-                rank = None
-            if Participation.objects.filter(rider__pk=rider_id, event__pk=event_id).exists():
-                continue
-            if not Event.objects.filter(pk=event_id).exists():
-                e = Event.scrapeEvent(status='Completed', date_str='01 Jan 2000', event_url=comp_url)
-                e.save()
-            p = Participation(rider=Rider.objects.get(id=rider_id), event=Event.objects.get(id=event_id),
-                              rank=rank, points=points)
-            p.save()
+            self.event.name + ' ' + str(self.event.date.year)
 
 
 class Sponsorship(models.Model):
@@ -395,33 +387,30 @@ class Sponsorship(models.Model):
     def __str__(self):
         return self.rider.name + ', ' + self.sponsor.name
 
-    @staticmethod
-    def scrapeSponsors(rider_id):
-        rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(rider_id)
-        rider_page = requests.get(rider_url)
-        rider_soup = BeautifulSoup(rider_page.text, 'lxml')
-        try:
-            rider_sponsors = rider_soup.find('p', {'class': 'athlete-profile-sponsors'}).text.strip()
-        except Exception:
-            return
-        sponsors = [sponsor.strip() for sponsor in rider_sponsors.split('|')]
-        main = True
-        print('Scraping rider sponsors...')
-        for sponsor_name in sponsors:
-            if not Sponsor.objects.filter(name=sponsor_name).exists():
-                s = Sponsor(name=sponsor_name)
-                s.save()
-            Sponsorship(rider=Rider.objects.get(pk=rider_id), sponsor=Sponsor.objects.get(name=sponsor_name),
-                        main=main).save()
-            if main:
-                main = False
+
+class Country(models.Model):
+    name = models.CharField(max_length=50, blank=True)
+    shortname = models.CharField(max_length=5, blank=True)
+    isocode = models.CharField(max_length=3, blank=True)
+    photo = models.CharField(max_length=150, blank=True)
+
+    def __str__(self):
+        return self.name + ', ' + self.isocode
 
     @staticmethod
-    def scrapeAllSponsors():
-        riders = Rider.objects.all()
-        n = riders.count()
-        for rider in riders:
-            print('-----')
-            print(f'Scraping {n}th rider:', rider.name)
-            rider_id = rider.id
-            Sponsorship.scrapeSponsors(rider_id)
+    def createCountries():
+        countries = Country.objects.all()
+        for country in countries:
+            isocode = country_codes[country.shortname]
+            country.isocode = isocode
+            c = pycountry.countries.get(alpha_2=isocode)
+            country.name = c.name
+            photo = "https://www.countryflagicons.com/FLAT/24/" + isocode + ".png"
+            country.photo = photo
+            print(country)
+            country.save()
+
+
+class Series(models.Model):
+    name = models.CharField(max_length=50)
+
