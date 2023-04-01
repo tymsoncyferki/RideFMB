@@ -3,6 +3,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
 from django.utils.text import slugify
+from django.core.exceptions import *
 from wiki.scripts.countries import *
 import pycountry
 
@@ -75,7 +76,13 @@ class Rider(models.Model):
         lastname = ' '.join(namelist[1:])
         slug = slugify(name)
         country_name = rider_info.find('small').text.strip()
-        country = Country.objects.get(shortname=country_name)
+        try:
+            country = Country.objects.get(shortname=country_name)
+        except ObjectDoesNotExist:
+            # Create a country if it's not in the database
+            new_country = Country(shortname=country_name)
+            new_country.save()
+            country = new_country
         photo = rider_info.find('img').get('src')
         try:
             instagram = rider_info.find('svg', {'class': 'icon-instagram'}).parent.get('href')
@@ -160,10 +167,8 @@ class Rider(models.Model):
     @staticmethod
     def countMedals():
         riders = Rider.objects.all()
-        n = 0
-        for rider in riders:
-            print(n, 'counting', rider.name)
-            n += 1
+        for i, rider in enumerate(riders):
+            print(i, 'counting', rider.name)
             rider.updateMedals()
 
     # Scrapes riders from an event
@@ -202,7 +207,6 @@ class Rider(models.Model):
             year_url = year.get('href')
             print("----------")
             print("Scraping year:", year_url)
-            print("----------")
             # Get page content
             year_page = requests.get(year_url)
             year_soup = BeautifulSoup(year_page.text, 'lxml')
@@ -292,6 +296,7 @@ class Event(models.Model):
     prize = models.CharField(max_length=255, blank=True)
     website = models.CharField(max_length=255, blank=True)
     partners = models.TextField(blank=True)
+    partnerships = models.ManyToManyField('Partner', through='Partnership')
     riders = models.ManyToManyField('Rider', through='Participation')
 
     def __str__(self):
@@ -304,12 +309,42 @@ class Event(models.Model):
     @staticmethod
     def fixSlugs():
         events = Event.objects.all()
-        n = events.count()
-        for event in events:
-            print(n, event.name)
+        for i, event in enumerate(events):
+            print(i, event.name)
             event.slug = slugify(event.name)
             event.save()
-            n -= 1
+
+    @staticmethod
+    def scrapePartnersAgain():
+        events = Event.objects.all()
+        for i, event in enumerate(events):
+            print(i, 'scraping', event.name)
+            event_url = 'https://www.fmbworldtour.com/competition/?id=' + str(event.id)
+            event_page = requests.get(event_url)
+            event_soup = BeautifulSoup(event_page.text, 'html.parser')
+            event_details = event_soup.find('div', {'class': 'competition-details'})
+            event_partners = event_details.find('strong', text='Partners: ')
+            partners = event_partners.next_sibling.text.strip()
+            event.partners = partners
+            event.save()
+
+    @staticmethod
+    def createPartners():
+        events = Event.objects.all()
+        for i, event in enumerate(events):
+            print(i, event.name)
+            event_partners = event.partners
+            partners = [partner.strip() for partner in event_partners.split('|')]
+            print('Scraping event partners...')
+            # Iterate through partners
+            for partner_name in partners:
+                # Add partner
+                if not Partner.objects.filter(name=partner_name).exists():
+                    p = Partner(name=partner_name)
+                    p.save()
+                # Add partnership
+                pship = Partnership(event=event, partner=Partner.objects.get(name=partner_name))
+                pship.save()
 
     @staticmethod
     def fixEventWebsite():
@@ -422,6 +457,7 @@ class Country(models.Model):
     def __str__(self):
         return self.name + ', ' + self.isocode
 
+    # Completes countries from given shortnames
     @staticmethod
     def createCountries():
         countries = Country.objects.all()
@@ -437,9 +473,40 @@ class Country(models.Model):
 
 
 class Series(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.name
 
 
+class Partner(models.Model):
+    name = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.name
+
+    # Fixes the same partners but differently written
+    # arg - string that all partners contain
+    @staticmethod
+    def fixPartners(arg):
+        arg_partners = Partner.objects.filter(name__icontains=arg)
+        main_partner = arg_partners[0]
+        for partner in arg_partners[1:]:
+            for partnership in partner.partnership_set.all():
+                partnership.partner = main_partner
+                partnership.save()
+            partner.delete()
+
+
+class Partnership(models.Model):
+    event = models.ForeignKey('Event', on_delete=models.CASCADE)
+    partner = models.ForeignKey('Partner', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.partner.name + ': ' + self.event.name
+
+
+# Extracts ID from url
 def getID(url):
     id_index = url.index('=') + 1
     return url[id_index:]
