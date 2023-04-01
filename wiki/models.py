@@ -35,13 +35,13 @@ class Rider(models.Model):
     def getMainSponsor(self):
         return self.sponsorship_set.filter(main=True)[0].sponsor.name
 
+    # Scrapes all information about rider
     @staticmethod
     def scrapeRider(rider_url=None, new_id=None):
         # get id
         assert rider_url or new_id, 'specify rider_url or new_id'
         if not new_id:
-            id_start_idx = rider_url.index('=') + 1
-            new_id = rider_url[id_start_idx:]
+            new_id = getID(rider_url)
         # information
         print('1. Rider information')
         rider = Rider.scrapeRiderInfo(new_id=new_id)
@@ -58,17 +58,16 @@ class Rider(models.Model):
     # Scrapes basic information about rider (without sponsors, events, medals)
     @staticmethod
     def scrapeRiderInfo(rider_url=None, new_id=None):
-        # getting id
+        # getting id and url
         assert rider_url or new_id, 'specify rider_url or new_id'
         if not new_id:
-            id_start_idx = rider_url.index('=') + 1
-            new_id = rider_url[id_start_idx:]
-
+            new_id = getID(rider_url)
+        if not rider_url:
+            rider_url = "https://www.fmbworldtour.com/athlete/?id=" + new_id
         # getting page content
         rider_page = requests.get(rider_url)
         rider_soup = BeautifulSoup(rider_page.text, 'lxml')
         rider_info = rider_soup.find('div', {'class': 'athelte-profile'})
-
         # scraping basic info
         name = rider_info.find('h1').text.strip()
         namelist = name.split(' ')
@@ -80,48 +79,52 @@ class Rider(models.Model):
         photo = rider_info.find('img').get('src')
         try:
             instagram = rider_info.find('svg', {'class': 'icon-instagram'}).parent.get('href')
-        except Exception:
+        except (Exception,):
             instagram = ''
-
         # scraping rank
         rider_history = rider_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
         try:
             rank = rider_history.find('a', {'href': "https://www.fmbworldtour.com/ranking?series=70"}).\
                 previous.previous_sibling.find('sup').previous_sibling
             active = True
-        except Exception:
+        except (Exception,):
             rank = None
             active = False
-
         # saving rider
-        rider = Rider(id=new_id, firstname=firstname, lastname=lastname, name=name, slug=slug, country=country, phoyo=photo,
-                      instagram=instagram, active=active, rank=rank)
+        rider = Rider(id=new_id, firstname=firstname, lastname=lastname, name=name, slug=slug, country=country,
+                      photo=photo, instagram=instagram, active=active, rank=rank)
         rider.save()
         return rider
 
     # Updates ranking points, rank, active field
     @staticmethod
     def updateRanking():
+        # Getting main page
         Rider.objects.all().update(active=False)
         main_url = "https://www.fmbworldtour.com/ranking/?series=70"
         main_page = requests.get(main_url)
         main_soup = BeautifulSoup(main_page.text, 'lxml')
         pages = main_soup.find('div', {'class': 'page-counter'})
+        # Iterate through ranking pages
         for page in pages.find_all('a', {'class': 'page-counter-link'}):
             print('-----------')
-            print('scraping page...')
+            print('Scraping page...')
+            # Get page content
             ranking_url = page.get('href')
             ranking_page = requests.get(ranking_url)
             ranking_soup = BeautifulSoup(ranking_page.text, 'lxml')
+            # Get ranking table
             ranking_table = ranking_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
+            # Iterate through riders on the page
             for rider_row in ranking_table.find_all('tr'):
+                # Get rider ID
                 rider_url = rider_row.find('a').get('href')
-                id_start_index = rider_url.index('=') + 1
-                rider_id = rider_url[id_start_index:]
+                rider_id = getID(rider_url)
                 rider = Rider.objects.get(pk=rider_id)
                 row_data = rider_row.find_all('td')
                 print('-----')
-                print('scraping rider:', rider.name)
+                print('Scraping rider:', rider.name)
+                # Get ranking data
                 rider.rank = row_data[0].text.strip()
                 rider.points = row_data[-2].text.strip()
                 rider.active = True
@@ -130,12 +133,14 @@ class Rider(models.Model):
 
     # Count rider medals
     def updateMedals(self):
+        # Set everything to 0
         golds = 0
         silvers = 0
         bronzes = 0
         parts = self.participation_set.all()
         self.alltime_points = 0
         points = 0
+        # Add according to participations
         for part in parts:
             if part.rank == 1:
                 golds += 1
@@ -161,95 +166,115 @@ class Rider(models.Model):
             n += 1
             rider.updateMedals()
 
+    # Scrapes riders from an event
     @staticmethod
-    def scrapeRidersEvent(event_url):
+    def getRidersFromEvent(event_url):
+        # Get page content
         event_page = requests.get(event_url)
         event_soup = BeautifulSoup(event_page.text, 'lxml')
         try:
             rider_table = event_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
-        except Exception:
+        except (Exception,):
             print('no data about event')
             return
+        # Iterate through riders
         for rider in rider_table.find_all('tr'):
             rider_url = rider.find('a').get('href')
             print('---')
             print('Scraping rider:', rider_url)
-            id_start_index = rider_url.index('=') + 1
-            rider_id = rider_url[id_start_index:]
+            rider_id = getID(rider_url)
+            # Scrape only non-existing ones
             if Rider.objects.filter(pk=rider_id).exists():
                 print('Already scraped')
                 continue
-            r = Rider.scrapeRider(rider_url)
-            r.save()
-            print('Scraping his participations...')
-            Participation.scrapeParticipations(rider_url)
+            Rider.scrapeRider(rider_url, rider_id)
 
+    # Scrapes all riders by iterating through all events
     @staticmethod
     def scrapeAllRiders():
+        # Get main page content
         main_url = "https://www.fmbworldtour.com/events/"
         main_page = requests.get(main_url)
         main_soup = BeautifulSoup(main_page.text, 'lxml')
         year_panel = main_soup.find('div', {'class': 'page-counter'})
+        # Iterate through year pages
         for year in year_panel.find_all('a'):
             year_url = year.get('href')
             print("----------")
             print("Scraping year:", year_url)
             print("----------")
+            # Get page content
             year_page = requests.get(year_url)
             year_soup = BeautifulSoup(year_page.text, 'lxml')
             event_table = year_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
+            # Iterate through events from a given year
             for event in event_table.find_all('tr'):
                 event_url = event.find('a').get('href')
                 print("------")
                 print("Scraping riders from event:", event_url)
-                Rider.scrapeRidersEvent(event_url)
+                Rider.getRidersFromEvent(event_url)
             print("Year scraped succesfully!")
         print("SUCCESS!")
 
+    # Scrapes riders sponsorships
     def scrapeSponsors(self):
+        # Get page content
         rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(self.id)
         rider_page = requests.get(rider_url)
         rider_soup = BeautifulSoup(rider_page.text, 'lxml')
         try:
             rider_sponsors = rider_soup.find('p', {'class': 'athlete-profile-sponsors'}).text.strip()
-        except Exception:
+        except (Exception,):
             print('No sponsors')
             return
+        # Extract sponsors
         sponsors = [sponsor.strip() for sponsor in rider_sponsors.split('|')]
         main = True
         print('Scraping rider sponsors...')
+        # Iterate through sponsors
         for sponsor_name in sponsors:
+            # Add sponsor
             if not Sponsor.objects.filter(name=sponsor_name).exists():
                 s = Sponsor(name=sponsor_name)
                 s.save()
+            # Add sponsorship
             Sponsorship(rider=self, sponsor=Sponsor.objects.get(name=sponsor_name),
                         main=main).save()
+            # First sponsor is the main sponsor
             if main:
                 main = False
 
+    # Scrapews riders participations
     def scrapeParticipations(self):
+        # Get page content
         rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(self.id)
         rider_page = requests.get(rider_url)
         rider_soup = BeautifulSoup(rider_page.text, 'lxml')
+        # Get participations table
         rider_results = rider_soup.find('h2', text="Previous Results").find_next_sibling()
         rider_parts = rider_results.find('tbody')
+        # Iterate over participations
         for row in rider_parts.find_all('tr'):
+            # Get cells with data
             cells = row.find_all('td')
-            points = cells[-1].text.strip()
             comp_url = row.find('a').get('href')
-            compid_start_index = comp_url.index('=') + 1
-            event_id = comp_url[compid_start_index:]
-            try:
-                rank = row.find('a').previous.previous_sibling.find('sup').previous_sibling
-            except Exception:
-                rank = None
+            event_id = getID(comp_url)
+            # Scrape only non-existing participations
             if Participation.objects.filter(rider__pk=self.id, event__pk=event_id).exists():
                 print('Participation exists')
                 continue
+            # Get participation data
+            points = cells[-1].text.strip()
+            try:
+                rank = row.find('a').previous.previous_sibling.find('sup').previous_sibling
+            except (Exception,):
+                rank = None
             print('Scraping rider participations...')
+            # Add event if it somehow does not exist in database
             if not Event.objects.filter(pk=event_id).exists():
                 e = Event.scrapeEvent(status='Completed', date_str='01 Jan 2000', event_url=comp_url)
                 e.save()
+            # Save participation
             p = Participation(rider=Rider.objects.get(id=self.id), event=Event.objects.get(id=event_id),
                               rank=rank, points=points)
             p.save()
@@ -414,3 +439,7 @@ class Country(models.Model):
 class Series(models.Model):
     name = models.CharField(max_length=50)
 
+
+def getID(url):
+    id_index = url.index('=') + 1
+    return url[id_index:]
