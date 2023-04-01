@@ -36,9 +36,9 @@ class Rider(models.Model):
     def getMainSponsor(self):
         return self.sponsorship_set.filter(main=True)[0].sponsor.name
 
-    # Scrapes all information about rider
     @staticmethod
     def scrapeRider(rider_url=None, new_id=None):
+        """ Scrapes all information about rider """
         # get id
         assert rider_url or new_id, 'specify rider_url or new_id'
         if not new_id:
@@ -56,9 +56,9 @@ class Rider(models.Model):
         print('4. Rider medals')
         rider.updateMedals()
 
-    # Scrapes basic information about rider (without sponsors, events, medals)
     @staticmethod
     def scrapeRiderInfo(rider_url=None, new_id=None):
+        """ Scrapes basic information about rider (without sponsors, events, medals) """
         # getting id and url
         assert rider_url or new_id, 'specify rider_url or new_id'
         if not new_id:
@@ -76,13 +76,7 @@ class Rider(models.Model):
         lastname = ' '.join(namelist[1:])
         slug = slugify(name)
         country_name = rider_info.find('small').text.strip()
-        try:
-            country = Country.objects.get(shortname=country_name)
-        except ObjectDoesNotExist:
-            # Create a country if it's not in the database
-            new_country = Country(shortname=country_name)
-            new_country.save()
-            country = new_country
+        country = Country.getCountry(country_name)
         photo = rider_info.find('img').get('src')
         try:
             instagram = rider_info.find('svg', {'class': 'icon-instagram'}).parent.get('href')
@@ -103,9 +97,9 @@ class Rider(models.Model):
         rider.save()
         return rider
 
-    # Updates ranking points, rank, active field
     @staticmethod
     def updateRanking():
+        """ Updates ranking points, rank, active field """
         # Getting main page
         Rider.objects.all().update(active=False)
         main_url = "https://www.fmbworldtour.com/ranking/?series=70"
@@ -138,8 +132,8 @@ class Rider(models.Model):
                 rider.save()
                 print('rank', row_data[0].text.strip(), 'points', row_data[-2].text.strip())
 
-    # Count rider medals
     def updateMedals(self):
+        """ Counts rider medals """
         # Set everything to 0
         golds = 0
         silvers = 0
@@ -163,17 +157,20 @@ class Rider(models.Model):
         self.medal = golds + silvers + bronzes
         self.save()
 
-    # Counts medals for all riders
     @staticmethod
     def countMedals():
+        """ Counts medals for all riders """
         riders = Rider.objects.all()
         for i, rider in enumerate(riders):
             print(i, 'counting', rider.name)
             rider.updateMedals()
 
-    # Scrapes riders from an event
     @staticmethod
-    def getRidersFromEvent(event_url):
+    def getRidersFromEvent(event_url, update=True):
+        """
+        Scrapes riders from an event
+        update - set update to False to omit existing riders
+        """
         # Get page content
         event_page = requests.get(event_url)
         event_soup = BeautifulSoup(event_page.text, 'lxml')
@@ -188,15 +185,16 @@ class Rider(models.Model):
             print('---')
             print('Scraping rider:', rider_url)
             rider_id = getID(rider_url)
-            # Scrape only non-existing ones
-            if Rider.objects.filter(pk=rider_id).exists():
-                print('Already scraped')
-                continue
+            if not update:
+                # Scrape only non-existing ones
+                if Rider.objects.filter(pk=rider_id).exists():
+                    print('Already scraped')
+                    continue
             Rider.scrapeRider(rider_url, rider_id)
 
-    # Scrapes all riders by iterating through all events
     @staticmethod
     def scrapeAllRiders():
+        """ Scrapes all riders by iterating through all events """
         # Get main page content
         main_url = "https://www.fmbworldtour.com/events/"
         main_page = requests.get(main_url)
@@ -220,8 +218,8 @@ class Rider(models.Model):
             print("Year scraped succesfully!")
         print("SUCCESS!")
 
-    # Scrapes riders sponsorships
     def scrapeSponsors(self):
+        """ Scrapes riders sponsorships """
         # Get page content
         rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(self.id)
         rider_page = requests.get(rider_url)
@@ -248,8 +246,8 @@ class Rider(models.Model):
             if main:
                 main = False
 
-    # Scrapews riders participations
     def scrapeParticipations(self):
+        """ Scrapews riders participations """
         # Get page content
         rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(self.id)
         rider_page = requests.get(rider_url)
@@ -276,8 +274,7 @@ class Rider(models.Model):
             print('Scraping rider participations...')
             # Add event if it somehow does not exist in database
             if not Event.objects.filter(pk=event_id).exists():
-                e = Event.scrapeEvent(status='Completed', date_str='01 Jan 2000', event_url=comp_url)
-                e.save()
+                Event.scrapeEvent(event_url=comp_url, status='Completed', date_str='01 Jan 2000')
             # Save participation
             p = Participation(rider=Rider.objects.get(id=self.id), event=Event.objects.get(id=event_id),
                               rank=rank, points=points)
@@ -295,122 +292,137 @@ class Event(models.Model):
     completed = models.BooleanField(default=True)
     prize = models.CharField(max_length=255, blank=True)
     website = models.CharField(max_length=255, blank=True)
-    partners = models.TextField(blank=True)
-    partnerships = models.ManyToManyField('Partner', through='Partnership')
+    partners = models.ManyToManyField('Partner', through='Partnership')
     riders = models.ManyToManyField('Rider', through='Participation')
 
     def __str__(self):
         return f"{self.name}, {self.date.year}"
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(Event, self).save(*args, **kwargs)
-
-    @staticmethod
-    def fixSlugs():
-        events = Event.objects.all()
-        for i, event in enumerate(events):
-            print(i, event.name)
-            event.slug = slugify(event.name)
-            event.save()
-
-    @staticmethod
-    def scrapePartnersAgain():
-        events = Event.objects.all()
-        for i, event in enumerate(events):
-            print(i, 'scraping', event.name)
-            event_url = 'https://www.fmbworldtour.com/competition/?id=' + str(event.id)
+    def scrapePartners(self, content=None):
+        """
+        Scrapes event partners
+        content - page content can be given
+        """
+        if content is None:
+            event_url = 'https://www.fmbworldtour.com/competition/?id=' + str(self.id)
             event_page = requests.get(event_url)
             event_soup = BeautifulSoup(event_page.text, 'html.parser')
-            event_details = event_soup.find('div', {'class': 'competition-details'})
-            event_partners = event_details.find('strong', text='Partners: ')
-            partners = event_partners.next_sibling.text.strip()
-            event.partners = partners
-            event.save()
-
-    @staticmethod
-    def createPartners():
-        events = Event.objects.all()
-        for i, event in enumerate(events):
-            print(i, event.name)
-            event_partners = event.partners
-            partners = [partner.strip() for partner in event_partners.split('|')]
-            print('Scraping event partners...')
-            # Iterate through partners
-            for partner_name in partners:
-                # Add partner
-                if not Partner.objects.filter(name=partner_name).exists():
-                    p = Partner(name=partner_name)
-                    p.save()
-                # Add partnership
-                pship = Partnership(event=event, partner=Partner.objects.get(name=partner_name))
-                pship.save()
+        else:
+            event_soup = content
+        event_details = event_soup.find('div', {'class': 'competition-details'})
+        event_partners = event_details.find('strong', text='Partners: ')
+        all_partners = event_partners.next_sibling.text.strip()
+        partners = [partner.strip() for partner in all_partners.split('|')]
+        print('Scraping event partners...')
+        # Iterate through partners
+        for partner_name in partners:
+            # Add partner
+            if not Partner.objects.filter(name=partner_name).exists():
+                p = Partner(name=partner_name)
+                p.save()
+            # Add partnership
+            pship = Partnership(event=self, partner=Partner.objects.get(name=partner_name))
+            pship.save()
 
     @staticmethod
     def fixEventWebsite():
-        # TODO: wywalić http
+        # TODO: fix links
         pass
 
     @staticmethod
-    def scrapeEvent(status, date_str, event_url):
-        id_start_index = event_url.index('=') + 1
-        new_id = event_url[id_start_index:]
-        date = datetime.strptime(date_str, '%d %b %Y').date()
-        year = date.year
-        completed = True
-        if status == 'Upcoming':
-            completed = False
+    def fixStatus():
+        # TODO: status - upcoming, completed, canceled
+        pass
 
+    # def completed(self):
+    #     # TODO: change completed to status
+    #     pass
+
+    @staticmethod
+    def scrapeEvent(event_url, status, date_str, include_parts=False):
+        """
+        Scrapes event from given url
+        status - Upcoming, Completed, Canceled
+        date_str - format example: 01 Jul 2023
+        include_parts - set to true to scrape riders and participations
+        """
+        new_id = getID(event_url)
+        date = datetime.strptime(date_str, '%d %b %Y').date()
+        completed = status
+        # Get page content
         event_page = requests.get(event_url)
         event_soup = BeautifulSoup(event_page.text, 'lxml')
         event_info = event_soup.find('div', {'class': 'api-content'})
+        # Get event information
         name = event_info.find('h1').text.strip()
         location = event_info.find('small').text.strip()
         comma = location.rfind(',')
-        city, country = location[:comma].strip(), location[comma+1:].strip()
-
+        city = location[:comma].strip()
+        country_name = location[comma+1:].strip()
+        country = Country.getCountry(country_name)
+        # Get event details
         event_details = event_soup.find('div', {'class': 'competition-details'})
         event_category = event_details.find('strong', text='Category: ')
         category = event_category.next_sibling.text.strip()
         event_discipline = event_details.find('strong', text='Disipline: ')
         discipline = event_discipline.next_sibling.text.strip()
+        if discipline == 'Unknown':
+            discipline = 'Freeride'
         event_prize = event_details.find('strong', text='Prize Money: ')
         prize = event_prize.next_sibling.text.strip()
         event_website = event_details.find('strong', text='Website: ')
         website = event_website.next_sibling.get('href')
-        event_partners = event_details.find('strong', text='Partners: ')
-        partners = event_partners.next_sibling.text.strip()
-
-        event = Event(id=new_id, name=name, date=date, year=year, city=city, country=country,
+        # Save event
+        event = Event(id=new_id, name=name, date=date, city=city, country=country,
                       category=category, discipline=discipline, completed=completed,
-                      prize=prize, website=website, partners=partners)
-        return event
+                      prize=prize, website=website)
+        event.save()
+        event.scrapePartners(content=event_soup)
+        if include_parts:
+            Rider.getRidersFromEvent(event_url)
 
     @staticmethod
-    def scrapeEventsYear(year_url):
+    def scrapeEventsYear(year_url=None, year=None, update=True):
+        """
+        Scrapes events from whole year
+        year_url - year page url
+        year - url will be created for given year
+        update - set update to false to omit already existing events
+        """
+        assert year_url or year, 'year_url or year should be given'
+        if year:
+            year_url = "https://www.fmbworldtour.com/events/?yr=" + str(year)
+        # Get page content
         year_page = requests.get(year_url)
         year_soup = BeautifulSoup(year_page.text, 'lxml')
         event_table = year_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
+        # Iterate over events
         for event in event_table.find_all('tr'):
             cells = event.find_all('td')
             date = cells[0].text.strip()
             status = cells[-1].text.strip()
             event_url = event.find('a').get('href')
-            id_start_index = event_url.index('=') + 1
-            curid = event_url[id_start_index:]
-            if Event.objects.filter(pk=curid).exists():
-                continue
+            if not update:
+                curid = getID(event_url)
+                # Omit existing events
+                if Event.objects.filter(pk=curid).exists():
+                    print("Already scraped")
+                    continue
             print("Scraping event:", event_url)
-            e = Event.scrapeEvent(status, date, event_url)
-            e.save()
+            if update:
+                Event.scrapeEvent(event_url, status, date, include_parts=True)
+            else:
+                Event.scrapeEvent(event_url, status, date)
         print("Year scraped succesfully!")
 
     @staticmethod
     def scrapeAllEvents():
+        """ Scrapes all events """
         main_url = "https://www.fmbworldtour.com/events/"
         main_page = requests.get(main_url)
         main_soup = BeautifulSoup(main_page.text, 'lxml')
         year_panel = main_soup.find('div', {'class': 'page-counter'})
+        # Iterates over years
         for year in year_panel.find_all('a'):
             year_url = year.get('href')
             print("Scraping year:", year_url)
@@ -457,9 +469,9 @@ class Country(models.Model):
     def __str__(self):
         return self.name + ', ' + self.isocode
 
-    # Completes countries from given shortnames
     @staticmethod
     def createCountries():
+        """ Completes countries from given shortnames """
         countries = Country.objects.all()
         for country in countries:
             isocode = country_codes[country.shortname]
@@ -470,6 +482,17 @@ class Country(models.Model):
             country.photo = photo
             print(country)
             country.save()
+
+    @staticmethod
+    def getCountry(name):
+        try:
+            country = Country.objects.get(shortname=name)
+        except ObjectDoesNotExist:
+            # Create a country if it's not in the database
+            new_country = Country(shortname=name)
+            new_country.save()
+            country = new_country
+        return country
 
 
 class Series(models.Model):
@@ -485,10 +508,12 @@ class Partner(models.Model):
     def __str__(self):
         return self.name
 
-    # Fixes the same partners but differently written
-    # arg - string that all partners contain
     @staticmethod
     def fixPartners(arg):
+        """
+        Fixes same partners but differently written
+        arg - string that all partners contain
+        """
         arg_partners = Partner.objects.filter(name__icontains=arg)
         main_partner = arg_partners[0]
         for partner in arg_partners[1:]:
@@ -506,7 +531,11 @@ class Partnership(models.Model):
         return self.partner.name + ': ' + self.event.name
 
 
-# Extracts ID from url
 def getID(url):
+    """ Extracts ID from url """
     id_index = url.index('=') + 1
     return url[id_index:]
+
+
+def updateDatabase():
+    Event.scrapeEventsYear(datetime.now().year)
