@@ -5,13 +5,14 @@
 {% block head %}
     {% load wiki_extras %}
     {% load static %}
+    <link href="{% static 'wiki/index.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
     <div class="container-lg">
         <h1 class="text-center">RideFMB</h1>
         <p class="text-center">Welcome to the best FMB World Tour Database</p>
-        last data update: 01.03.2023
+        <span class="text-center text-muted">last data update: 01.03.2023</span>
     </div>
 
 {% endblock %}

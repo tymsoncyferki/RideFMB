@@ -289,7 +289,8 @@ class Event(models.Model):
     country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True)
     category = models.CharField(max_length=100, blank=True)
     discipline = models.CharField(max_length=100, blank=True)
-    completed = models.BooleanField(default=True)
+    status = models.CharField(max_length=20, default='Upcoming')
+    series = models.ForeignKey('Series', on_delete=models.SET_NULL, null=True)
     prize = models.CharField(max_length=255, blank=True)
     website = models.CharField(max_length=255, blank=True)
     partners = models.ManyToManyField('Partner', through='Partnership')
@@ -297,6 +298,12 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.name}, {self.date.year}"
+
+    def completed(self):
+        if self.status == 'Completed':
+            return True
+        else:
+            return False
 
     def scrapePartners(self, content=None):
         """
@@ -330,15 +337,6 @@ class Event(models.Model):
         pass
 
     @staticmethod
-    def fixStatus():
-        # TODO: status - upcoming, completed, canceled
-        pass
-
-    # def completed(self):
-    #     # TODO: change completed to status
-    #     pass
-
-    @staticmethod
     def scrapeEvent(event_url, status, date_str, include_parts=False):
         """
         Scrapes event from given url
@@ -348,7 +346,7 @@ class Event(models.Model):
         """
         new_id = getID(event_url)
         date = datetime.strptime(date_str, '%d %b %Y').date()
-        completed = status
+        status = status
         # Get page content
         event_page = requests.get(event_url)
         event_soup = BeautifulSoup(event_page.text, 'lxml')
@@ -366,15 +364,17 @@ class Event(models.Model):
         category = event_category.next_sibling.text.strip()
         event_discipline = event_details.find('strong', text='Disipline: ')
         discipline = event_discipline.next_sibling.text.strip()
-        if discipline == 'Unknown':
+        if discipline == 'Unknown' and status == 'Completed':
             discipline = 'Freeride'
         event_prize = event_details.find('strong', text='Prize Money: ')
         prize = event_prize.next_sibling.text.strip()
         event_website = event_details.find('strong', text='Website: ')
         website = event_website.next_sibling.get('href')
+        # Scrape series
+        # TODO
         # Save event
         event = Event(id=new_id, name=name, date=date, city=city, country=country,
-                      category=category, discipline=discipline, completed=completed,
+                      category=category, discipline=discipline, status=status,
                       prize=prize, website=website)
         event.save()
         event.scrapePartners(content=event_soup)
@@ -511,8 +511,8 @@ class Partner(models.Model):
     @staticmethod
     def fixPartners(arg):
         """
-        Fixes same partners but differently written
-        arg - string that all partners contain
+        Fixes same partners but written differently
+        arg - pattern (string) that all partners contain
         """
         arg_partners = Partner.objects.filter(name__icontains=arg)
         main_partner = arg_partners[0]
