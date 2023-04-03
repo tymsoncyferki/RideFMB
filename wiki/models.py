@@ -305,6 +305,12 @@ class Event(models.Model):
         else:
             return False
 
+    def cleanName(self):
+        """ Drops brackets """
+        index = self.name.rfind('(')
+        string = self.name[:index]
+        return string.strip()
+
     def scrapePartners(self, content=None):
         """
         Scrapes event partners
@@ -335,6 +341,50 @@ class Event(models.Model):
     def fixEventWebsite():
         # TODO: fix links
         pass
+
+    def scrapeSeries(self, content=None):
+        """
+        Scrapes event series
+        content - page content can be given
+        """
+        if content is None:
+            event_url = 'https://www.fmbworldtour.com/competition/?id=' + str(self.id)
+            event_page = requests.get(event_url)
+            event_soup = BeautifulSoup(event_page.text, 'html.parser')
+        else:
+            event_soup = content
+        event_info = event_soup.find('div', {'class': 'api-content'})
+        event_history = event_info.find_all('div')[-1]
+        for comp in event_history.find_all('a'):
+            try:
+                comp_url = comp.get('href')
+                comp_id = getID(comp_url)
+                event = Event.objects.get(id=comp_id)
+            except ObjectDoesNotExist:
+                continue
+            if event.series and event.id != self.id:
+                s = event.series
+                self.series = s
+                self.save()
+                print('Added to series')
+                return
+        sname = self.cleanName()
+        try:
+            Series.objects.get(name=sname)
+            print('Already added to series')
+        except ObjectDoesNotExist:
+            print('Series created')
+            s = Series(name=sname)
+            s.save()
+            self.series = s
+            self.save()
+
+    @staticmethod
+    def scrapeAllSeries():
+        events = Event.objects.all()
+        for i, event in enumerate(events):
+            print(i, event)
+            event.scrapeSeries()
 
     @staticmethod
     def scrapeEvent(event_url, status, date_str, include_parts=False):
@@ -370,14 +420,15 @@ class Event(models.Model):
         prize = event_prize.next_sibling.text.strip()
         event_website = event_details.find('strong', text='Website: ')
         website = event_website.next_sibling.get('href')
-        # Scrape series
-        # TODO
         # Save event
         event = Event(id=new_id, name=name, date=date, city=city, country=country,
                       category=category, discipline=discipline, status=status,
                       prize=prize, website=website)
         event.save()
+        # Scrape partners
         event.scrapePartners(content=event_soup)
+        # Scrape series
+        event.scrapeSeries(content=event_soup)
         if include_parts:
             Rider.getRidersFromEvent(event_url)
 

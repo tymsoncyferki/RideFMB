@@ -82,7 +82,8 @@ def riders(request):
 def event(request, event_id, slug):
     main_event = Event.objects.get(id=event_id)
     parts = main_event.participation_set.all().order_by('rank')
-    return render(request, 'wiki/event.html', {'event': main_event, 'participations': parts})
+    series = main_event.series.event_set.all()
+    return render(request, 'wiki/event.html', {'event': main_event, 'participations': parts, 'series': series})
 
 
 def events(request, page_idx=1):
