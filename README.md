@@ -5,7 +5,7 @@
 Website where you can easily access all
 information about FMB World Tour riders, events and rankings.
 
-Unfortunately, timeliness of data is 100%
+Unfortunately, data is 100%
 dependent on official fmbworldtour website
 as there is no api or database containing this data.
 
