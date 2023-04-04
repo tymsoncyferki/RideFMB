@@ -82,7 +82,10 @@ def riders(request):
 def event(request, event_id, slug):
     main_event = Event.objects.get(id=event_id)
     parts = main_event.participation_set.all().order_by('rank')
-    series = main_event.series.event_set.all()
+    try:
+        series = main_event.series.event_set.all().order_by('-date')
+    except AttributeError:
+        series = [main_event]
     return render(request, 'wiki/event.html', {'event': main_event, 'participations': parts, 'series': series})
 
 

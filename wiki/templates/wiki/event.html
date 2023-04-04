@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="container-lg">
-        <h1>{{ event.name }}</h1>
+        <h1>{{ event.name }} {{ event.year }}</h1>
         <span>{{ event.year }}</span>
         <div>
             <h2>Information</h2>
@@ -19,6 +19,16 @@
                     <li>{{ part.rank }}. <a
                             href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>, {{ part.points }}
                         Points
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h2>{{ event.series.name }} series</h2>
+            <ul>
+                {% for comp in series %}
+                    <li>
+                        {{ comp.year }} <a href="{% url 'wiki:event' comp.id comp.slug %}">{{ comp.name }}</a>
                     </li>
                 {% endfor %}
             </ul>

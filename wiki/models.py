@@ -43,21 +43,26 @@ class Rider(models.Model):
         assert rider_url or new_id, 'specify rider_url or new_id'
         if not new_id:
             new_id = getID(rider_url)
+        if not rider_url:
+            rider_url = "https://www.fmbworldtour.com/athlete/?id=" + new_id
+        # Get page
+        rider_page = requests.get(rider_url)
+        rider_soup = BeautifulSoup(rider_page.text, 'html.parser')
         # information
         print('1. Rider information')
-        rider = Rider.scrapeRiderInfo(new_id=new_id)
+        rider = Rider.scrapeRiderInfo(new_id=new_id, content=rider_soup)
         # sponsors
         print('2. Rider sponsors')
-        rider.scrapeSponsors()
+        rider.scrapeSponsors(content=rider_soup)
         # participations
         print('3. Rider participations')
-        rider.scrapeParticipations()
+        rider.scrapeParticipations(content=rider_soup)
         # medals
         print('4. Rider medals')
         rider.updateMedals()
 
     @staticmethod
-    def scrapeRiderInfo(rider_url=None, new_id=None):
+    def scrapeRiderInfo(rider_url=None, new_id=None, content=None):
         """ Scrapes basic information about rider (without sponsors, events, medals) """
         # getting id and url
         assert rider_url or new_id, 'specify rider_url or new_id'
@@ -66,8 +71,11 @@ class Rider(models.Model):
         if not rider_url:
             rider_url = "https://www.fmbworldtour.com/athlete/?id=" + new_id
         # getting page content
-        rider_page = requests.get(rider_url)
-        rider_soup = BeautifulSoup(rider_page.text, 'lxml')
+        if content is None:
+            rider_page = requests.get(rider_url)
+            rider_soup = BeautifulSoup(rider_page.text, 'html.parser')
+        else:
+            rider_soup = content
         rider_info = rider_soup.find('div', {'class': 'athelte-profile'})
         # scraping basic info
         name = rider_info.find('h1').text.strip()
@@ -104,7 +112,7 @@ class Rider(models.Model):
         Rider.objects.all().update(active=False)
         main_url = "https://www.fmbworldtour.com/ranking/?series=70"
         main_page = requests.get(main_url)
-        main_soup = BeautifulSoup(main_page.text, 'lxml')
+        main_soup = BeautifulSoup(main_page.text, 'html.parser')
         pages = main_soup.find('div', {'class': 'page-counter'})
         # Iterate through ranking pages
         for page in pages.find_all('a', {'class': 'page-counter-link'}):
@@ -113,7 +121,7 @@ class Rider(models.Model):
             # Get page content
             ranking_url = page.get('href')
             ranking_page = requests.get(ranking_url)
-            ranking_soup = BeautifulSoup(ranking_page.text, 'lxml')
+            ranking_soup = BeautifulSoup(ranking_page.text, 'html.parser')
             # Get ranking table
             ranking_table = ranking_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
             # Iterate through riders on the page
@@ -166,14 +174,17 @@ class Rider(models.Model):
             rider.updateMedals()
 
     @staticmethod
-    def getRidersFromEvent(event_url, update=True):
+    def getRidersFromEvent(event_url=None, content=None, update=True):
         """
         Scrapes riders from an event
         update - set update to False to omit existing riders
         """
         # Get page content
-        event_page = requests.get(event_url)
-        event_soup = BeautifulSoup(event_page.text, 'lxml')
+        if content is None:
+            event_page = requests.get(event_url)
+            event_soup = BeautifulSoup(event_page.text, 'html.parser')
+        else:
+            event_soup = content
         try:
             rider_table = event_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
         except (Exception,):
@@ -198,7 +209,7 @@ class Rider(models.Model):
         # Get main page content
         main_url = "https://www.fmbworldtour.com/events/"
         main_page = requests.get(main_url)
-        main_soup = BeautifulSoup(main_page.text, 'lxml')
+        main_soup = BeautifulSoup(main_page.text, 'html.parser')
         year_panel = main_soup.find('div', {'class': 'page-counter'})
         # Iterate through year pages
         for year in year_panel.find_all('a'):
@@ -207,7 +218,7 @@ class Rider(models.Model):
             print("Scraping year:", year_url)
             # Get page content
             year_page = requests.get(year_url)
-            year_soup = BeautifulSoup(year_page.text, 'lxml')
+            year_soup = BeautifulSoup(year_page.text, 'html.parser')
             event_table = year_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
             # Iterate through events from a given year
             for event in event_table.find_all('tr'):
@@ -218,12 +229,15 @@ class Rider(models.Model):
             print("Year scraped succesfully!")
         print("SUCCESS!")
 
-    def scrapeSponsors(self):
+    def scrapeSponsors(self, content=None):
         """ Scrapes riders sponsorships """
         # Get page content
-        rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(self.id)
-        rider_page = requests.get(rider_url)
-        rider_soup = BeautifulSoup(rider_page.text, 'lxml')
+        if content is None:
+            rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(self.id)
+            rider_page = requests.get(rider_url)
+            rider_soup = BeautifulSoup(rider_page.text, 'html.parser')
+        else:
+            rider_soup = content
         try:
             rider_sponsors = rider_soup.find('p', {'class': 'athlete-profile-sponsors'}).text.strip()
         except (Exception,):
@@ -246,12 +260,15 @@ class Rider(models.Model):
             if main:
                 main = False
 
-    def scrapeParticipations(self):
+    def scrapeParticipations(self, content=None):
         """ Scrapews riders participations """
         # Get page content
-        rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(self.id)
-        rider_page = requests.get(rider_url)
-        rider_soup = BeautifulSoup(rider_page.text, 'lxml')
+        if content is None:
+            rider_url = "https://www.fmbworldtour.com/athlete/?id=" + str(self.id)
+            rider_page = requests.get(rider_url)
+            rider_soup = BeautifulSoup(rider_page.text, 'html.parser')
+        else:
+            rider_soup = content
         # Get participations table
         rider_results = rider_soup.find('h2', text="Previous Results").find_next_sibling()
         rider_parts = rider_results.find('tbody')
@@ -307,9 +324,14 @@ class Event(models.Model):
 
     def cleanName(self):
         """ Drops brackets """
-        index = self.name.rfind('(')
-        string = self.name[:index]
+        string = self.name
+        index = string.rfind('(')
+        if index != -1:
+            string = string[:index]
         return string.strip()
+
+    def year(self):
+        return self.date.year
 
     def scrapePartners(self, content=None):
         """
@@ -399,10 +421,11 @@ class Event(models.Model):
         status = status
         # Get page content
         event_page = requests.get(event_url)
-        event_soup = BeautifulSoup(event_page.text, 'lxml')
+        event_soup = BeautifulSoup(event_page.text, 'html.parser')
         event_info = event_soup.find('div', {'class': 'api-content'})
         # Get event information
         name = event_info.find('h1').text.strip()
+        slug = slugify(name)
         location = event_info.find('small').text.strip()
         comma = location.rfind(',')
         city = location[:comma].strip()
@@ -421,7 +444,7 @@ class Event(models.Model):
         event_website = event_details.find('strong', text='Website: ')
         website = event_website.next_sibling.get('href')
         # Save event
-        event = Event(id=new_id, name=name, date=date, city=city, country=country,
+        event = Event(id=new_id, name=name, slug=slug, date=date, city=city, country=country,
                       category=category, discipline=discipline, status=status,
                       prize=prize, website=website)
         event.save()
@@ -430,7 +453,7 @@ class Event(models.Model):
         # Scrape series
         event.scrapeSeries(content=event_soup)
         if include_parts:
-            Rider.getRidersFromEvent(event_url)
+            Rider.getRidersFromEvent(event_url=event_url, content=event_soup)
 
     @staticmethod
     def scrapeEventsYear(year_url=None, year=None, update=True):
@@ -445,7 +468,7 @@ class Event(models.Model):
             year_url = "https://www.fmbworldtour.com/events/?yr=" + str(year)
         # Get page content
         year_page = requests.get(year_url)
-        year_soup = BeautifulSoup(year_page.text, 'lxml')
+        year_soup = BeautifulSoup(year_page.text, 'html.parser')
         event_table = year_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
         # Iterate over events
         for event in event_table.find_all('tr'):
@@ -471,7 +494,7 @@ class Event(models.Model):
         """ Scrapes all events """
         main_url = "https://www.fmbworldtour.com/events/"
         main_page = requests.get(main_url)
-        main_soup = BeautifulSoup(main_page.text, 'lxml')
+        main_soup = BeautifulSoup(main_page.text, 'html.parser')
         year_panel = main_soup.find('div', {'class': 'page-counter'})
         # Iterates over years
         for year in year_panel.find_all('a'):
@@ -589,4 +612,4 @@ def getID(url):
 
 
 def updateDatabase():
-    Event.scrapeEventsYear(datetime.now().year)
+    Event.scrapeEventsYear(year=datetime.now().year)
