@@ -618,6 +618,17 @@ class Partnership(models.Model):
         return self.partner.name + ': ' + self.event.name
 
 
+class AppData(models.Model):
+    lastUpdate = models.DateField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.pk and AppData.objects.exists():
+            # if you'll not check for self.pk
+            # then error will also be raised in update of exists model
+            raise ValidationError('There can be only one AppData instance')
+        return super(AppData, self).save(*args, **kwargs)
+
+
 def getID(url):
     """ Extracts ID from url """
     id_index = url.index('=') + 1
@@ -627,3 +638,6 @@ def getID(url):
 def updateDatabase():
     Event.scrapeEventsYear(year=datetime.now().year)
     Rider.updateRanking()
+    data = AppData.objects.get(id=1)
+    data.lastUpdate = datetime.now()
+    data.save()

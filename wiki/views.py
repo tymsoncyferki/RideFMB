@@ -4,7 +4,8 @@ from django.db.models import F
 
 
 def index(request):
-    return render(request, 'wiki/index.html')
+    data = AppData.objects.get(id=1)
+    return render(request, 'wiki/index.html', {'appData': data})
 
 
 def rider(request, rider_id, slug):
