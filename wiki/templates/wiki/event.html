@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="container-lg">
-        <h1>{{ event.name }} {{ event.year }}</h1>
+        <h1>{{ event.name }}</h1>
         <span>{{ event.year }}</span>
         <div>
             <h2>Information</h2>
@@ -24,7 +24,7 @@
             </ul>
         </div>
         <div>
-            <h2>{{ event.series.name }} series</h2>
+            <h2>{{ event.series.name }} Series</h2>
             <ul>
                 {% for comp in series %}
                     <li>

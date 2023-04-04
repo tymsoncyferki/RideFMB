@@ -53,7 +53,7 @@ class Rider(models.Model):
         rider = Rider.scrapeRiderInfo(new_id=new_id, content=rider_soup)
         # sponsors
         print('2. Rider sponsors')
-        # TODO: fix sponsors - delete before adding
+        Sponsorship.objects.filter(rider__id=new_id).delete()
         rider.scrapeSponsors(content=rider_soup)
         # participations
         print('3. Rider participations')
@@ -101,9 +101,20 @@ class Rider(models.Model):
             rank = None
             active = False
         # saving rider
-        # TODO: dont always create new rider - just change fields
-        rider = Rider(id=new_id, firstname=firstname, lastname=lastname, name=name, slug=slug, country=country,
-                      photo=photo, instagram=instagram, active=active, rank=rank)
+        try:
+            rider = Rider.objects.get(id=new_id)
+            rider.firstname = firstname
+            rider.lastname = lastname
+            rider.name = name
+            rider.slug = slug
+            rider.country = country
+            rider.photo = photo
+            rider.instagram = instagram
+            rider.active = active
+            rider.rank = rank
+        except ObjectDoesNotExist:
+            rider = Rider(id=new_id, firstname=firstname, lastname=lastname, name=name, slug=slug, country=country,
+                          photo=photo, instagram=instagram, active=active, rank=rank)
         rider.save()
         return rider
 
@@ -615,4 +626,4 @@ def getID(url):
 
 def updateDatabase():
     Event.scrapeEventsYear(year=datetime.now().year)
-    # TODO - update ranking!
+    Rider.updateRanking()
