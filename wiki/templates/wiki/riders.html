@@ -35,23 +35,34 @@
                         <form id="filters" action="{% url 'wiki:riders' %}" method="get">
                             <div class="filter-element">
                                 <select class="form-select filter-select rounded-0" name="country" id="country">
-                                    {% if not request.GET.country %}
-                                    <option value="all" selected>Select country</option>
+                                    {% if not request.GET.country or request.GET.country == 'all' %}
+                                        <option value="all" selected>Select Country</option>
                                     {% endif %}
-                                    <option value="all">All</option>
+                                        <option value="all">All</option>
                                     {% for country in countries %}
-                                    <option value="{{ country.isocode }}"{% if request.GET.country == country.isocode %} selected {% endif %}>{{ country.name }}</option>
+                                        <option value="{{ country.isocode }}"{% if request.GET.country == country.isocode %} selected {% endif %}>{{ country.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="filter-element">
                                 <select class="form-select filter-select rounded-0" name="ranked" id="ranked">
-                                    {% if not request.GET.ranked %}
-                                        <option value="all" selected>Select status</option>
+                                    {% if not request.GET.ranked or request.GET.ranked == 'all' %}
+                                        <option value="all" selected>Select Status</option>
                                     {% endif %}
-                                    <option value="all" {% if request.GET.ranked == 'all' %} selected {% endif %}>All</option>
+                                    <option value="all">All</option>
                                     <option value="yes" {% if request.GET.ranked == 'yes' %} selected {% endif %}>Ranked</option>
                                     <option value="no" {% if request.GET.ranked == 'no' %} selected {% endif %}>Not ranked</option>
+                                </select>
+                            </div>
+                            <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="sponsor" id="sponsor">
+                                    {% if not request.GET.sponsor or request.GET.sponsor == 'all' %}
+                                        <option value="all" selected>Select Sponsor</option>
+                                    {% endif %}
+                                        <option value="all">All</option>
+                                    {% for sponsor in sponsors %}
+                                        <option value="{{ sponsor.id }}"{% if request.GET.sponsor == sponsor.strID %} selected {% endif %}>{{ sponsor.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             {% if request.GET.sort %}
@@ -118,6 +129,11 @@
                         {% if request.GET.sort in medals %}
                             <div class="col-2 d-flex justify-content-center">
                                 {{ request.GET.sort|label }}
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
+                                    </svg>
+                                </span>
                             </div>
                         {% else %}
                             <div class="col-2 d-flex justify-content-center">

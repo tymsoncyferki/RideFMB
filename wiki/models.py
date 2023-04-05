@@ -34,7 +34,11 @@ class Rider(models.Model):
         return self.name
 
     def getMainSponsor(self):
-        return self.sponsorship_set.filter(main=True)[0].sponsor.name
+        try:
+            sponsor = self.sponsorship_set.filter(main=True)[0].sponsor.name
+        except IndexError:
+            sponsor = ''
+        return sponsor
 
     @staticmethod
     def scrapeRider(rider_url=None, new_id=None):
@@ -262,6 +266,8 @@ class Rider(models.Model):
         print('Scraping rider sponsors...')
         # Iterate through sponsors
         for sponsor_name in sponsors:
+            if sponsor_name == '':
+                continue
             # Add sponsor
             if not Sponsor.objects.filter(name=sponsor_name).exists():
                 s = Sponsor(name=sponsor_name)
@@ -525,6 +531,9 @@ class Sponsor(models.Model):
     def __str__(self):
         name = str(self.name)
         return name
+
+    def strID(self):
+        return str(self.id)
 
 
 class Participation(models.Model):

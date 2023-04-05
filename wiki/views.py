@@ -49,6 +49,10 @@ def riders(request):
         else:
             all_riders = all_riders.filter(active=False)
 
+    sponsor = request.GET.get('sponsor')
+    if sponsor and sponsor != 'all':
+        all_riders = all_riders.filter(sponsor__id=sponsor)
+
     # sorting
     sort_option = request.GET.get('sort')
     if sort_option:
@@ -67,9 +71,10 @@ def riders(request):
                     'lastname']
     sort_options = list(zip(sort_labels, sort_queries))
     filter_labels = ['Name', 'Country', 'Sponsors', 'Ranked']
-    url_params = ['sort', 'country', 'ranked']
+    url_params = ['sort', 'country', 'ranked', 'sponsor']
     medals = ['-medal', '-gold', '-silver', '-bronze']
     countries = Country.objects.all().order_by('name')
+    sponsors = Sponsor.objects.all().order_by('name')
 
     # page
     riders_html = all_riders[start_idx:last_idx]
@@ -77,7 +82,7 @@ def riders(request):
     return render(request, 'wiki/riders.html', {'riders': riders_html, 'page_index': page_idx,
                                                 'pages_count': pages_count, 'sortOptions': sort_options,
                                                 'filterLabels': filter_labels, 'url_params': url_params,
-                                                'medals': medals, 'countries': countries})
+                                                'medals': medals, 'countries': countries, 'sponsors': sponsors})
 
 
 def event(request, event_id, slug):

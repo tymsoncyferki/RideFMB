@@ -7,3 +7,6 @@
 {% if request.GET.ranked %}
     <input type="hidden" name="ranked" value="{{ request.GET.ranked }}">
 {% endif %}
+{% if request.GET.sponsor %}
+    <input type="hidden" name="sponsor" value="{{ request.GET.sponsor }}">
+{% endif %}

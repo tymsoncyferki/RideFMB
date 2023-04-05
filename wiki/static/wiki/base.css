@@ -1,10 +1,21 @@
 :root {
-    --rf-background: #181818;
+    --rf-background: #000000;
     --rf-primary: #727af7;
-    --rf-table: #272c32;
-    --rf-table-2: #4e545c;
+    --rf-table: #1e2124;
+    --rf-table-2: #272c32;
     --rf-border: #6c757d;
     --rf-lightgrey: #e0e0e0;
+}
+
+@media screen and (max-width: 767px) {
+    :root {
+    --rf-table: #1c1c1d;
+    --rf-table-2: #2c2c2d;
+    --rf-border: #6c757d;
+}
+}
+a {
+   color: var(--rf-primary);
 }
 
 body {
@@ -37,7 +48,8 @@ body {
     max-width: 60px;
     max-height: 60px;
 }
-a.nav-link:hover {
+a.nav-link:hover,
+a.nav-link:focus{
     color: var(--rf-primary) !important;
 }
 .btn-navbar-menu {
@@ -103,6 +115,10 @@ a.nav-link:hover {
 .rf-table-item-link,
 .rf-table-item-link:hover {
     color: white;
+    text-decoration: none;
+}
+.rf-table-item-link:focus {
+    color: var(--rf-primary);
     text-decoration: none;
 }
 .rf-table-item-points {
