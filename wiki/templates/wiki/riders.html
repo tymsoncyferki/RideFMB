@@ -115,8 +115,17 @@
             <ul class="list-group list-group-table rounded-4 rf-table">
                 <li class="list-group-item rf-table-header">
                     <div class="row align-items-center text-white">
-                        <div class="col-1 text-center">
+                        <div class="col-1 d-flex justify-content-center">
+{#                            <span class="d-flex justify-content-center" style="min-width: 50px; margin-left: 10px; padding-right: 0">Rank#}
                             Rank
+                            {% if request.GET.sort and request.GET.sort == 'rank' %}
+                                <span style="padding-left: 3px">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
+                                    </svg>
+                                </span>
+{#                            </span>#}
+                            {% endif %}
                         </div>
                         <div class="col-2 d-none d-sm-block"></div>
                         <div class="col d-sm-none rf-table-rider-photo"></div>
@@ -127,16 +136,16 @@
                             Sponsor
                         </div>
                         {% if request.GET.sort in medals %}
-                            <div class="col-2 d-flex justify-content-center">
+                            <div class="col-2 d-flex justify-content-center" style="min-width: 62px">
                                 {{ request.GET.sort|label }}
-                                <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                <span style="padding-left: 3px">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
                                         <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
                                     </svg>
                                 </span>
                             </div>
                         {% else %}
-                            <div class="col-2 d-flex justify-content-center">
+                            <div class="col-2 d-flex justify-content-center" style="min-width: 62px">
                                 Points
                             </div>
                         {% endif %}
@@ -216,20 +225,20 @@
                         </ul>
                     </div>
                 </div>
-                {% with next_index=page_index|add:1 %}
-                    <div class="col-5 text-start">
-                        {% if next_index <= pages_count %}
-                            <form action="{% url 'wiki:riders' %}" method="get">
-                                {% include "wiki/riders_parameters.html" %}
-                                <input type="hidden" name="page" value="{{ next_index }}">
-                                <button type="submit" class="btn btn-link rf-nav-link"><h2>>></h2></button>
-                            </form>
-                        {% else %}
-                            <button class="btn btn-link link-disabled rf-nav-link"><h2>>></h2></button>
-                        {% endif %}
-                    </div>
-                    </div>
-                {% endwith %}
+                    {% with next_index=page_index|add:1 %}
+                        <div class="col-5 text-start">
+                            {% if next_index <= pages_count %}
+                                <form action="{% url 'wiki:riders' %}" method="get">
+                                    {% include "wiki/riders_parameters.html" %}
+                                    <input type="hidden" name="page" value="{{ next_index }}">
+                                    <button type="submit" class="btn btn-link rf-nav-link"><h2>>></h2></button>
+                                </form>
+                            {% else %}
+                                <button class="btn btn-link link-disabled rf-nav-link"><h2>>></h2></button>
+                            {% endif %}
+                        </div>
+                    {% endwith %}
+                </div>
         {% else %}
             <p>No results found :(</p>
         {% endif %}
