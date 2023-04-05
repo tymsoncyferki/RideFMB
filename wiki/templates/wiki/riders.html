@@ -12,11 +12,13 @@
         <h1>FMB World Tour Athletes</h1>
         <div class="row py-3">
             <div class="col-6" id="filterButtonContainer">
-                <button type="button" class="btn btn-settings-menu rounded-3" data-bs-toggle="modal" data-bs-target="#filterModal">Filter
+                <button type="button" class="btn btn-settings-menu rounded-3" data-bs-toggle="modal"
+                        data-bs-target="#filterModal">Filter
                 </button>
             </div>
             <div class="col-6" id="sortButtonContainer">
-                <button type="button" class="btn btn-settings-menu rounded-3" data-bs-toggle="modal" data-bs-target="#sortModal">
+                <button type="button" class="btn btn-settings-menu rounded-3" data-bs-toggle="modal"
+                        data-bs-target="#sortModal">
                     Sort
                 </button>
             </div>
@@ -31,16 +33,18 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-0 m-0">
-                    <!--filter body-->
+                        <!--filter body-->
                         <form id="filters" action="{% url 'wiki:riders' %}" method="get">
                             <div class="filter-element">
                                 <select class="form-select filter-select rounded-0" name="country" id="country">
                                     {% if not request.GET.country or request.GET.country == 'all' %}
                                         <option value="all" selected>Select Country</option>
                                     {% endif %}
-                                        <option value="all">All</option>
+                                    <option value="all">All</option>
                                     {% for country in countries %}
-                                        <option value="{{ country.isocode }}"{% if request.GET.country == country.isocode %} selected {% endif %}>{{ country.name }}</option>
+                                        <option value="{{ country.isocode }}"
+                                                {% if request.GET.country == country.isocode %}
+                                                selected {% endif %}>{{ country.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -50,8 +54,12 @@
                                         <option value="all" selected>Select Status</option>
                                     {% endif %}
                                     <option value="all">All</option>
-                                    <option value="yes" {% if request.GET.ranked == 'yes' %} selected {% endif %}>Ranked</option>
-                                    <option value="no" {% if request.GET.ranked == 'no' %} selected {% endif %}>Not ranked</option>
+                                    <option value="yes" {% if request.GET.ranked == 'yes' %} selected {% endif %}>
+                                        Ranked
+                                    </option>
+                                    <option value="no" {% if request.GET.ranked == 'no' %} selected {% endif %}>Not
+                                        ranked
+                                    </option>
                                 </select>
                             </div>
                             <div class="filter-element">
@@ -59,9 +67,10 @@
                                     {% if not request.GET.sponsor or request.GET.sponsor == 'all' %}
                                         <option value="all" selected>Select Sponsor</option>
                                     {% endif %}
-                                        <option value="all">All</option>
+                                    <option value="all">All</option>
                                     {% for sponsor in sponsors %}
-                                        <option value="{{ sponsor.id }}"{% if request.GET.sponsor == sponsor.strID %} selected {% endif %}>{{ sponsor.name }}</option>
+                                        <option value="{{ sponsor.id }}"{% if request.GET.sponsor == sponsor.strID %}
+                                                selected {% endif %}>{{ sponsor.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -115,18 +124,27 @@
             <ul class="list-group list-group-table rounded-4 rf-table">
                 <li class="list-group-item rf-table-header">
                     <div class="row align-items-center text-white">
-                        <div class="col-1 d-flex justify-content-center">
-{#                            <span class="d-flex justify-content-center" style="min-width: 50px; margin-left: 10px; padding-right: 0">Rank#}
+                        {% if request.GET.sort == 'rank' or request.GET.sort == "-rank" %}
+                            <div class="col-1 d-flex justify-content-center">
+                            <span class="d-flex justify-content-center"
+                                  style="min-width: 50px; margin-left: 20px; padding-right: 0">
                             Rank
-                            {% if request.GET.sort and request.GET.sort == 'rank' %}
                                 <span style="padding-left: 3px">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                         class="bi bi-caret-down-fill" viewBox="0 0 16 16">
                                         <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
                                     </svg>
                                 </span>
-{#                            </span>#}
-                            {% endif %}
-                        </div>
+                            </span>
+                            </div>
+                        {% else %}
+                            <div class="col-1 d-flex justify-content-center">
+                            <span class="d-flex justify-content-center"
+                                  style="min-width: 50px; margin-left: 10px; padding-right: 0">
+                            Rank
+                            </span>
+                            </div>
+                        {% endif %}
                         <div class="col-2 d-none d-sm-block"></div>
                         <div class="col d-sm-none rf-table-rider-photo"></div>
                         <div class="col">
@@ -139,15 +157,28 @@
                             <div class="col-2 d-flex justify-content-center" style="min-width: 62px">
                                 {{ request.GET.sort|label }}
                                 <span style="padding-left: 3px">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                         class="bi bi-caret-down-fill" viewBox="0 0 16 16">
                                         <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
                                     </svg>
                                 </span>
                             </div>
                         {% else %}
-                            <div class="col-2 d-flex justify-content-center" style="min-width: 62px">
-                                Points
-                            </div>
+                            {% if request.GET.sort == 'alltime_points' or request.GET.sort == '-alltime_points' %}
+                                <div class="col-2 d-flex justify-content-center" style="min-width: 62px">
+                                    Points
+                                    <span style="padding-left: 3px">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                         class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
+                                    </svg>
+                                </span>
+                                </div>
+                            {% else %}
+                                <div class="col-2 d-flex justify-content-center" style="min-width: 62px">
+                                    Points
+                                </div>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </li>
@@ -171,7 +202,8 @@
                             </div>
                             <div class="col">
                                 <h6 class="rf-table-item-name">
-                                    <a class="stretched-link rf-table-item-link" href="{% url 'wiki:rider' rider.id rider.slug %}">
+                                    <a class="stretched-link rf-table-item-link"
+                                       href="{% url 'wiki:rider' rider.id rider.slug %}">
                                         {{ rider.name }}
                                     </a>
                                 </h6>
@@ -225,20 +257,20 @@
                         </ul>
                     </div>
                 </div>
-                    {% with next_index=page_index|add:1 %}
-                        <div class="col-5 text-start">
-                            {% if next_index <= pages_count %}
-                                <form action="{% url 'wiki:riders' %}" method="get">
-                                    {% include "wiki/riders_parameters.html" %}
-                                    <input type="hidden" name="page" value="{{ next_index }}">
-                                    <button type="submit" class="btn btn-link rf-nav-link"><h2>>></h2></button>
-                                </form>
-                            {% else %}
-                                <button class="btn btn-link link-disabled rf-nav-link"><h2>>></h2></button>
-                            {% endif %}
-                        </div>
-                    {% endwith %}
-                </div>
+                {% with next_index=page_index|add:1 %}
+                    <div class="col-5 text-start">
+                        {% if next_index <= pages_count %}
+                            <form action="{% url 'wiki:riders' %}" method="get">
+                                {% include "wiki/riders_parameters.html" %}
+                                <input type="hidden" name="page" value="{{ next_index }}">
+                                <button type="submit" class="btn btn-link rf-nav-link"><h2>>></h2></button>
+                            </form>
+                        {% else %}
+                            <button class="btn btn-link link-disabled rf-nav-link"><h2>>></h2></button>
+                        {% endif %}
+                    </div>
+                {% endwith %}
+            </div>
         {% else %}
             <p>No results found :(</p>
         {% endif %}
