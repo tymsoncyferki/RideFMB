@@ -25,7 +25,14 @@
 /*}*/
 
 a {
-   color: var(--rf-primary);
+    color: var(--rf-primary);
+    text-decoration: none;
+}
+
+a:hover,
+a:focus {
+    color: var(--rf-primary);
+    text-decoration: underline;
 }
 
 body {
@@ -121,6 +128,7 @@ a.nav-link:focus{
 }
 .rf-table-item:hover {
     background-color: var(--rf-table-2);
+    cursor: pointer;
 }
 .rf-table-item-link,
 .rf-table-item-link:hover {

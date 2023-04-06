@@ -19,7 +19,7 @@ def search(request):
     query = request.GET.get('q')
     if query:
         riders_html = Rider.objects.filter(name__icontains=query)
-        events_html = Event.objects.filter(name__icontains=query)
+        events_html = Event.objects.filter(name__icontains=query).order_by('-date')
     else:
         riders_html = False
         events_html = False
