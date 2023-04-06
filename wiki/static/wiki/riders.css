@@ -38,6 +38,22 @@
 .rf-nav-link {
     padding-top: 0;
 }
+.rf-table-rank {
+    min-width: 50px;
+    margin-left: 10px;
+    padding-right: 0;
+}
+.rf-table-rank-sort {
+    min-width: 50px;
+    margin-left: 20px;
+    padding-right: 0;
+}
+.rf-table-sort-icon {
+    padding-left: 3px;
+}
+.rf-table-var {
+    min-width: 62px;
+}
 
 
 

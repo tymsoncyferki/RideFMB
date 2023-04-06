@@ -12,8 +12,18 @@
     --rf-table: #1c1c1d;
     --rf-table-2: #2c2c2d;
     --rf-border: #6c757d;
+    }
 }
-}
+
+/*:root {*/
+/*    --rf-background: #000000;*/
+/*    --rf-primary: #727af7;*/
+/*    --rf-table: #1c1c1d;*/
+/*    --rf-table-2: #2c2c2d;*/
+/*    --rf-border: #6c757d;*/
+/*    --rf-lightgrey: #e0e0e0;*/
+/*}*/
+
 a {
    color: var(--rf-primary);
 }
