@@ -16,19 +16,21 @@
         {% else %}
             <h1>Results</h1>
         {% endif %}
-        <div class="search-results">
+
         {% if riders %}
             <h4>Riders:</h4>
             <!-- rf table development -->
-{#            <table class="table rf-table rounded-3 overflow-hidden" style="max-width: 576px;">#}
+{#            <table class="table table-borderless rf-table rounded-3 overflow-hidden text-white" style="max-width: 576px;">#}
 {#                <thead class="rf-table-header rounded-3">#}
+{#                    <th scope="col">Rank</th>#}
 {#                    <th scope="col"></th>#}
 {#                    <th scope="col">Name</th>#}
 {#                    <th scope="col">Country</th>#}
 {#                </thead>#}
 {#                <tbody>#}
 {#                {% for rider in riders %}#}
-{#                    <tr class="rf-table-item" onclick="window.location='{% url 'wiki:rider' rider.id rider.slug %}';">#}
+{#                    <tr class="rf-table-item align-items-center" onclick="window.location='{% url 'wiki:rider' rider.id rider.slug %}';">#}
+{#                        <td>{{ rider.rank }}</td>#}
 {#                        <td>#}
 {#                            <img src="{{ rider.photo }}" class="rounded-circle border border-2 border-white" width="50" height="50">#}
 {#                        </td>#}
@@ -41,7 +43,7 @@
 {#                </tbody>#}
 {#            </table>#}
             <!-- search table -->
-            <table class="my-table">
+            <table class="search-table">
                 <tbody>
                 {% for rider in riders %}
                     <tr class="search-item">
@@ -57,11 +59,11 @@
                 {% endfor %}
                 </tbody>
             </table>
+            <br>
         {% endif %}
-        <br>
         {% if events %}
             <h4>Events:</h4>
-            <table class="my-table" style="max-width: 576px;">
+            <table class="search-table">
                 <tbody>
                 {% for event in events %}
                     <tr class="search-item">
@@ -75,7 +77,6 @@
                 </tbody>
             </table>
         {% endif %}
-        </div>
     </div>
 {% endblock %}
 

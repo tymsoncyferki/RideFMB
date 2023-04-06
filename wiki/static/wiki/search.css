@@ -11,15 +11,12 @@
 /*    padding: 10px 0 10px 5px;*/
 /*}*/
 
-.my-table {
+.search-table {
     border-collapse: separate;
     border-spacing: 0 10px;
-
+    padding-left: 10px;
 }
 .rf-table-rider-photo {
     min-width: 60px;
 }
 
-.search-results {
-    padding-left: 10px;
-}

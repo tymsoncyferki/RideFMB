@@ -68,6 +68,7 @@ body {
 a.nav-link:hover,
 a.nav-link:focus{
     color: var(--rf-primary) !important;
+    text-decoration: none;
 }
 .btn-navbar-menu {
     color: var(--rf-primary);
@@ -153,6 +154,7 @@ a.nav-link:focus{
     margin-left: -5px;
     padding-top: 5px;
 }
+
 .rf-nav-link {
     color: var(--rf-primary);
     text-decoration: none;
@@ -168,6 +170,11 @@ a.nav-link:focus{
     color: var(--rf-primary);
     padding: 5px 5px 0 0;
 }
+#dropdownMenuLink:hover,
+#dropdownMenuLink:focus {
+    text-decoration: none;
+}
+
 #dropdownMenuList {
     height: auto;
     max-height: 200px;
