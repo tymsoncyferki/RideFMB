@@ -35,6 +35,12 @@
 .rf-table-rider-photo {
     max-width: 60px;
 }
+td {
+  vertical-align: middle;
+}
+th{
+    font-weight: normal;
+}
 .rf-nav-link {
     padding-top: 0;
 }

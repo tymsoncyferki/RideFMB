@@ -19,29 +19,6 @@
 
         {% if riders %}
             <h4>Riders:</h4>
-            <!-- rf table development -->
-{#            <table class="table table-borderless rf-table rounded-3 overflow-hidden text-white" style="max-width: 576px;">#}
-{#                <thead class="rf-table-header rounded-3">#}
-{#                    <th scope="col">Rank</th>#}
-{#                    <th scope="col"></th>#}
-{#                    <th scope="col">Name</th>#}
-{#                    <th scope="col">Country</th>#}
-{#                </thead>#}
-{#                <tbody>#}
-{#                {% for rider in riders %}#}
-{#                    <tr class="rf-table-item align-items-center" onclick="window.location='{% url 'wiki:rider' rider.id rider.slug %}';">#}
-{#                        <td>{{ rider.rank }}</td>#}
-{#                        <td>#}
-{#                            <img src="{{ rider.photo }}" class="rounded-circle border border-2 border-white" width="50" height="50">#}
-{#                        </td>#}
-{#                        <td class="rf-table-item-name">#}
-{#                            <a class="rf-table-item-link" href="{% url 'wiki:rider' rider.id rider.slug %}">{{ rider.name }}</a>#}
-{#                        </td>#}
-{#                        <td><img src="{{ rider.country.photo }}"></td>#}
-{#                    </tr>#}
-{#                {% endfor %}#}
-{#                </tbody>#}
-{#            </table>#}
             <!-- search table -->
             <table class="search-table">
                 <tbody>
