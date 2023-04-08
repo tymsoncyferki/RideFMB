@@ -9,92 +9,96 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-lg">
+    <div class="container-lg" style="display: table">
         <h1 class="d-none d-sm-block">FMB World Tour Ranking 2023</h1>
         <h1 class="d-sm-none">FMB Ranking 2023</h1>
-        <ul class="list-group list-group-table rf-table rounded-4">
-            <li class="list-group-item rf-table-header">
-                <div class="row align-items-center text-white">
-                    <div class="col-1 text-center">
-                        Rank
-                    </div>
-                    <div class="col-2 d-none d-sm-block"></div>
-                    <div class="col d-sm-none rf-table-rider-photo"></div>
-                    <div class="col">
-                        Name
-                    </div>
-                    <div class="col-3 d-none d-sm-block">
-                        Sponsor
-                    </div>
-                    <div class="col-2 d-flex justify-content-center">
-                        Points
-                    </div>
-                </div>
-            </li>
-        {% for rider in riders %}
-            <li class="list-group-item rf-table-item">
-                <div class="row align-items-center text-white">
-                    <div class="col-1 d-flex justify-content-center">
-                        <h6>{{rider.rank}}</h6>
-                    </div>
-                    <div class="col-2 py-1 d-none d-md-block ">
-                        <img alt="Rider photo" src="{{rider.photo}}" class="rounded-circle border border-3 border-white" width="90" height="90">
-                    </div>
-                    <div class="col-2 d-none d-sm-block d-md-none">
-                        <img alt="Rider photo" src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="70" height="70">
-                    </div>
-                    <div class="col d-sm-none rf-table-rider-photo">
-                        <img alt="Rider photo" src="{{rider.photo}}" class="d-md-none rounded-circle border border-2 border-white" width="50" height="50">
-                    </div>
-                    <div class="col">
+        <table class="table table-borderless rf-table rounded-4 overflow-hidden text-white">
+            <thead class="rf-table-header rounded-3">
+            <tr>
+                <!-- Rank -->
+                <th class="text-center d-none d-sm-block" scope="col">Rank</th>
+                <th class="d-sm-none" colspan="2">Rank</th>
+                <th class="d-none d-sm-table-cell" scope="col"></th>
+                <th scope="col">Name</th>
+                <th class="d-none d-sm-table-cell" scope="col">Sponsor</th>
+                <th class="text-center" scope="col">Points</th>
+            <tr>
+            </thead>
+            <tbody>
+            {% for rider in riders %}
+                <tr class="rf-table-item" onclick="window.location='{% url 'wiki:rider' rider.id rider.slug %}';">
+                    <!-- Rank -->
+                    <td>
+                        <h6 class="text-center">{{ rider.rank }}</h6>
+                    </td>
+                    <!-- Photo -->
+                    <td class="py-3 d-none d-md-block">
+                        <img alt="Rider photo" src="{{ rider.photo }}"
+                             class="rounded-circle border border-3 border-white" width="90" height="90">
+                    </td>
+                    <td class="d-none d-sm-block d-md-none">
+                        <img alt="Rider photo" src="{{ rider.photo }}"
+                             class="rounded-circle border border-2 border-white" width="70" height="70">
+                    </td>
+                    <td class="d-sm-none rf-table-rider-photo">
+                        <img alt="Rider photo" src="{{ rider.photo }}"
+                             class="rounded-circle border border-2 border-white" width="50" height="50">
+                    </td>
+                    <!-- Name -->
+                    <td>
                         <h6 class="rf-table-item-name">
-                            <a class="stretched-link rf-table-item-link" href="{% url 'wiki:rider' rider.id rider.slug %}">
-                                {{rider.name}}
-                            </a>
+                            <a class="rf-table-item-link"
+                               href="{% url 'wiki:rider' rider.id rider.slug %}">{{ rider.name }}</a>
                         </h6>
                         <img alt="Rider country flag" src="{{ rider.country.photo }}">
-                    </div>
-                    <div class="col-3 d-none d-sm-block">
+                    </td>
+                    <!-- Sponsor -->
+                    <td class="d-none d-sm-block">
                         {{ rider.getMainSponsor }}
-                    </div>
-                    <div class="col-2 d-flex justify-content-center">
-                        <h6 class="rf-table-item-points rounded-2">{{rider.points}}</h6>
-                    </div>
-                </div>
-            </li>
-        {% endfor %}
-        </ul>
+                    </td>
+                    <!-- Points -->
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <h6 class="rf-table-item-points rounded-2">{{rider.points}}</h6>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
         <div class="row rf-nav">
-        {% with previous_index=page_index|sub:1 %}
-            <div class="col-5 text-end">
-            {% if previous_index > 0 %}
-                <h2><a class="rf-nav-link" href="{% url 'wiki:ranking' previous_index %}"><<</a></h2>
-            {% else %}
-                <h2><a class="rf-nav-link link-disabled"><<</a></h2>
-            {% endif %}
-            </div>
-        {% endwith %}
+            {% with previous_index=page_index|sub:1 %}
+                <div class="col-5 text-end">
+                    {% if previous_index > 0 %}
+                        <h2><a class="rf-nav-link" href="{% url 'wiki:ranking' previous_index %}"><<</a></h2>
+                    {% else %}
+                        <h2><a class="rf-nav-link link-disabled"><<</a></h2>
+                    {% endif %}
+                </div>
+            {% endwith %}
             <div class="col-2">
                 <div class="dropdown text-center rf-nav-dropdown">
-                      <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                       data-bs-toggle="dropdown" aria-expanded="false">
                         PAGE
-                      </a>
-                      <ul class="dropdown-menu dropdown-menu-center" id="dropdownMenuList" aria-labelledby="dropdownMenuLink">
-                      {% for i in 30|times %}
-                          <li><a class="dropdown-item" href="{% url 'wiki:ranking' i %}">{{i}}</a></li>
-                      {% endfor %}
-                  </ul>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-center" id="dropdownMenuList"
+                        aria-labelledby="dropdownMenuLink">
+                        {% for i in 30|times %}
+                            <li><a class="dropdown-item" href="{% url 'wiki:ranking' i %}">{{ i }}</a></li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
-        {% with next_index=page_index|add:1 %}
-            <div class="col-5 text-start">
-            {% if next_index < 31 %}
-                <h2><a class="rf-nav-link" href="{% url 'wiki:ranking' next_index %}">>></a></h2>
-            {% else %}
-                <h2><a class="rf-nav-link link-disabled">>></a></h2>
-            {% endif %}
-            </div>
-        </div>
-        {% endwith %}
+            {% with next_index=page_index|add:1 %}
+                <div class="col-5 text-start">
+                    {% if next_index < 31 %}
+                        <h2><a class="rf-nav-link" href="{% url 'wiki:ranking' next_index %}">>></a></h2>
+                    {% else %}
+                        <h2><a class="rf-nav-link link-disabled">>></a></h2>
+                    {% endif %}
+                </div>
+                </div>
+            {% endwith %}
     </div>
 {% endblock %}

@@ -1,6 +1,7 @@
 :root {
     --rf-background: #000000;
     --rf-primary: #727af7;
+    --rf-primary-light: #8990fa;
     --rf-table: #1e2124;
     --rf-table-2: #272c32;
     --rf-border: #6c757d;
@@ -148,7 +149,10 @@ a.nav-link:focus{
 .rf-table-item-name {
     margin: 0;
 }
-
+.rf-table-rider-photo {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
 /*Page navigation*/
 .rf-nav-dropdown {
     margin-left: -5px;

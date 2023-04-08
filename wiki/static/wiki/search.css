@@ -20,3 +20,6 @@
     min-width: 60px;
 }
 
+a {
+    color: var(--rf-primary-light);
+}

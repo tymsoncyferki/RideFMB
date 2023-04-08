@@ -123,32 +123,93 @@
         {% if riders %}
             <table class="table table-borderless rf-table rounded-4 overflow-hidden text-white">
                 <thead class="rf-table-header rounded-3">
+                <tr>
                     <!-- Rank -->
-                    <th class="text-center" scope="col">
+                    <th class="text-center d-none d-sm-block" scope="col">
                         Rank
-                        {% if request.GET.sort == 'rank' %}
-                            <span class="rf-table-sort-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
-                                     class="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                                    <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
-                                </svg>
-                            </span>
-                        {% elif request.GET.sort == '-rank' %}
-                            <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
-                                    <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path>
-                                </svg>
-                            </span>
+                        {% if request.GET.sort == '-rank' %}
+                            <span class="rf-sort-icon-left">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                         class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
+                                    </svg>
+                                </span>
+                        {% elif request.GET.sort == 'rank' %}
+                            <span class="rf-sort-icon-left">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                         class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                        <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path>
+                                    </svg>
+                                </span>
+                        {% endif %}
+                    </th>
+                    <th class="d-sm-none" colspan="2">
+                        Rank
+                        {% if request.GET.sort == '-rank' %}
+                            <span class="rf-sort-icon-leftn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                         class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
+                                    </svg>
+                                </span>
+                        {% elif request.GET.sort == 'rank' %}
+                            <span class="rf-sort-icon-left">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                         class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                        <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path>
+                                    </svg>
+                                </span>
                         {% endif %}
                     </th>
                     <!-- Photo -->
-                    <th scope="col"></th>
+                    <th class="d-none d-sm-table-cell" scope="col"></th>
                     <!-- Name -->
-                    <th scope="col">Name</th>
+                    <th scope="col">
+                        Name
+                        {% if request.GET.sort == 'lastname' %}
+                            <span class="rf-sort-icon-left">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                         class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                        <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path>
+                                    </svg>
+                                </span>
+                        {% endif %}
+                    </th>
                     <!-- Sponsor -->
-                    <th scope="col" class="d-none d-sm-block">Sponsor</th>
+                    <th scope="col" class="d-none d-sm-table-cell">Sponsor</th>
                     <!-- Points / Medals -->
-                    <th class="text-center" scope="col">Points</th>
+                    {% if request.GET.sort in medals %}
+                        <th class="text-center justify-content-center rf-table-cell-right" scope="col">
+                            {{ request.GET.sort|label }}
+                            <span class="rf-sort-icon-right">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                         class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
+                                    </svg>
+                                </span>
+                        </th>
+                    {% else %}
+                        <th class="text-center justify-content-center rf-table-cell-right" scope="col">
+                            Points
+                            {% if request.GET.sort == '-alltime_points' %}
+                                <span class="rf-sort-icon-right">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
+                                             fill="currentColor"
+                                             class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                            <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
+                                        </svg>
+                                    </span>
+                            {% elif request.GET.sort == 'alltime_points' %}
+                                <span class="rf-sort-icon-right">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
+                                             fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                            <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path>
+                                        </svg>
+                                    </span>
+                            {% endif %}
+                        </th>
+                    {% endif %}
+                </tr>
                 </thead>
                 <tbody>
                 {% for rider in riders %}
@@ -166,8 +227,8 @@
                             <img alt="Rider photo" src="{{ rider.photo }}"
                                  class="rounded-circle border border-2 border-white" width="70" height="70">
                         </td>
-                        <td>
-                            <img alt="Rider photo d-sm-none" src="{{ rider.photo }}"
+                        <td class="d-sm-none rf-table-rider-photo">
+                            <img alt="Rider photo" src="{{ rider.photo }}"
                                  class="rounded-circle border border-2 border-white" width="50" height="50">
                         </td>
                         <!-- Name -->
@@ -180,142 +241,22 @@
                         </td>
                         <!-- Sponsor -->
                         <td class="d-none d-sm-block">
-                                {{ rider.getMainSponsor }}
+                            {{ rider.getMainSponsor }}
                         </td>
                         <!-- Points / Medals -->
                         <td>
                             <div class="d-flex justify-content-center">
-                            {% if request.GET.sort in medals %}
-                                <h6 class="rf-table-item-points rounded-2">{{ rider|medal:request.GET.sort }}</h6>
-                            {% else %}
-                                <h6 class="rf-table-item-points rounded-2">{{ rider.alltime_points|asint }}</h6>
-                            {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <ul class="list-group list-group-table rounded-4 rf-table">
-                <li class="list-group-item rf-table-header">
-                    <div class="row align-items-center text-white">
-                        {% if request.GET.sort == 'rank' or request.GET.sort == "-rank" %}
-                            <div class="col-1 d-flex justify-content-center">
-                                <span class="d-flex justify-content-center rf-table-rank-sort">
-                                    Rank
-                                    <span class="rf-table-sort-icon">
-                                        {% if request.GET.sort == 'rank' %}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
-                                                 class="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                                                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
-                                            </svg>
-                                        {% else %}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
-                                                <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path>
-                                            </svg>
-                                        {% endif %}
-                                    </span>
-                                </span>
-                            </div>
-                        {% else %}
-                            <div class="col-1 d-flex justify-content-center">
-                                <span class="d-flex justify-content-center rf-table-rank">
-                                Rank
-                                </span>
-                            </div>
-                        {% endif %}
-                        <div class="col-2 d-none d-sm-block"></div>
-                        <div class="col d-sm-none rf-table-rider-photo"></div>
-                        <div class="col">
-                            Name
-                            {% if request.GET.sort == 'lastname' %}
-                                <span class="rf-table-sort-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
-                                         class="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
-                                    </svg>
-                                </span>
-                            {% endif %}
-                        </div>
-                        <div class="col-3 d-none d-sm-block">
-                            Sponsor
-                        </div>
-                        {% if request.GET.sort in medals %}
-                            <div class="col-2 d-flex justify-content-center rf-table-var">
-                                {{ request.GET.sort|label }}
-                                <span class="rf-table-sort-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
-                                         class="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
-                                    </svg>
-                                </span>
-                            </div>
-                        {% else %}
-                            {% if request.GET.sort == 'alltime_points' or request.GET.sort == '-alltime_points' %}
-                                <div class="col-2 d-flex justify-content-center rf-table-var">
-                                    Points
-                                    <span class="rf-table-sort-icon">
-                                        {% if request.GET.sort == '-alltime_points' %}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
-                                                 class="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                                                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
-                                            </svg>
-                                        {% else %}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
-                                                <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path>
-                                            </svg>
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            {% else %}
-                                <div class="col-2 d-flex justify-content-center rf-table-var">
-                                    Points
-                                </div>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                </li>
-                {% for rider in riders %}
-                    <li class="list-group-item rf-table-item">
-                        <div class="row align-items-center text-white">
-                            <div class="col-1 d-flex justify-content-center">
-                                <h6>{% if rider.rank %}{{ rider.rank }}{% else %}-{% endif %}</h6>
-                            </div>
-                            <div class="col-2 py-1 d-none d-md-block ">
-                                <img alt="Rider photo" src="{{ rider.photo }}"
-                                     class="rounded-circle border border-3 border-white" width="90" height="90">
-                            </div>
-                            <div class="col-2 d-none d-sm-block d-md-none">
-                                <img alt="Rider photo" src="{{ rider.photo }}"
-                                     class="rounded-circle border border-2 border-white" width="70" height="70">
-                            </div>
-                            <div class="col d-sm-none rf-table-rider-photo">
-                                <img alt="Rider photo" src="{{ rider.photo }}"
-                                     class="rounded-circle border border-2 border-white" width="50" height="50">
-                            </div>
-                            <div class="col">
-                                <h6 class="rf-table-item-name">
-                                    <a class="stretched-link rf-table-item-link"
-                                       href="{% url 'wiki:rider' rider.id rider.slug %}">
-                                        {{ rider.name }}
-                                    </a>
-                                </h6>
-                                <img alt="Rider country flag" src="{{ rider.country.photo }}">
-                            </div>
-                            <div class="col-3 d-none d-sm-block">
-                                {{ rider.getMainSponsor }}
-                            </div>
-                            <div class="col-2 d-flex justify-content-center">
                                 {% if request.GET.sort in medals %}
                                     <h6 class="rf-table-item-points rounded-2">{{ rider|medal:request.GET.sort }}</h6>
                                 {% else %}
                                     <h6 class="rf-table-item-points rounded-2">{{ rider.alltime_points|asint }}</h6>
                                 {% endif %}
                             </div>
-                        </div>
-                    </li>
+                        </td>
+                    </tr>
                 {% endfor %}
-            </ul>
+                </tbody>
+            </table>
             <div class="row">
                 {% with previous_index=page_index|sub:1 %}
                     <div class="col-5 text-end">
