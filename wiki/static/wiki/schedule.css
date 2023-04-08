@@ -4,3 +4,9 @@
 .status-icon {
     padding-left: 0;
 }
+td {
+    vertical-align: middle;
+}
+th {
+    font-weight: normal;
+}
