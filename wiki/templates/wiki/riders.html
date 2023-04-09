@@ -80,6 +80,10 @@
                         </form>
                     </div>
                     <div class="modal-footer" id="filterModalFooter">
+                        <form action="{% url 'wiki:riders' %}" method="get">
+                            <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                            <button class="btn btn-danger">Reset filters</button>
+                        </form>
                         <button type="submit" form="filters" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>

@@ -21,6 +21,19 @@
 .filter-element {
     padding: 8px 5px 0 5px;
 }
+.btn-primary,
+.btn-primary:visited
+ {
+    background-color: var(--rf-primary);
+    border-color: var(--rf-primary);
+}
+.btn-primary:focus,
+.btn-primary:hover,
+.btn-primary:active
+{
+    background-color: var(--rf-primary-dark);
+    border-color: var(--rf-primary-dark);
+}
 
 /*Sort Modal*/
 .sort-option {
