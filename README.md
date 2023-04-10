@@ -16,4 +16,5 @@ Why my website is (or will be) better than official one?
 - Mobile responsiveness
 - Easy search for riders and events
 - Multiple filter and sort options for browsing data
-- Better SEO and site navigation
+- More natural site navigation
+- Better SEO (hopefully) 
