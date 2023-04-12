@@ -83,40 +83,38 @@
             {% endfor %}
             </tbody>
         </table>
-        <div class="row">
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination justify-content-center">
             {% with next_year=year|add:1 %}
-                <div class="col-5 text-end">
-                    {% if next_year < 2024 %}
-                        <h2><a class="rf-nav-link" href="{% url 'wiki:schedule' next_year %}"><<</a></h2>
-                    {% else %}
-                        <h2><a class="rf-nav-link link-disabled disabled"><<</a></h2>
-                    {% endif %}
-                </div>
-            {% endwith %}
-            <div class="col-2">
-                <div class="dropdown text-center rf-nav-dropdown">
-                    <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        YEAR
+                <li class="page-item">
+                    <a class="page-link page-navigation {% if next_year > 2023 %}disabled{% endif %}" href="{% url 'wiki:schedule' next_year %}">
+                        <span>&laquo;</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-center" id="dropdownMenuList"
-                        aria-labelledby="dropdownMenuLink">
-                        {% for i_year in 2010|years %}
-                            <li><a class="dropdown-item" href="{% url 'wiki:schedule' i_year %}">{{ i_year }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            {% with previous_year=year|sub:1 %}
-                <div class="col-5 text-start">
-                    {% if previous_year > 2009 %}
-                        <h2><a class="rf-nav-link" href="{% url 'wiki:schedule' previous_year %}">>></a></h2>
-                    {% else %}
-                        <h2><a class="rf-nav-link link-disabled">>></a></h2>
-                    {% endif %}
-                </div>
+                </li>
             {% endwith %}
-        </div>
+                <li class="page-item dropdown-page-item">
+                    <div class="dropdown text-center">
+                        <a class="page-link dropdown-toggle page-navigation" href="#" role="button" id="navigationLink"
+                           data-bs-toggle="dropdown">
+                            {{ year }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-center rounded-2" id="dropdownMenuList" style="width: 60px">
+                            {% for i_year in 2010|years %}
+                                <li><a class="dropdown-item text-center" href="{% url 'wiki:schedule' i_year %}">{{ i_year }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+            {% with previous_year=year|sub:1 %}
+                <li class="page-item">
+                    <a class="page-link page-navigation {% if previous_year < 2010 %}disabled{% endif %}" href="{% url 'wiki:schedule' previous_year %}">
+                        <span>&raquo;</span>
+                    </a>
+                </li>
+            {% endwith %}
+            </ul>
+        </nav>
     </div>
 {% endblock %}
 

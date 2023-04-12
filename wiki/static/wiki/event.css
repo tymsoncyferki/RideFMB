@@ -1,0 +1,5 @@
+a:hover,
+a:focus {
+    color: var(--rf-primary);
+    text-decoration: underline;
+}

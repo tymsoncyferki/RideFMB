@@ -10,3 +10,15 @@ td {
 th {
     font-weight: normal;
 }
+
+/*Navigation*/
+
+.dropdown-menu {
+    --bs-dropdown-width: 15%;
+    --bs-dropdown-min-width: 100%;
+}
+.disabled {
+    border-color: var(--rf-background) !important;
+    background-color: var(--rf-primary-dark) !important;
+}
+

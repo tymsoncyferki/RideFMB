@@ -2,6 +2,12 @@
 
 {% block title %}{{ event.name }} {{ event.year }} - Standings and Information | RideFMB{% endblock %}
 
+{% block head %}
+    {% load wiki_extras %}
+    {% load static %}
+    <link href="{% static 'wiki/event.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
     <div class="container-lg">
         <h1>{{ event.name }}</h1>

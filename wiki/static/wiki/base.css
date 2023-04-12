@@ -31,12 +31,6 @@ a {
     text-decoration: none;
 }
 
-a:hover,
-a:focus {
-    color: var(--rf-primary);
-    text-decoration: underline;
-}
-
 body {
     padding-top: 70px;
     background-color: var(--rf-background);
@@ -127,6 +121,7 @@ a.nav-link:focus{
     background-color: var(--rf-table-2);
 }
 .rf-table-item {
+    border-top: 1px solid rgba(20, 20, 20, .5);
     background-color: transparent;
 }
 .rf-table-item:hover {
@@ -155,26 +150,6 @@ a.nav-link:focus{
     padding-right: 0 !important;
 }
 /*Page navigation*/
-.rf-nav-dropdown {
-    margin-left: -5px;
-    padding-top: 5px;
-}
-
-.rf-nav-link {
-    color: var(--rf-primary);
-    text-decoration: none;
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-.link-disabled {
-    color: lightgrey;
-    pointer-events: none;
-}
-#dropdownMenuLink {
-    color: var(--rf-primary);
-    padding: 5px 5px 0 0;
-}
 #dropdownMenuLink:hover,
 #dropdownMenuLink:focus {
     text-decoration: none;
@@ -183,10 +158,23 @@ a.nav-link:focus{
 #dropdownMenuList {
     height: auto;
     max-height: 200px;
-    max-width: 50px;
     overflow-x: hidden;
 }
-
+.dropdown-page-item {
+    width: 20%;
+    min-width: 120px;
+}
+.page-navigation {
+    background-color: var(--rf-primary) !important;
+    color: white !important;
+    border-color: var(--rf-background);
+}
+.page-navigation:focus {
+    outline: none;
+}
+.pagination {
+    --bs-pagination-focus-box-shadow: none !important;
+}
 /*Footer*/
 #myFooter {
     border-bottom: 1px solid var(--rf-border);

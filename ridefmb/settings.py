@@ -37,7 +37,6 @@ SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE")
 # Application definition
 
 INSTALLED_APPS = [
-    "simpleui",
     "wiki.apps.WikiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
