@@ -169,11 +169,15 @@ a.nav-link:focus{
     color: white !important;
     border-color: var(--rf-background);
 }
-.page-navigation:focus {
+.page-navigation:focus,
+.page-navigation:hover {
     outline: none;
+    border-color: var(--rf-background);
+    background-color: var(--rf-primary-dark) !important;
 }
 .pagination {
     --bs-pagination-focus-box-shadow: none !important;
+    --bs-pagination-border-radius: 0.5rem;
 }
 /*Footer*/
 #myFooter {

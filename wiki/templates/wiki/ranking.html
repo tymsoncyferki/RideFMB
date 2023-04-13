@@ -12,10 +12,10 @@
     <div class="container-lg" style="display: table">
         <h1 class="d-none d-sm-block">FMB World Tour Ranking 2023</h1>
         <h1 class="d-sm-none">FMB Ranking 2023</h1>
+        <!-- Ranking table -->
         <table class="table table-borderless rf-table rounded-4 overflow-hidden text-white">
             <thead class="rf-table-header rounded-3">
             <tr>
-                <!-- Rank -->
                 <th class="text-center d-none d-sm-block" scope="col">Rank</th>
                 <th class="d-sm-none" colspan="2">Rank</th>
                 <th class="d-none d-sm-table-cell" scope="col"></th>
@@ -59,46 +59,47 @@
                     <!-- Points -->
                     <td>
                         <div class="d-flex justify-content-center">
-                            <h6 class="rf-table-item-points rounded-2">{{rider.points}}</h6>
+                            <h6 class="rf-table-item-points rounded-2">{{ rider.points }}</h6>
                         </div>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-        <div class="row rf-nav">
-            {% with previous_index=page_index|sub:1 %}
-                <div class="col-5 text-end">
-                    {% if previous_index > 0 %}
-                        <h2><a class="rf-nav-link" href="{% url 'wiki:ranking' previous_index %}"><<</a></h2>
-                    {% else %}
-                        <h2><a class="rf-nav-link link-disabled"><<</a></h2>
-                    {% endif %}
-                </div>
-            {% endwith %}
-            <div class="col-2">
-                <div class="dropdown text-center rf-nav-dropdown">
-                    <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        PAGE
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-center" id="dropdownMenuList"
-                        aria-labelledby="dropdownMenuLink">
-                        {% for i in 30|times %}
-                            <li><a class="dropdown-item" href="{% url 'wiki:ranking' i %}">{{ i }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            {% with next_index=page_index|add:1 %}
-                <div class="col-5 text-start">
-                    {% if next_index < 31 %}
-                        <h2><a class="rf-nav-link" href="{% url 'wiki:ranking' next_index %}">>></a></h2>
-                    {% else %}
-                        <h2><a class="rf-nav-link link-disabled">>></a></h2>
-                    {% endif %}
-                </div>
-                </div>
-            {% endwith %}
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% with previous_index=page_index|sub:1 %}
+                    <li class="page-item">
+                        <a class="page-link page-navigation {% if previous_index < 1 %}disabled{% endif %}"
+                           href="{% url 'wiki:ranking' previous_index %}">
+                            <span>&laquo;</span>
+                        </a>
+                    </li>
+                {% endwith %}
+                <li class="page-item dropdown-page-item">
+                    <div class="dropdown text-center">
+                        <a class="page-link dropdown-toggle page-navigation" href="#" role="button" id="navigationLink"
+                           data-bs-toggle="dropdown">
+                            {{ page_index }} / 30
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-center rounded-2" id="dropdownMenuList">
+                            {% for i in 30|times %}
+                                <li><a class="dropdown-item text-center" href="{% url 'wiki:ranking' i %}">{{ i }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% with next_index=page_index|add:1 %}
+                    <li class="page-item">
+                        <a class="page-link page-navigation {% if next_index > 30 %}disabled{% endif %}"
+                           href="{% url 'wiki:ranking' next_index %}">
+                            <span>&raquo;</span>
+                        </a>
+                    </li>
+                {% endwith %}
+            </ul>
+        </nav>
     </div>
 {% endblock %}

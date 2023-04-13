@@ -261,54 +261,57 @@
                 {% endfor %}
                 </tbody>
             </table>
-            <div class="row">
-                {% with previous_index=page_index|sub:1 %}
-                    <div class="col-5 text-end">
-                        {% if previous_index > 0 %}
+            <!-- Pagination -->
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% with previous_index=page_index|sub:1 %}
+                        <li class="page-item">
                             <form action="{% url 'wiki:riders' %}" method="get">
                                 {% include "wiki/riders_parameters.html" %}
                                 <input type="hidden" name="page" value="{{ previous_index }}">
-                                <button type="submit" class="btn btn-link rf-nav-link"><h2><<</h2></button>
+                                <button type="submit"
+                                        class="page-link page-navigation {% if previous_index < 1 %}disabled{% endif %}">
+                                    <span>&laquo;</span></button>
                             </form>
-                        {% else %}
-                            <button class="btn btn-link link-disabled rf-nav-link"><h2><<</h2></button>
-                        {% endif %}
-                    </div>
-                {% endwith %}
-                <div class="col-2">
-                    <div class="dropdown text-center rf-nav-dropdown">
-                        <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            PAGE
-                        </a>
-                        <ul class="dropdown-menu" id="dropdownMenuList"
-                            aria-labelledby="dropdownMenuLink">
-                            {% for i in pages_count|times %}
-                                <li>
-                                    <form action="{% url 'wiki:riders' %}" method="get">
-                                        {% include "wiki/riders_parameters.html" %}
-                                        <input type="hidden" name="page" value="{{ i }}">
-                                        <button type="submit" class="dropdown-item">{{ i }}</button>
-                                    </form>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {% with next_index=page_index|add:1 %}
-                    <div class="col-5 text-start">
-                        {% if next_index <= pages_count %}
+                        </li>
+                    {% endwith %}
+                    <li class="page-item dropdown-page-item">
+                        <div class="dropdown text-center">
+                            <a class="page-link dropdown-toggle page-navigation {% if pages_count == 1 %}disabled{% endif %}"
+                               href="#" role="button"
+                               id="navigationLink"
+                               data-bs-toggle="dropdown">
+                                {{ page_index }} / {{ pages_count }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-center rounded-2" id="dropdownMenuList"
+                                aria-labelledby="dropdownMenuLink">
+                                {% for i in pages_count|times %}
+                                    <li>
+                                        <form action="{% url 'wiki:riders' %}" method="get">
+                                            {% include "wiki/riders_parameters.html" %}
+                                            <input type="hidden" name="page" value="{{ i }}">
+                                            <button type="submit"
+                                                    class="dropdown-item text-center">
+                                                {{ i }}</button>
+                                        </form>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% with next_index=page_index|add:1 %}
+                        <li class="page-item">
                             <form action="{% url 'wiki:riders' %}" method="get">
                                 {% include "wiki/riders_parameters.html" %}
                                 <input type="hidden" name="page" value="{{ next_index }}">
-                                <button type="submit" class="btn btn-link rf-nav-link"><h2>>></h2></button>
+                                <button type="submit"
+                                        class="page-link page-navigation {% if next_index > pages_count %}disabled{% endif %}">
+                                    <span>&raquo;</span></button>
                             </form>
-                        {% else %}
-                            <button class="btn btn-link link-disabled rf-nav-link"><h2>>></h2></button>
-                        {% endif %}
-                    </div>
-                {% endwith %}
-            </div>
+                        </li>
+                    {% endwith %}
+                </ul>
+            </nav>
         {% else %}
             <p>No results found :(</p>
         {% endif %}

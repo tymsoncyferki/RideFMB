@@ -64,6 +64,13 @@ th {
 .rf-nav-link {
     padding-top: 0;
 }
+.dropdown-menu {
+    --bs-dropdown-min-width: 100%;
+}
+.disabled {
+    border-color: var(--rf-background) !important;
+    background-color: var(--rf-primary-dark) !important;
+}
 
 
 
