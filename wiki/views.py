@@ -95,12 +95,20 @@ def event(request, event_id, slug):
     return render(request, 'wiki/event.html', {'event': main_event, 'participations': parts, 'series': series})
 
 
-def events(request, page_idx=1):
-    start_idx = (page_idx - 1) * 10
-    last_idx = start_idx + 30
-    # events = Event.objects.all().order_by('-date')[start_idx:last_idx]
-    events_html = Event.objects.all().order_by('-date')
-    return render(request, 'wiki/events.html', {'events': events_html})
+def events(request):
+    page_idx = request.GET.get('page')
+    if page_idx:
+        page_idx = int(page_idx)
+    else:
+        page_idx = 1
+    start_idx = (page_idx - 1) * 20
+    last_idx = start_idx + 20
+    all_events = Event.objects.all()
+    all_events = all_events.order_by('-date')
+    events_html = all_events[start_idx:last_idx]
+    pages_count = (all_events.count() // 20) + 1
+    return render(request, 'wiki/events.html', {'events': events_html, 'page_index': page_idx,
+                                                'pages_count': pages_count})
 
 
 def schedule(request, year):
