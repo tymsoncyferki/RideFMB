@@ -5,7 +5,7 @@
 {% block head %}
     {% load wiki_extras %}
     {% load static %}
-    <link href="{% static 'wiki/riders.css' %}" rel="stylesheet">
+    <link href="{% static 'wiki/stylesheets/riders.css' %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
     <div class="container-lg" style="display: table">
@@ -267,7 +267,7 @@
                     {% with previous_index=page_index|sub:1 %}
                         <li class="page-item">
                             <form action="{% url 'wiki:riders' %}" method="get">
-                                {% include "wiki/riders_parameters.html" %}
+                                {% include "wiki/riders/riders_parameters.html" %}
                                 <input type="hidden" name="page" value="{{ previous_index }}">
                                 <button type="submit"
                                         class="page-link page-navigation {% if previous_index < 1 %}disabled{% endif %}">
@@ -288,7 +288,7 @@
                                 {% for i in pages_count|times %}
                                     <li>
                                         <form action="{% url 'wiki:riders' %}" method="get">
-                                            {% include "wiki/riders_parameters.html" %}
+                                            {% include "wiki/riders/riders_parameters.html" %}
                                             <input type="hidden" name="page" value="{{ i }}">
                                             <button type="submit"
                                                     class="dropdown-item text-center">
@@ -302,7 +302,7 @@
                     {% with next_index=page_index|add:1 %}
                         <li class="page-item">
                             <form action="{% url 'wiki:riders' %}" method="get">
-                                {% include "wiki/riders_parameters.html" %}
+                                {% include "wiki/riders/riders_parameters.html" %}
                                 <input type="hidden" name="page" value="{{ next_index }}">
                                 <button type="submit"
                                         class="page-link page-navigation {% if next_index > pages_count %}disabled{% endif %}">
