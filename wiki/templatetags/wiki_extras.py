@@ -43,3 +43,8 @@ def printMedal(rider, s):
         return rider.bronze
     else:
         return rider.medal
+
+
+@register.filter(name='asstr')
+def asStr(var):
+    return str(var)

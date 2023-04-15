@@ -1,0 +1,24 @@
+{% if request.GET.sort %}
+    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+{% endif %}
+{% if request.GET.country %}
+    <input type="hidden" name="country" value="{{ request.GET.country }}">
+{% endif %}
+{% if request.GET.status %}
+    <input type="hidden" name="status" value="{{ request.GET.status }}">
+{% endif %}
+{% if request.GET.partner %}
+    <input type="hidden" name="partner" value="{{ request.GET.partner }}">
+{% endif %}
+{% if request.GET.date %}
+    <input type="hidden" name="date" value="{{ request.GET.date }}">
+{% endif %}
+{% if request.GET.series %}
+    <input type="hidden" name="series" value="{{ request.GET.series }}">
+{% endif %}
+{% if request.GET.category %}
+    <input type="hidden" name="category" value="{{ request.GET.category }}">
+{% endif %}
+{% if request.GET.discipline %}
+    <input type="hidden" name="discipline" value="{{ request.GET.discipline }}">
+{% endif %}

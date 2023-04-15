@@ -597,12 +597,18 @@ class Series(models.Model):
     def __str__(self):
         return self.name
 
+    def strID(self):
+        return str(self.id)
+
 
 class Partner(models.Model):
     name = models.CharField(max_length=150)
 
     def __str__(self):
         return self.name
+
+    def strID(self):
+        return str(self.id)
 
     @staticmethod
     def fixPartners(arg):

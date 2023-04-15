@@ -1,0 +1,325 @@
+{% extends 'wiki/base.html' %}
+
+{% block title %}Slopestyle and Dirt Jumping Events | RideFMB{% endblock %}
+
+{% block head %}
+    {% load wiki_extras %}
+    {% load static %}
+    <link href="{% static 'wiki/stylesheets/riders.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container-lg">
+        <h1 class="d-none d-sm-block">Events and Competitions</h1>
+        <h1 class="d-sm-none">Competitions</h1>
+        <!-- Buttons -->
+        <div class="row py-3">
+            <div class="col-6" id="filterButtonContainer">
+                <button type="button" class="btn btn-settings-menu rounded-3" data-bs-toggle="modal"
+                        data-bs-target="#filterModal">Filter
+                </button>
+            </div>
+            <div class="col-6" id="sortButtonContainer">
+                <button type="button" class="btn btn-settings-menu rounded-3" data-bs-toggle="modal"
+                        data-bs-target="#sortModal">
+                    Sort
+                </button>
+            </div>
+        </div>
+        <!-- Filter Modal -->
+        <div class="modal fade text-dark" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="filterModalLabel">Select filter:</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0 m-0">
+                        <!--filter body-->
+                        <form id="filters" action="{% url 'wiki:events' %}" method="get">
+                            <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="country" id="country">
+                                    {% if not request.GET.country or request.GET.country == 'all' %}
+                                        <option value="all" selected>Select Country</option>
+                                    {% endif %}
+                                    <option value="all">All</option>
+                                    {% for country in countries %}
+                                        <option value="{{ country.isocode }}"
+                                                {% if request.GET.country == country.isocode %}
+                                                selected {% endif %}>{{ country.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="status" id="status">
+                                    {% if not request.GET.status or request.GET.status == 'all' %}
+                                        <option value="all" selected>Select Status</option>
+                                    {% endif %}
+                                    <option value="all">All</option>
+                                    <option value="Completed" {% if request.GET.ranked == 'Completed' %}
+                                            selected {% endif %}>
+                                        Completed
+                                    </option>
+                                    <option value="Upcoming" {% if request.GET.ranked == 'Upcoming' %}
+                                            selected {% endif %}>
+                                        Upcoming
+                                    </option>
+                                    <option value="Canceled" {% if request.GET.ranked == 'Canceled' %}
+                                            selected {% endif %}>
+                                        Canceled
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="partner" id="partner">
+                                    {% if not request.GET.partner or request.GET.partner == 'all' %}
+                                        <option value="all" selected>Select Partner</option>
+                                    {% endif %}
+                                    <option value="all">All</option>
+                                    {% for partner in partners %}
+                                        <option value="{{ partner.id }}"{% if request.GET.partner == partner.strID %}
+                                                selected {% endif %}>{{ partner.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="year" id="year">
+                                    {% if not request.GET.year or request.GET.year == 'all' %}
+                                        <option value="all" selected>Select Year</option>
+                                    {% endif %}
+                                    <option value="all">All</option>
+                                    {% for year in 2010|years %}
+                                        <option value="{{ year }}"{% if request.GET.year == year|asstr %}
+                                                selected {% endif %}>{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="series" id="series">
+                                    {% if not request.GET.series or request.GET.series == 'all' %}
+                                        <option value="all" selected>Select Series</option>
+                                    {% endif %}
+                                    <option value="all">All</option>
+                                    {% for series in seriess %}
+                                        <option value="{{ series.id }}"{% if request.GET.series == series.strID %}
+                                                selected {% endif %}>{{ series.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="category" id="category">
+                                    {% if not request.GET.category or request.GET.category == 'all' %}
+                                        <option value="all" selected>Select Category</option>
+                                    {% endif %}
+                                    <option value="all">All</option>
+                                    <option value="Diamond" {% if request.GET.category == 'Diamond' %}
+                                            selected {% endif %}>
+                                        Diamond
+                                    </option>
+                                    <option value="Gold" {% if request.GET.category == 'Gold' %}
+                                            selected {% endif %}>
+                                        Gold
+                                    </option>
+                                    <option value="Silver" {% if request.GET.category == 'Silver' %}
+                                            selected {% endif %}>
+                                        Silver
+                                    </option>
+                                    <option value="Bronze" {% if request.GET.category == 'Bronze' %}
+                                            selected {% endif %}>
+                                        Bronze
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="discipline" id="discipline">
+                                    {% if not request.GET.series or request.GET.series == 'all' %}
+                                        <option value="all" selected>Select Discipline</option>
+                                    {% endif %}
+                                    <option value="all">All</option>
+                                    <option value="Slopestyle" {% if request.GET.discipline == 'Slopestyle' %}
+                                            selected {% endif %}>
+                                        Slopestyle
+                                    </option>
+                                    <option value="Dirt Jump" {% if request.GET.discipline == 'Dirt Jump' %}
+                                            selected {% endif %}>
+                                        Dirt Jump
+                                    </option>
+                                    <option value="Unknown" {% if request.GET.ranked == 'Unknown' %}
+                                            selected {% endif %}>
+                                        Unknown
+                                    </option>
+                                </select>
+                            </div>
+                            {% if request.GET.sort %}
+                                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                            {% endif %}
+                        </form>
+                    </div>
+                    <div class="modal-footer" id="filterModalFooter">
+                        <form action="{% url 'wiki:events' %}" method="get">
+                            <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                            <button class="btn btn-danger">Reset filters</button>
+                        </form>
+                        <button type="submit" form="filters" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--sort Modal-->
+        <div class="modal fade text-dark" id="sortModal" tabindex="-1" aria-labelledby="sortModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="sortModalLabel">Sort by:</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0 m-0">
+                        <ul class="list-group list-group-flush p-0">
+                            {% for label in sortOptions %}
+                                <li class="list-group-item p-0 m-0">
+                                    <form action="{% url 'wiki:events' %}" method="get">
+                                        {% include 'wiki/events/events_params.html' %}
+                                        <input type="hidden" name="sort" value="{{ label.1 }}">
+                                        <button type="submit" class="btn sort-option rounded-0">
+                                            {% if request.GET.sort == label.1 %}<strong>{{ label.0 }}</strong>{% else %}
+                                                {{ label.0 }}{% endif %}
+                                        </button>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="modal-footer"></div>
+                </div>
+            </div>
+        </div>
+        <!--riders table-->
+        <!-- events table -->
+        <table class="table table-borderless rf-table rounded-4 overflow-hidden text-white">
+            <thead class="rf-table-header rounded-3">
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col" style="width: 400px">Name</th>
+                <th class="d-none d-sm-table-cell" scope="col">Country</th>
+                <th class="d-none d-sm-table-cell" scope="col">Category</th>
+                <th class="d-none d-sm-table-cell text-center" scope="col">Status</th>
+                <th class="d-sm-none text-end" colspan="2">Status</th>
+            <tr>
+            </thead>
+            <tbody>
+            {% for event in events %}
+                <tr class="rf-table-item" onclick="window.location='{% url 'wiki:event' event.id event.slug %}';">
+                    <!-- Date -->
+                    <td class="d-none d-md-table-cell">
+                        {{ event.date|date:"d M Y" }}
+                    </td>
+                    <td class="d-md-none">
+                        {{ event.date|date:"d.m" }}
+                        <small>{{ event.date|date:"Y" }}</small>
+                    </td>
+                    <!-- Name -->
+                    <td>
+                        <h6 class="rf-table-item-name">
+                            <a class="rf-table-item-link"
+                               href="{% url 'wiki:event' event.id event.slug %}">{{ event.name }}
+                            </a>
+                        </h6>
+                    </td>
+                    <!-- Country -->
+                    <td>
+                        <img alt="Country flag" src={{ event.country.photo }}>
+                    </td>
+                    <!-- Category -->
+                    <td class="d-none d-sm-table-cell">
+                        {{ event.category }}
+                    </td>
+                    <!-- Status -->
+                    <td class="text-center justify-content-center">
+                        {% if event.completed %}
+                            <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#198754"
+                                 class="bi bi-check-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"></path>
+                            </svg>
+                            </span>
+                        {% else %}
+                            {% if event.date.year == 2023 %}
+                                <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffc107"
+                                     class="bi bi-clock" viewBox="0 0 16 16">
+                                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"></path>
+                                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"></path>
+                                </svg>
+                                </span>
+                            {% else %}
+                                <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#dc3545"
+                                     class="bi bi-x-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                </svg>
+                                </span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% with previous_index=page_index|sub:1 %}
+                    <li class="page-item">
+                        <form action="{% url 'wiki:events' %}" method="get">
+                            {% include "wiki/events/events_params.html" %}
+                            <input type="hidden" name="page" value="{{ previous_index }}">
+                            <button type="submit"
+                                    class="page-link page-navigation {% if previous_index < 1 %}disabled{% endif %}">
+                                <span>&laquo;</span></button>
+                        </form>
+                    </li>
+                {% endwith %}
+                <li class="page-item dropdown-page-item">
+                    <div class="dropdown text-center">
+                        <a class="page-link dropdown-toggle page-navigation {% if pages_count == 1 %}disabled{% endif %}"
+                           href="#" role="button"
+                           id="navigationLink"
+                           data-bs-toggle="dropdown">
+                            {{ page_index }} / {{ pages_count }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-center rounded-2" id="dropdownMenuList"
+                            aria-labelledby="dropdownMenuLink">
+                            {% for i in pages_count|times %}
+                                <li>
+                                    <form action="{% url 'wiki:events' %}" method="get">
+                                        {% include "wiki/events/events_params.html" %}
+                                        <input type="hidden" name="page" value="{{ i }}">
+                                        <button type="submit"
+                                                class="dropdown-item text-center">
+                                            {{ i }}</button>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% with next_index=page_index|add:1 %}
+                    <li class="page-item">
+                        <form action="{% url 'wiki:events' %}" method="get">
+                            {% include "wiki/events/events_params.html" %}
+                            <input type="hidden" name="page" value="{{ next_index }}">
+                            <button type="submit"
+                                    class="page-link page-navigation {% if next_index > pages_count %}disabled{% endif %}">
+                                <span>&raquo;</span></button>
+                        </form>
+                    </li>
+                {% endwith %}
+            </ul>
+        </nav>
+    </div>
+{% endblock %}
+

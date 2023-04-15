@@ -96,6 +96,7 @@ def event(request, event_id, slug):
 
 
 def events(request):
+    # default
     page_idx = request.GET.get('page')
     if page_idx:
         page_idx = int(page_idx)
@@ -104,11 +105,63 @@ def events(request):
     start_idx = (page_idx - 1) * 20
     last_idx = start_idx + 20
     all_events = Event.objects.all()
-    all_events = all_events.order_by('-date')
+
+    # filtering
+    country = request.GET.get('country')
+    if country and country != 'all':
+        all_events = all_events.filter(country__isocode=country)
+
+    status = request.GET.get('status')
+    if status and status != 'all':
+        all_events = all_events.filter(status=status)
+
+    partner = request.GET.get('partner')
+    if partner and partner != 'all':
+        all_events = all_events.filter(partnership__partner__id=partner)
+
+    year = request.GET.get('year')
+    if year and year != 'all':
+        all_events = all_events.filter(date__year=year)
+
+    series = request.GET.get('series')
+    if series and series != 'all':
+        all_events = all_events.filter(series__id=series)
+
+    category = request.GET.get('category')
+    if category and category != 'all':
+        all_events = all_events.filter(category=category)
+
+    discipline = request.GET.get('discipline')
+    if discipline and discipline != 'all':
+        all_events = all_events.filter(discipline=discipline)
+
+    # sorting
+    sort_option = request.GET.get('sort')
+    if sort_option:
+        if sort_option[0] == '-':
+            sort = sort_option[1:]
+            all_events = all_events.order_by(F(sort).desc(nulls_last=True))
+        else:
+            all_events = all_events.order_by(F(sort_option).asc(nulls_last=True))
+    else:
+        all_events = all_events.order_by('-date')
+
+    # arguments
+    sort_labels = ['Date descending', 'Date ascending', 'Name']
+    sort_queries = ['-date', 'date', 'name']
+    sort_options = list(zip(sort_labels, sort_queries))
+    url_params = ['sort', 'country', 'status', 'partner', 'date', 'series']
+    countries = Country.objects.all().order_by('name')
+    partners = Partner.objects.all().order_by('name')
+    seriess = Series.objects.all().order_by('name')
+
+    # page
     events_html = all_events[start_idx:last_idx]
     pages_count = (all_events.count() // 20) + 1
-    return render(request, 'wiki/events.html', {'events': events_html, 'page_index': page_idx,
-                                                'pages_count': pages_count})
+    return render(request, 'wiki/events/events.html', {'events': events_html, 'page_index': page_idx,
+                                                'pages_count': pages_count, 'sortOptions': sort_options,
+                                                'seriess': seriess, 'url_params': url_params,
+                                                'countries': countries, 'partners': partners})
 
 
 def schedule(request, year):
