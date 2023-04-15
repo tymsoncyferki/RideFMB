@@ -1,4 +1,3 @@
 ridefmb/.env
-Oracle_Wallet
-data.json
 database
+/wiki/static/wiki/backup.sqlite3
