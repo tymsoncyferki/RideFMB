@@ -200,7 +200,7 @@
             <thead class="rf-table-header rounded-3">
             <tr>
                 <th scope="col" {% if request.GET.sort == 'date' or request.GET.sort == '-date' %}
-                    style="min-width: 60px; padding-right: 0"{% endif %}>
+                    class="date-icon" {% endif %}>
                     Date
                     {% if request.GET.sort == '-date' %}
                         <span class="rf-sort-icon-left">
@@ -242,10 +242,13 @@
                     <td class="d-none d-md-table-cell">
                         {{ event.date|date:"d M Y" }}
                     </td>
-                    <td class="d-md-none">
-                        {{ event.date|date:"d.m" }}
-                        <small>{{ event.date|date:"Y" }}</small>
+                    <td class="d-none d-sm-table-cell d-md-none">
+                        {{ event.date|date:"d.m.Y" }}
                     </td>
+                    <td class="d-sm-none line-small">
+                        {{ event.date|date:"d.m Y" }}
+                    </td>
+
                     <!-- Name -->
                     <td>
                         <h6 class="rf-table-item-name">
