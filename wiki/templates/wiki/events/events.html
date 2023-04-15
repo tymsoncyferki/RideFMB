@@ -199,8 +199,36 @@
         <table class="table table-borderless rf-table rounded-4 overflow-hidden text-white">
             <thead class="rf-table-header rounded-3">
             <tr>
-                <th scope="col">Date</th>
-                <th scope="col" style="width: 400px">Name</th>
+                <th scope="col" {% if request.GET.sort == 'date' or request.GET.sort == '-date' %}
+                    style="min-width: 60px; padding-right: 0"{% endif %}>
+                    Date
+                    {% if request.GET.sort == '-date' %}
+                        <span class="rf-sort-icon-left">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                 class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"></path>
+                            </svg>
+                        </span>
+                    {% elif request.GET.sort == 'date' %}
+                        <span class="rf-sort-icon-left">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                                 class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path>
+                            </svg>
+                        </span>
+                    {% endif %}
+                </th>
+                <th scope="col" style="width: 400px">
+                    Name
+                    {% if request.GET.sort == 'name' %}
+                    <span class="rf-sort-icon-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                             class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                            <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path>
+                        </svg>
+                    </span>
+                    {% endif %}
+                </th>
                 <th class="d-none d-sm-table-cell" scope="col">Country</th>
                 <th class="d-none d-sm-table-cell" scope="col">Category</th>
                 <th class="d-none d-sm-table-cell text-center" scope="col">Status</th>
