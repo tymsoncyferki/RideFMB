@@ -1,6 +1,6 @@
 .date-icon {
     min-width: 60px;
-    padding-right: 0;
+    padding-right: 0 !important;
 }
 
 .line-small {

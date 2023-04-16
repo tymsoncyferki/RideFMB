@@ -6,6 +6,7 @@
     {% load wiki_extras %}
     {% load static %}
     <link href="{% static 'wiki/stylesheets/riders.css' %}" rel="stylesheet">
+    <link href="{% static 'wiki/stylesheets/events.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -57,15 +58,15 @@
                                         <option value="all" selected>Select Status</option>
                                     {% endif %}
                                     <option value="all">All</option>
-                                    <option value="Completed" {% if request.GET.ranked == 'Completed' %}
+                                    <option value="Completed" {% if request.GET.status == 'Completed' %}
                                             selected {% endif %}>
                                         Completed
                                     </option>
-                                    <option value="Upcoming" {% if request.GET.ranked == 'Upcoming' %}
+                                    <option value="Upcoming" {% if request.GET.status == 'Upcoming' %}
                                             selected {% endif %}>
                                         Upcoming
                                     </option>
-                                    <option value="Canceled" {% if request.GET.ranked == 'Canceled' %}
+                                    <option value="Canceled" {% if request.GET.status == 'Canceled' %}
                                             selected {% endif %}>
                                         Canceled
                                     </option>
@@ -133,7 +134,7 @@
                             </div>
                             <div class="filter-element">
                                 <select class="form-select filter-select rounded-0" name="discipline" id="discipline">
-                                    {% if not request.GET.series or request.GET.series == 'all' %}
+                                    {% if not request.GET.discipline or request.GET.discipline == 'all' %}
                                         <option value="all" selected>Select Discipline</option>
                                     {% endif %}
                                     <option value="all">All</option>
