@@ -11,21 +11,64 @@
 {% block content %}
     <div class="container-xxl">
         <div class="container-lg">
-            <h1>{{ rider.name }}</h1>
-            <img alt="Rider photo" src="{{ rider.photo }}">
-            <h2>Information</h2>
-            <div>
-                <p>Nationality: {{ rider.country.name }}</p>
-                <p>FMB World Tour Rank: {{ rider.rank }}</p>
-                <p>Date of Birth: {{ rider.birth }}</p>
-                <p>Sponsors: </p>
-                <ul>
-                    {% for spon in sponsorships %}
-                        <li>{{ spon.sponsor.name }}</li>
-                    {% endfor %}
-                </ul>
-                <a href={{ rider.instagram }} target="_blank">Instagram</a>
-            </div>
+            <h1 class="text-center">{{ rider.name }}</h1>
+            <table class="table table-borderless rf-table rounded-3 overflow-hidden text-white">
+                <tbody>
+                <tr>
+                    <td colspan="2">
+                        <img class="rounded-circle d-block mx-auto py-2" alt="Rider photo" src="{{ rider.photo }}">
+                    </td>
+                </tr>
+                <tr class="rf-table-item">
+                    <th>Nationality</th>
+                    <td>{{ rider.country.name }} <img alt="Rider country flag" src="{{ rider.country.photo }}"></td>
+                </tr>
+                <tr class="rf-table-item">
+                    <th>WT Rank</th>
+                    <td>{{ rider.rank }}</td>
+                </tr>
+                <tr class="rf-table-item">
+                    <th>Sponsors</th>
+                    <td>
+                        {% for spon in sponsorships %}
+                            <span>{{ spon.sponsor.name }} |</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr class="rf-table-item">
+                    <th>Birth Date</th>
+                    <td>{{ rider.birth }}</td>
+                </tr>
+                <tr class="rf-table-item">
+                    <th>Sex</th>
+                    <td>{{ rider.sex }}</td>
+                </tr>
+                <tr class="rf-table-item">
+                    <th>Socials</th>
+                    <td>
+                        <a href={{ rider.instagram }} target="_blank">Instagram</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <h2>Description</h2>
+            <p>Max Fredriksson grew up with a bike between his legs and has been jumping them for over 13 years to get
+                to the head heights he now finds himself at. He has amassed a stack of peachy contest finishes and a top
+                three world ranking since his 2011 debut on the international slopestyle scene, but a nasty injury in
+                2017 and arm breaking bail in 2018 on the glory booter of the Crankworx NZ course put the brakes on his
+                skyward trajectory.</p>
+
+            <p>In Max’s words though, “it was nothing that a bit of hard work down the gym couldn’t cure,” and in 2019
+                he came belting back, stacking up a season of banger edits and travel stories, as well as playing plenty
+                of BIKE with his right-hand-man Theo – you can check out on their mind-bending trickery on their YouTube
+                channel.</p>
+
+            <p>With 2019 in the bag, which Max described as his “best year ever”, 2020 is looking like a humdinger,
+                with Max promising to dial three crispy new tricks on the contest circuit – “to be shown when the time
+                is right” says Max.</p>
+
+            <p>Keep watching this space and his YouTube channel for his latest news and views, and fingers crossed Theo
+                gets his tail whips down and wins a game of BIKE… </p>
             <h2>Event History</h2>
             <ul>
                 {% for part in participations %}
@@ -35,6 +78,8 @@
                     </li>
                 {% endfor %}
             </ul>
+            <h5>Sources</h5>
+            <a href="https://www.ridetsg.com/rider/Max_Fredriksson/">https://www.ridetsg.com/rider/Max_Fredriksson/</a>
         </div>
     </div>
 {% endblock %}
