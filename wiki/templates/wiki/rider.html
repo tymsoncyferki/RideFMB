@@ -51,24 +51,7 @@
                 </tr>
                 </tbody>
             </table>
-            <h2>Description</h2>
-            <p>Max Fredriksson grew up with a bike between his legs and has been jumping them for over 13 years to get
-                to the head heights he now finds himself at. He has amassed a stack of peachy contest finishes and a top
-                three world ranking since his 2011 debut on the international slopestyle scene, but a nasty injury in
-                2017 and arm breaking bail in 2018 on the glory booter of the Crankworx NZ course put the brakes on his
-                skyward trajectory.</p>
-
-            <p>In Max’s words though, “it was nothing that a bit of hard work down the gym couldn’t cure,” and in 2019
-                he came belting back, stacking up a season of banger edits and travel stories, as well as playing plenty
-                of BIKE with his right-hand-man Theo – you can check out on their mind-bending trickery on their YouTube
-                channel.</p>
-
-            <p>With 2019 in the bag, which Max described as his “best year ever”, 2020 is looking like a humdinger,
-                with Max promising to dial three crispy new tricks on the contest circuit – “to be shown when the time
-                is right” says Max.</p>
-
-            <p>Keep watching this space and his YouTube channel for his latest news and views, and fingers crossed Theo
-                gets his tail whips down and wins a game of BIKE… </p>
+            {{ rider.description|markdown }}
             <h2>Event History</h2>
             <ul>
                 {% for part in participations %}
@@ -79,7 +62,11 @@
                 {% endfor %}
             </ul>
             <h5>Sources</h5>
-            <a href="https://www.ridetsg.com/rider/Max_Fredriksson/">https://www.ridetsg.com/rider/Max_Fredriksson/</a>
+            <a style="word-wrap: break-word" href="https://www.fmbworldtour.com">https://www.fmbworldtour.com</a>
+            {% for source in sources %}
+                <br>
+                <a style="word-wrap: break-word" href="{{ source.link }}">{{ source.link }}</a>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

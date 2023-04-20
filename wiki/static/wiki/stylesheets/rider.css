@@ -3,3 +3,7 @@ a:focus {
     color: var(--rf-primary);
     text-decoration: underline;
 }
+
+td {
+    width: 600px !important;
+}

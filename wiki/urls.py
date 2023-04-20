@@ -10,5 +10,6 @@ urlpatterns = [
     path('ranking/<int:page_idx>', views.ranking, name='ranking'),
     path('riders', views.riders, name='riders'),
     path('events', views.events, name='events'),
-    path('schedule/<int:year>', views.schedule, name='schedule')
+    path('schedule/<int:year>', views.schedule, name='schedule'),
+    path('markdownx/', include('markdownx.urls')),
 ]

@@ -12,7 +12,9 @@ def rider(request, rider_id, slug):
     main_rider = Rider.objects.get(id=rider_id)
     parts = main_rider.participation_set.all()
     spons = main_rider.sponsorship_set.all()
-    return render(request, 'wiki/rider.html', {'rider': main_rider, 'participations': parts, 'sponsorships': spons})
+    sources = main_rider.source_set.all()
+    return render(request, 'wiki/rider.html', {'rider': main_rider, 'participations': parts, 'sponsorships': spons,
+                                               'sources': sources})
 
 
 def search(request):

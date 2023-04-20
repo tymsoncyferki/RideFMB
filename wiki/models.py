@@ -1,6 +1,7 @@
 import pycountry
 from django.core.exceptions import *
 from django.db import models
+from markdownx.models import MarkdownxField
 
 from wiki.utils.countries import *
 
@@ -13,7 +14,7 @@ class Rider(models.Model):
     country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True)
     birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=20, default='Unknown', blank=True)
-    description = models.TextField(blank=True)
+    description = MarkdownxField(blank=True)
     photo = models.CharField(max_length=255, blank=True)
     instagram = models.CharField(max_length=255, blank=True)
     active = models.BooleanField(default=False)
@@ -69,6 +70,11 @@ class Rider(models.Model):
         for i, rider in enumerate(riders):
             print(i, 'counting', rider.name)
             rider.updateMedals()
+
+
+class Source(models.Model):
+    link = models.CharField(max_length=255, default='#')
+    rider = models.ForeignKey('Rider', on_delete=models.CASCADE)
 
 
 class Event(models.Model):
