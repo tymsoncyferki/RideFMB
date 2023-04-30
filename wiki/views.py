@@ -10,11 +10,15 @@ def index(request):
 
 def rider(request, rider_id, slug):
     main_rider = Rider.objects.get(id=rider_id)
-    parts = main_rider.participation_set.all()
+    parts = main_rider.participation_set.all().order_by('-event__date')
     spons = main_rider.sponsorship_set.all()
     sources = main_rider.source_set.all()
+    years = []
+    for part in parts:
+        if part.event.date.year not in years:
+            years.append(part.event.date.year)
     return render(request, 'wiki/rider.html', {'rider': main_rider, 'participations': parts, 'sponsorships': spons,
-                                               'sources': sources})
+                                               'sources': sources, 'years': years})
 
 
 def search(request):

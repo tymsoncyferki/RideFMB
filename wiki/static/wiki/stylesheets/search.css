@@ -3,7 +3,8 @@
 }
 
 .search-item-desc {
-    color: var(--rf-border)
+    /*color: var(--rf-border)*/
+    color: var(--rf-lightgrey);
 }
 
 /*.search-item {*/

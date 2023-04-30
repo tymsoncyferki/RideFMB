@@ -7,3 +7,38 @@ a:focus {
 td {
     width: 600px !important;
 }
+
+.rf-info-item {
+    border-top: 1px solid rgba(20, 20, 20, .5);
+    background-color: transparent;
+}
+
+.rider-part {
+    margin-left: 0;
+    padding-bottom: 10px;
+}
+
+.event-info {
+    color: var(--rf-lightgrey);
+}
+
+ul, ol li::marker {
+  color: var(--rf-lightgrey);
+}
+
+.event-list {
+    margin-left: 0;
+    padding-left: 1rem;
+    margin-bottom: 0;
+}
+
+.lead {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.rider-header {
+    margin-top: 20px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--rf-border);
+}

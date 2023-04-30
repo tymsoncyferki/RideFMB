@@ -1,7 +1,7 @@
 from django import template
 from django.utils.safestring import mark_safe
 from markdownx.utils import markdownify
-
+import inflect
 register = template.Library()
 
 
@@ -55,3 +55,9 @@ def printMedal(rider, s):
 @register.filter(name='asstr')
 def asStr(var):
     return str(var)
+
+
+@register.filter(name='sufix')
+def addSufix(var):
+    p = inflect.engine()
+    return p.ordinal(str(var))

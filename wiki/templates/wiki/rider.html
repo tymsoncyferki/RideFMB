@@ -19,15 +19,15 @@
                         <img class="rounded-circle d-block mx-auto py-2" alt="Rider photo" src="{{ rider.photo }}">
                     </td>
                 </tr>
-                <tr class="rf-table-item">
+                <tr class="rf-info-item">
                     <th>Nationality</th>
                     <td>{{ rider.country.name }} <img alt="Rider country flag" src="{{ rider.country.photo }}"></td>
                 </tr>
-                <tr class="rf-table-item">
+                <tr class="rf-info-item">
                     <th>WT Rank</th>
                     <td>{{ rider.rank }}</td>
                 </tr>
-                <tr class="rf-table-item">
+                <tr class="rf-info-item">
                     <th>Sponsors</th>
                     <td>
                         {% for spon in sponsorships %}
@@ -35,15 +35,15 @@
                         {% endfor %}
                     </td>
                 </tr>
-                <tr class="rf-table-item">
+                <tr class="rf-info-item">
                     <th>Birth Date</th>
                     <td>{{ rider.birth }}</td>
                 </tr>
-                <tr class="rf-table-item">
+                <tr class="rf-info-item">
                     <th>Sex</th>
                     <td>{{ rider.sex }}</td>
                 </tr>
-                <tr class="rf-table-item">
+                <tr class="rf-info-item">
                     <th>Socials</th>
                     <td>
                         <a href={{ rider.instagram }} target="_blank">Instagram</a>
@@ -52,21 +52,48 @@
                 </tbody>
             </table>
             {{ rider.description|markdown }}
-            <h2>Event History</h2>
-            <ul>
-                {% for part in participations %}
-                    <li>{{ part.event.year }} <a
-                            href="{% url 'wiki:event' part.event.id part.event.slug %}">{{ part.event.name }}</a>, {{ part.rank }}.
-                        place
+            <h4 class="rider-header">Event History</h4>
+            {#            <table class="search-table">#}
+            {#                <tbody>#}
+            {#                {% for part in participations %}#}
+            {#                    <tr>#}
+            {#                        <td style="padding-bottom: 10px">#}
+            {#                            <span>{{ part.rank }}th</span>#}
+            {#                            <a href="{% url 'wiki:event' part.event.id part.event.slug %}">{{ part.event.series.name }}</a>#}
+            {#                            <br>#}
+            {#                            <span>{{ part.event.city }}, {{ part.event.country.name }}</span>#}
+            {#                        </td>#}
+            {#                    </tr>#}
+            {#                {% endfor %}#}
+            {#                </tbody>#}
+            {#            </table>#}
+            {% for year in years %}
+                <h6 class="lead">{{ year }}</h6>
+                <ul class="event-list">
+                    {% for part in participations %}
+                        {% if part.event.date.year == year %}
+                            <li class="rider-part">
+                                <strong class="event-info">{{ part.rank | sufix }}</strong>
+                                <a href="{% url 'wiki:event' part.event.id part.event.slug %}">{{ part.event.series.name }}</a>
+                                <br>
+                                <span class="event-info">{{ part.event.city }}, {{ part.event.country.name }}</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+            <h4 class="rider-header">Sources</h4>
+            <ol class="event-list">
+                <li>
+                    <a style="word-wrap: break-word"
+                       href="https://www.fmbworldtour.com">https://www.fmbworldtour.com</a>
+                </li>
+                {% for source in sources %}
+                    <li>
+                        <a style="word-wrap: break-word" href="{{ source.link }}">{{ source.link }}</a>
                     </li>
                 {% endfor %}
-            </ul>
-            <h5>Sources</h5>
-            <a style="word-wrap: break-word" href="https://www.fmbworldtour.com">https://www.fmbworldtour.com</a>
-            {% for source in sources %}
-                <br>
-                <a style="word-wrap: break-word" href="{{ source.link }}">{{ source.link }}</a>
-            {% endfor %}
+            </ol>
         </div>
     </div>
 {% endblock %}
