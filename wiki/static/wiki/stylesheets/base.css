@@ -40,6 +40,9 @@ body {
 .container-lg {
     max-width: 960px;
 }
+.container-md {
+    max-width: 768px;
+}
 
 /*Navigation bar*/
 .navbar {

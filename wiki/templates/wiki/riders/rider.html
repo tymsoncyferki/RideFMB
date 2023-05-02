@@ -10,46 +10,56 @@
 
 {% block content %}
     <div class="container-xxl">
-        <div class="container-lg">
+        <div class="container-md">
             <h1 class="text-center">{{ rider.name }}</h1>
             <table class="table table-borderless rf-table rounded-3 overflow-hidden text-white">
                 <tbody>
                 <tr>
-                    <td colspan="2">
-                        <img class="rounded-circle border border-2 border-white d-block mx-auto my-2" alt="Rider photo"
+                    <td rowspan="8" class="d-none d-sm-table-cell photo-holder">
+                        <img class="rider-photo rounded-circle border border-2 border-white d-block mx-auto my-2 mx-4" alt="Rider photo"
+                             src="{{ rider.photo }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="d-sm-none">
+                        <img class="rider-photo rounded-circle border border-2 border-white d-block mx-auto my-2" alt="Rider photo"
                              src="{{ rider.photo }}">
                     </td>
                 </tr>
                 <tr class="rf-info-item">
                     <th>Nationality</th>
-                    <td>{{ rider.country.name }} <img alt="Rider country flag" src="{{ rider.country.photo }}"></td>
+                    <td class="data">{{ rider.country.name }} <img alt="Rider country flag" src="{{ rider.country.photo }}"></td>
                 </tr>
                 <tr class="rf-info-item">
                     <th>WT Rank</th>
-                    <td>{{ rider.rank }}</td>
+                    <td class="data">{{ rider.rank }}</td>
                 </tr>
                 <tr class="rf-info-item">
                     <th>Sponsors</th>
-                    <td>
-                        {% for spon in sponsorships %}
-                            <span>{{ spon.sponsor.name }} |</span>
-                        {% endfor %}
+                    <td class="data">
+                        {% if sponsorships %}
+                            {{ sponsorships | display }}
+                        {% else %}
+                            None
+                        {% endif %}
                     </td>
                 </tr>
                 <tr class="rf-info-item">
                     <th>Age</th>
-                    <td>{{ rider.birth | age }}</td>
+                    <td class="data">{{ rider.birth | age }}</td>
                 </tr>
                 <tr class="rf-info-item">
                     <th>Sex</th>
-                    <td>{{ rider.sex }}</td>
+                    <td class="data">{{ rider.sex }}</td>
                 </tr>
+                {% if rider.instagram %}
                 <tr class="rf-info-item">
                     <th>Socials</th>
-                    <td>
+                    <td class="data">
                         <a href={{ rider.instagram }} target="_blank">Instagram</a>
                     </td>
                 </tr>
+                {% endif %}
                 </tbody>
             </table>
             {{ rider.description|markdown }}

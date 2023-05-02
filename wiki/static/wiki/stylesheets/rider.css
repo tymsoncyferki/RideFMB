@@ -4,8 +4,12 @@ a:focus {
     text-decoration: underline;
 }
 
-td {
-    width: 600px !important;
+.photo-holder {
+    min-width: 250px;
+}
+
+.rider-photo {
+    max-width: 200px;
 }
 
 .rf-info-item {

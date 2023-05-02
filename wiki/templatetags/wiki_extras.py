@@ -53,6 +53,14 @@ def printMedal(rider, s):
         return rider.medal
 
 
+@register.filter(name='display')
+def sponsorsDisplay(sponsorships):
+    string = ''
+    for sponsor in sponsorships:
+        string += (sponsor.sponsor.name + ' | ')
+    return string[:-2]
+
+
 @register.filter(name='asstr')
 def asStr(var):
     return str(var)
