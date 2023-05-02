@@ -3,8 +3,10 @@ from django.core.exceptions import *
 from django.db import models
 from markdownx.models import MarkdownxField
 import re
+import shutil
 
-from wiki.utils.countries import *
+from wiki.utils.countries import country_codes
+from wiki.utils.patterns import series_args, series_names, partners_args
 
 
 class Rider(models.Model):
@@ -197,6 +199,9 @@ class Series(models.Model):
     def strID(self):
         return str(self.id)
 
+    def hasMultipleEvents(self):
+        return self.event_set.count() > 1
+
     @staticmethod
     def fixSeries(arg, new_name=None):
         if not new_name:
@@ -212,6 +217,19 @@ class Series(models.Model):
                 event.series = s
                 event.save()
             series.delete()
+
+    @staticmethod
+    def seriesNames(pattern, name):
+        print('pattern: ' + pattern + ', name: ' + name)
+        s = Series.objects.filter(name__icontains=pattern)
+        try:
+            s = s[0]
+        except (IndexError, AttributeError):
+            print('No results')
+            return
+        print(s.name)
+        s.name = name
+        s.save()
 
 
 class Partner(models.Model):
@@ -261,3 +279,18 @@ def getID(url):
     """ Extracts ID from url """
     id_index = url.index('=') + 1
     return url[id_index:]
+
+
+def backupDatabase():
+    shutil.copy2('wiki/static/wiki/db.sqlite3', 'wiki/static/wiki/backup.sqlite3')
+
+
+def cleanDatabase():
+    print('Cleaning Series')
+    for arg in series_args:
+        Series.fixSeries(arg)
+    for mapping in series_names:
+        Series.seriesNames(mapping[0], mapping[1])
+
+
+

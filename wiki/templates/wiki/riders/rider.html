@@ -16,7 +16,8 @@
                 <tbody>
                 <tr>
                     <td colspan="2">
-                        <img class="rounded-circle border border-2 border-white d-block mx-auto my-2" alt="Rider photo" src="{{ rider.photo }}">
+                        <img class="rounded-circle border border-2 border-white d-block mx-auto my-2" alt="Rider photo"
+                             src="{{ rider.photo }}">
                     </td>
                 </tr>
                 <tr class="rf-info-item">
@@ -52,7 +53,7 @@
                 </tbody>
             </table>
             {{ rider.description|markdown }}
-            <h4 class="rider-header">Event History</h4>
+            <h4 class="rider-header">Competitions</h4>
             {% for year in years %}
                 <h6 class="lead">{{ year }}</h6>
                 <ul class="event-list">
@@ -60,7 +61,8 @@
                         {% if part.event.date.year == year %}
                             <li class="rider-part">
                                 <strong class="event-info">{{ part.rank | sufix }}</strong>
-                                <a href="{% url 'wiki:event' part.event.id part.event.slug %}">{{ part.event.series.name }}</a>
+                                <a href="{% url 'wiki:event' part.event.id part.event.slug %}">
+                                    {{ part.event.series.name }}</a>
                                 <br>
                                 <span class="event-info">{{ part.event.city }}, {{ part.event.country.name }}</span>
                             </li>

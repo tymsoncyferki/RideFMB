@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from wiki.models import *
-from django.db.models import F
+from django.db.models import F, Count
 
 
 def index(request):
@@ -17,7 +17,7 @@ def rider(request, rider_id, slug):
     for part in parts:
         if part.event.date.year not in years:
             years.append(part.event.date.year)
-    return render(request, 'wiki/rider.html', {'rider': main_rider, 'participations': parts, 'sponsorships': spons,
+    return render(request, 'wiki/riders/rider.html', {'rider': main_rider, 'participations': parts, 'sponsorships': spons,
                                                'sources': sources, 'years': years})
 
 
@@ -98,7 +98,7 @@ def event(request, event_id, slug):
         series = main_event.series.event_set.all().order_by('-date')
     except AttributeError:
         series = [main_event]
-    return render(request, 'wiki/event.html', {'event': main_event, 'participations': parts, 'series': series})
+    return render(request, 'wiki/events/event.html', {'event': main_event, 'participations': parts, 'series': series})
 
 
 def events(request):
@@ -159,7 +159,7 @@ def events(request):
     url_params = ['sort', 'country', 'status', 'partner', 'date', 'series']
     countries = Country.objects.all().order_by('name')
     partners = Partner.objects.all().order_by('name')
-    seriess = Series.objects.all().order_by('name')
+    seriess = Series.objects.annotate(event_count=Count('event')).filter(event_count__gt=1) .order_by('name')
 
     # page
     events_html = all_events[start_idx:last_idx]
