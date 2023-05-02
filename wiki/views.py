@@ -17,8 +17,9 @@ def rider(request, rider_id, slug):
     for part in parts:
         if part.event.date.year not in years:
             years.append(part.event.date.year)
-    return render(request, 'wiki/riders/rider.html', {'rider': main_rider, 'participations': parts, 'sponsorships': spons,
-                                               'sources': sources, 'years': years})
+    return render(request, 'wiki/riders/rider.html',
+                  {'rider': main_rider, 'participations': parts, 'sponsorships': spons,
+                   'sources': sources, 'years': years})
 
 
 def search(request):
@@ -93,12 +94,14 @@ def riders(request):
 
 def event(request, event_id, slug):
     main_event = Event.objects.get(id=event_id)
+    partnerships = main_event.partnership_set.all()
     parts = main_event.participation_set.all().order_by('rank')
     try:
         series = main_event.series.event_set.all().order_by('-date')
     except AttributeError:
         series = [main_event]
-    return render(request, 'wiki/events/event.html', {'event': main_event, 'participations': parts, 'series': series})
+    return render(request, 'wiki/events/event.html', {'event': main_event, 'participations': parts, 'series': series,
+                                                      'partnerships': partnerships})
 
 
 def events(request):
@@ -159,15 +162,15 @@ def events(request):
     url_params = ['sort', 'country', 'status', 'partner', 'date', 'series']
     countries = Country.objects.all().order_by('name')
     partners = Partner.objects.all().order_by('name')
-    seriess = Series.objects.annotate(event_count=Count('event')).filter(event_count__gt=1) .order_by('name')
+    seriess = Series.objects.annotate(event_count=Count('event')).filter(event_count__gt=1).order_by('name')
 
     # page
     events_html = all_events[start_idx:last_idx]
     pages_count = (all_events.count() // 20) + 1
     return render(request, 'wiki/events/events.html', {'events': events_html, 'page_index': page_idx,
-                                                'pages_count': pages_count, 'sortOptions': sort_options,
-                                                'seriess': seriess, 'url_params': url_params,
-                                                'countries': countries, 'partners': partners})
+                                                       'pages_count': pages_count, 'sortOptions': sort_options,
+                                                       'seriess': seriess, 'url_params': url_params,
+                                                       'countries': countries, 'partners': partners})
 
 
 def schedule(request, year):

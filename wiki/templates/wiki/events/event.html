@@ -5,36 +5,96 @@
 {% block head %}
     {% load wiki_extras %}
     {% load static %}
+    <link href="{% static 'wiki/stylesheets/rider.css' %}" rel="stylesheet">
     <link href="{% static 'wiki/stylesheets/event.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-    <div class="container-lg">
-        <h1>{{ event.name }}</h1>
-        <span>{{ event.year }}</span>
+    <div class="container-md">
+        <h1>{{ event.name }} {{ event.year }}</h1>
+        <span class="lead">
+            {{ event.city }}, {{ event.country.name }}
+            <img alt="Country flag" src={{ event.country.photo }}>
+        </span>
+        <br>
+        <br>
+        <table class="table table-borderless rf-table rounded-3 overflow-hidden text-white">
+            <tbody>
+            <tr class="rf-info-item">
+                <th>Date</th>
+                <td class="data">{{ event.date }}</td>
+            </tr>
+            <tr class="rf-info-item">
+                <th>Status</th>
+                <td class="data">{{ event.status }}</td>
+            </tr>
+            <tr class="rf-info-item">
+                <th>Category</th>
+                <td class="data">{{ event.category }}</td>
+            </tr>
+            <tr class="rf-info-item">
+                <th>Date</th>
+                <td class="data">{{ event.discipline }}</td>
+            </tr>
+            <tr class="rf-info-item">
+                <th>Prize</th>
+                <td class="data">
+                    {% if event.prize %}
+                        {{ event.prize }}
+                    {% else %}
+                        Unknown
+                    {% endif %}
+                </td>
+            </tr>
+            <tr class="rf-info-item">
+                <th>Partners</th>
+                <td class="data">
+                    {% if partnerships %}
+                        {{ partnerships | displayP }}
+                    {% else %}
+                        None
+                    {% endif %}
+                </td>
+            </tr>
+            {% if event.website %}
+                <tr class="rf-info-item">
+                    <th>Website</th>
+                    <td class="data">
+                        <a href={{ event.website }} target="_blank">{{ event.series.name }}</a>
+                    </td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
         <div>
-            <h2>Information</h2>
-            <p>Place: {{ event.city }}, {{ event.country.name }}</p>
-            <p>Category: {{ event.category }}</p>
-            <p>Discipline: {{ event.discipline }}</p>
-        </div>
-        <div>
-            <h2>Standings</h2>
-            <ul>
+            <h4 class="rider-header">Standings</h4>
+            <table class="standings table table-borderless overflow-hidden">
+                <tbody>
                 {% for part in participations %}
-                    <li>{{ part.rank }}. <a
-                            href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>, {{ part.points }}
-                        Points
-                    </li>
+                    <tr class="participation">
+                        <td class="standings-item">{{ part.rank }}.</td>
+                        <td class="standings-item"><a
+                                href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>
+                        </td>
+                        <td class="standings-item">{{ part.points }} Pts</td>
+                    </tr>
                 {% endfor %}
-            </ul>
+                {% if not participations %}
+                    <span class="lead">
+                        Coming soon
+                    </span>
+                {% endif %}
+                </tbody>
+            </table>
         </div>
         <div>
-            <h2>{{ event.series.name }} Series</h2>
+            <h4 class="rider-header">Series</h4>
+            <span class="lead">{{ event.series.name }}</span>
             <ul>
                 {% for comp in series %}
-                    <li>
-                        {{ comp.year }} <a href="{% url 'wiki:event' comp.id comp.slug %}">{{ comp.name }}</a>
+                    <li class="rf-list-item">
+                        {{ comp.year }} <a href="{% url 'wiki:event' comp.id comp.slug %}">{{ comp.cleanName }}</a>
                     </li>
                 {% endfor %}
             </ul>

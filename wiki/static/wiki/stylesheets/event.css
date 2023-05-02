@@ -3,3 +3,21 @@ a:focus {
     color: var(--rf-primary);
     text-decoration: underline;
 }
+
+.standings {
+    width: fit-content;
+    color: var(--rf-lightgrey);
+}
+
+.standings-item {
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+}
+
+.rf-list-item {
+    padding-top: 2px;
+}
+
+.status-icon {
+    padding-left: 3px;
+}

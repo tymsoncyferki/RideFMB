@@ -114,6 +114,15 @@ class Event(models.Model):
         string = re.sub(pattern, '', string)
         return string.strip()
 
+    def displayName(self):
+        string = self.name
+        index = string.rfind('(M')
+        if index != -1:
+            string = string[:index]
+        pattern = r'\b\d{4}\b'
+        string = re.sub(pattern, '', string)
+        return string.strip()
+
     def year(self):
         return self.date.year
 
@@ -140,6 +149,8 @@ class Participation(models.Model):
     event = models.ForeignKey('Event', on_delete=models.CASCADE)
     rank = models.IntegerField(default=None, blank=True)
     points = models.FloatField(default=0, blank=True)
+    run1 = models.FloatField(default=0, blank=True)
+    run2 = models.FloatField(default=0, blank=True)
 
     def __str__(self):
         return str(self.rank) + '. ' + self.rider.name + ', ' + \
@@ -291,6 +302,10 @@ def cleanDatabase():
         Series.fixSeries(arg)
     for mapping in series_names:
         Series.seriesNames(mapping[0], mapping[1])
-
+    try:
+        p = Partner.objects.filter(name='')[0]
+        p.delete()
+    except IndexError:
+        pass
 
 
