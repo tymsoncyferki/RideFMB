@@ -16,7 +16,7 @@
                 <tbody>
                 <tr>
                     <td colspan="2">
-                        <img class="rounded-circle d-block mx-auto py-2" alt="Rider photo" src="{{ rider.photo }}">
+                        <img class="rounded-circle border border-2 border-white d-block mx-auto my-2" alt="Rider photo" src="{{ rider.photo }}">
                     </td>
                 </tr>
                 <tr class="rf-info-item">
@@ -36,8 +36,8 @@
                     </td>
                 </tr>
                 <tr class="rf-info-item">
-                    <th>Birth Date</th>
-                    <td>{{ rider.birth }}</td>
+                    <th>Age</th>
+                    <td>{{ rider.birth | age }}</td>
                 </tr>
                 <tr class="rf-info-item">
                     <th>Sex</th>
@@ -53,20 +53,6 @@
             </table>
             {{ rider.description|markdown }}
             <h4 class="rider-header">Event History</h4>
-            {#            <table class="search-table">#}
-            {#                <tbody>#}
-            {#                {% for part in participations %}#}
-            {#                    <tr>#}
-            {#                        <td style="padding-bottom: 10px">#}
-            {#                            <span>{{ part.rank }}th</span>#}
-            {#                            <a href="{% url 'wiki:event' part.event.id part.event.slug %}">{{ part.event.series.name }}</a>#}
-            {#                            <br>#}
-            {#                            <span>{{ part.event.city }}, {{ part.event.country.name }}</span>#}
-            {#                        </td>#}
-            {#                    </tr>#}
-            {#                {% endfor %}#}
-            {#                </tbody>#}
-            {#            </table>#}
             {% for year in years %}
                 <h6 class="lead">{{ year }}</h6>
                 <ul class="event-list">
@@ -85,12 +71,12 @@
             <h4 class="rider-header">Sources</h4>
             <ol class="event-list">
                 <li>
-                    <a style="word-wrap: break-word"
+                    <a class="source-link"
                        href="https://www.fmbworldtour.com">https://www.fmbworldtour.com</a>
                 </li>
                 {% for source in sources %}
                     <li>
-                        <a style="word-wrap: break-word" href="{{ source.link }}">{{ source.link }}</a>
+                        <a class="source-link" href="{{ source.link }}">{{ source.link }}</a>
                     </li>
                 {% endfor %}
             </ol>

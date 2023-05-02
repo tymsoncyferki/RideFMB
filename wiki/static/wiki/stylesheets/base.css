@@ -5,15 +5,17 @@
     --rf-primary-dark: #696fc7;
     --rf-table: #1e2124;
     --rf-table-2: #272c32;
-    --rf-border: #4a4b50;
-    --rf-lightgrey: #b6b6b6;
+    --rf-border: #6c757d;
+    --rf-border-2: #4a4b50;
+    --rf-grey: #b6b6b6;
+    --rf-lightgrey: #e0e0e0;
 }
 
 @media screen and (max-width: 767px) {
     :root {
     --rf-table: #1c1c1d;
     --rf-table-2: #2c2c2d;
-    --rf-border: #4a4b50;
+    --rf-border: #6c757d;
     }
 }
 

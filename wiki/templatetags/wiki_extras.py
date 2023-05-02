@@ -2,6 +2,7 @@ from django import template
 from django.utils.safestring import mark_safe
 from markdownx.utils import markdownify
 import inflect
+from datetime import date
 register = template.Library()
 
 
@@ -61,3 +62,12 @@ def asStr(var):
 def addSufix(var):
     p = inflect.engine()
     return p.ordinal(str(var))
+
+
+@register.filter(name='age')
+def calculateAge(born):
+    if not born:
+        return 'Unknown'
+    else:
+        today = date.today()
+        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))

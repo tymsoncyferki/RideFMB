@@ -2,6 +2,7 @@ import pycountry
 from django.core.exceptions import *
 from django.db import models
 from markdownx.models import MarkdownxField
+import re
 
 from wiki.utils.countries import *
 
@@ -102,11 +103,13 @@ class Event(models.Model):
             return False
 
     def cleanName(self):
-        """ Drops brackets """
+        """ Drops brackets and dates"""
         string = self.name
         index = string.rfind('(')
         if index != -1:
             string = string[:index]
+        pattern = r'\b\d{4}\b'
+        string = re.sub(pattern, '', string)
         return string.strip()
 
     def year(self):
@@ -193,6 +196,22 @@ class Series(models.Model):
 
     def strID(self):
         return str(self.id)
+
+    @staticmethod
+    def fixSeries(arg, new_name=None):
+        if not new_name:
+            new_name = arg
+        arg_series = Series.objects.filter(name__icontains=arg)
+        s = Series(name=new_name)
+        s.save()
+        for series in arg_series:
+            print('Series:', series)
+            series_events = series.event_set.all()
+            for event in series_events:
+                print('Event:', event)
+                event.series = s
+                event.save()
+            series.delete()
 
 
 class Partner(models.Model):
