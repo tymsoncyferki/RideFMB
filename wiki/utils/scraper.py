@@ -73,7 +73,7 @@ def scrapeRiderInfo(rider_url=None, new_id=None, content=None):
     # scraping rank
     rider_history = rider_soup.find('table', {'class': 'series-ranking-table'}).find('tbody')
     try:
-        rank = rider_history.find('a', {'href': "https://www.fmbworldtour.com/ranking?series=70"}).\
+        rank = rider_history.find('a', {'href': "https://www.fmbworldtour.com/ranking?series=70"}). \
             previous.previous_sibling.find('sup').previous_sibling
         active = True
     except (Exception,):
@@ -340,7 +340,7 @@ def scrapeEvent(event_url, status, date_str, include_parts=False):
     location = event_info.find('small').text.strip()
     comma = location.rfind(',')
     city = location[:comma].strip()
-    country_name = location[comma+1:].strip()
+    country_name = location[comma + 1:].strip()
     country = Country.getCountry(country_name)
     # Get event details
     event_details = event_soup.find('div', {'class': 'competition-details'})
@@ -355,9 +355,22 @@ def scrapeEvent(event_url, status, date_str, include_parts=False):
     event_website = event_details.find('strong', text='Website: ')
     website = event_website.next_sibling.get('href')
     # Save event
-    event = Event(id=new_id, name=name, slug=slug, date=date, city=city, country=country,
-                  category=category, discipline=discipline, status=status,
-                  prize=prize, website=website)
+    try:
+        event = Event.objects.get(id=new_id)
+        event.name = name
+        event.slug = slug
+        event.date = date
+        event.city = city
+        event.country = country
+        event.category = category
+        event.discipline = discipline
+        event.status = status
+        event.prize = prize
+        event.website = website
+    except ObjectDoesNotExist:
+        event = Event(id=new_id, name=name, slug=slug, date=date, city=city, country=country,
+                      category=category, discipline=discipline, status=status,
+                      prize=prize, website=website)
     event.save()
     # Scrape partners
     scrapePartners(event, content=event_soup)

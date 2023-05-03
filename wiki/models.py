@@ -298,14 +298,18 @@ def backupDatabase():
 
 def cleanDatabase():
     print('Cleaning Series')
+    # Joins split series
     for arg in series_args:
         Series.fixSeries(arg)
+    # Renames series
     for mapping in series_names:
         Series.seriesNames(mapping[0], mapping[1])
+    # Deletes blank partner
     try:
         p = Partner.objects.filter(name='')[0]
         p.delete()
     except IndexError:
         pass
+
 
 
