@@ -312,4 +312,24 @@ def cleanDatabase():
         pass
 
 
+def allocateSex():
+    riders = Rider.objects.all()
+    for rider in riders:
+        print('Rider:', rider.name)
+        sex_allocated = False
+        events = rider.event_set.all()
+        for event in events:
+            if '(M)' in event.name:
+                rider.sex = 'Male'
+                sex_allocated = True
+                continue
+            elif '(W)' in event.name:
+                rider.sex = 'Female'
+                sex_allocated = True
+                continue
+        if sex_allocated:
+            print('Sex allocated')
+            continue
+        print('Sex unknown')
+
 

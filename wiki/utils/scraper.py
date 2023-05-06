@@ -274,8 +274,13 @@ def scrapePartners(event, content=None):
         if not Partner.objects.filter(name=partner_name).exists():
             p = Partner(name=partner_name)
             p.save()
+        partner = Partner.objects.get(name=partner_name)
+        # Add only non-existing partnerships
+        if Partnership.objects.filter(event__pk=event.id, partner__pk=partner.id).exists():
+            print('Partnership exists')
+            continue
         # Add partnership
-        pship = Partnership(event=event, partner=Partner.objects.get(name=partner_name))
+        pship = Partnership(event=event, partner=partner)
         pship.save()
 
 
