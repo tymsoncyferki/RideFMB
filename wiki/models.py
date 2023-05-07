@@ -116,7 +116,7 @@ class Event(models.Model):
 
     def displayName(self):
         string = self.name
-        index = string.rfind('(M')
+        index = string.rfind('(M)')
         if index != -1:
             string = string[:index]
         pattern = r'\b\d{4}\b'
@@ -316,20 +316,34 @@ def allocateSex():
     riders = Rider.objects.all()
     for rider in riders:
         print('Rider:', rider.name)
-        sex_allocated = False
         events = rider.event_set.all()
         for event in events:
+            if '(W)' in event.name or event.name.lower().find('women') != -1 or event.id == 380:
+                rider.sex = 'Female'
+                rider.save()
+                break
             if '(M)' in event.name:
                 rider.sex = 'Male'
-                sex_allocated = True
-                continue
-            elif '(W)' in event.name:
-                rider.sex = 'Female'
-                sex_allocated = True
-                continue
-        if sex_allocated:
+                rider.save()
+                break
+        if rider.sex == 'Unknown':
+            for eventt in events:
+                if eventt.name.find('(') == -1 and eventt.name.find('M%W') == -1:
+                    rider.sex = 'Male'
+                    rider.save()
+                    break
+        if rider.sex == 'Unknown':
+            print('Sex unknown')
+        else:
             print('Sex allocated')
-            continue
-        print('Sex unknown')
 
 
+def changeSex(riders_list, male=False):
+    for rider_id in riders_list:
+        rider = Rider.objects.get(id=rider_id)
+        print(rider.name)
+        if male:
+            rider.sex = 'Male'
+        else:
+            rider.sex = 'Female'
+        rider.save()

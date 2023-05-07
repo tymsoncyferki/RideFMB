@@ -63,6 +63,26 @@
                                 </select>
                             </div>
                             <div class="filter-element">
+                                <select class="form-select filter-select rounded-0" name="sex" id="sex">
+                                    {% if not request.GET.sex or request.GET.sex == 'all' %}
+                                        <option value="all" selected>Select Sex</option>
+                                    {% endif %}
+                                    <option value="all">All</option>
+                                    <option value="Male" {% if request.GET.sex == 'Male' %}
+                                            selected {% endif %}>
+                                        Male
+                                    </option>
+                                    <option value="Female" {% if request.GET.sex == 'Female' %}
+                                            selected {% endif %}>
+                                        Female
+                                    </option>
+                                    <option value="Unknown" {% if request.GET.sex == 'Unknown' %}
+                                            selected {% endif %}>
+                                        Unknown
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="filter-element">
                                 <select class="form-select filter-select rounded-0" name="sponsor" id="sponsor">
                                     {% if not request.GET.sponsor or request.GET.sponsor == 'all' %}
                                         <option value="all" selected>Select Sponsor</option>

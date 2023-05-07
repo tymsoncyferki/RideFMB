@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from wiki.models import *
-from django.db.models import F, Count
+from django.db.models import F, Count, Q
 
 
 def index(request):
@@ -56,6 +56,10 @@ def riders(request):
         else:
             all_riders = all_riders.filter(active=False)
 
+    sex = request.GET.get('sex')
+    if sex and sex != 'all':
+        all_riders = all_riders.filter(sex=sex)
+
     sponsor = request.GET.get('sponsor')
     if sponsor and sponsor != 'all':
         all_riders = all_riders.filter(sponsor__id=sponsor)
@@ -96,12 +100,15 @@ def event(request, event_id, slug):
     main_event = Event.objects.get(id=event_id)
     partnerships = main_event.partnership_set.all()
     parts = main_event.participation_set.all().order_by('rank')
+    parts_women = main_event.participation_set.filter(rider__sex='Female').order_by('rank')
+    parts_men = main_event.participation_set.filter(~Q(rider__sex='Female')).order_by('rank')
     try:
         series = main_event.series.event_set.all().order_by('-date')
     except AttributeError:
         series = [main_event]
     return render(request, 'wiki/events/event.html', {'event': main_event, 'participations': parts, 'series': series,
-                                                      'partnerships': partnerships})
+                                                      'partnerships': partnerships, "parts_men": parts_men,
+                                                      "parts_women": parts_women})
 
 
 def events(request):

@@ -68,25 +68,66 @@
         </table>
 
         <div>
-            <h4 class="rider-header">Standings</h4>
-            <table class="standings table table-borderless overflow-hidden">
-                <tbody>
-                {% for part in participations %}
-                    <tr class="participation">
-                        <td class="standings-item">{{ part.rank }}.</td>
-                        <td class="standings-item"><a
-                                href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>
-                        </td>
-                        <td class="standings-item">{{ part.points }} Pts</td>
-                    </tr>
-                {% endfor %}
-                {% if not participations %}
-                    <span class="lead">
+            {% if parts_women and parts_men %}
+                <h4 class="rider-header">Standings Female</h4>
+                <table class="standings table table-borderless overflow-hidden">
+                    <tbody>
+                    {% for part in parts_women %}
+                        <tr class="participation">
+                            <td class="standings-item">{{ part.rank }}.</td>
+                            <td class="standings-item"><a
+                                    href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>
+                            </td>
+                            <td class="standings-item">{{ part.points }} Pts</td>
+                        </tr>
+                    {% endfor %}
+                    {% if not participations %}
+                        <span class="lead">
                         Coming soon
                     </span>
-                {% endif %}
-                </tbody>
-            </table>
+                    {% endif %}
+                    </tbody>
+                </table>
+                <h4 class="rider-header">Standings Male</h4>
+                <table class="standings table table-borderless overflow-hidden">
+                    <tbody>
+                    {% for part in parts_men %}
+                        <tr class="participation">
+                            <td class="standings-item">{{ part.rank }}.</td>
+                            <td class="standings-item"><a
+                                    href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>
+                            </td>
+                            <td class="standings-item">{{ part.points }} Pts</td>
+                        </tr>
+                    {% endfor %}
+                    {% if not participations %}
+                        <span class="lead">
+                        Coming soon
+                    </span>
+                    {% endif %}
+                    </tbody>
+                </table>
+            {% else %}
+                <h4 class="rider-header">Standings</h4>
+                <table class="standings table table-borderless overflow-hidden">
+                    <tbody>
+                    {% for part in participations %}
+                        <tr class="participation">
+                            <td class="standings-item">{{ part.rank }}.</td>
+                            <td class="standings-item"><a
+                                    href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>
+                            </td>
+                            <td class="standings-item">{{ part.points }} Pts</td>
+                        </tr>
+                    {% endfor %}
+                    {% if not participations %}
+                        <span class="lead">
+                        Coming soon
+                    </span>
+                    {% endif %}
+                    </tbody>
+                </table>
+            {% endif %}
         </div>
         <div>
             <h4 class="rider-header">Series</h4>
