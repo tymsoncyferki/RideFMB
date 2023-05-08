@@ -347,3 +347,4 @@ def changeSex(riders_list, male=False):
         else:
             rider.sex = 'Female'
         rider.save()
+

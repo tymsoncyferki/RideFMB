@@ -439,3 +439,20 @@ def scrapeAllSeries():
     for i, event in enumerate(events):
         print(i, event)
         scrapeSeries(event=event)
+
+
+def fixCities():
+    for event in Event.objects.all():
+        print(f"---{event.name}")
+        new_id = event.id
+        event_url = "https://www.fmbworldtour.com/competition/?id=" + str(new_id)
+        # Get page content
+        event_page = requests.get(event_url)
+        event_soup = BeautifulSoup(event_page.text, 'html.parser')
+        event_info = event_soup.find('div', {'class': 'api-content'})
+        location = event_info.find('small').text.strip()
+        comma = location.rfind(',')
+        city = location[:comma].strip()
+        print(event.city, city)
+        event.city = city
+        event.save()
