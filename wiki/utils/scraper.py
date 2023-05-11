@@ -453,6 +453,6 @@ def fixCities():
         location = event_info.find('small').text.strip()
         comma = location.rfind(',')
         city = location[:comma].strip()
-        print(event.city, city)
+        print(f"Old: {event.city}, New: {city}")
         event.city = city
         event.save()

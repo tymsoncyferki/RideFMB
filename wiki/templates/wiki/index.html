@@ -10,9 +10,36 @@
 
 {% block content %}
     <div class="container-lg">
-        <h1 class="text-center">RideFMB</h1>
-        <p class="text-center">Welcome to the best FMB World Tour Database</p>
-        <span class="text-center text-muted">Last data update: {{ appData.lastUpdate }}</span>
+        <div style="margin-top: 50px">
+            <img class="d-block m-auto" style="max-width:100%; max-height:100%;"
+                 src="https://see.fontimg.com/api/renderfont4/jEr99/eyJyIjoiZnMiLCJoIjo2NSwidyI6MTAwMCwiZnMiOjY1LCJmZ2MiOiIjRkZGRkZGIiwiYmdjIjoiIzAzMDAwMCIsInQiOjF9/UmlkZUZNQg/excludeditalic.png"
+                 alt="Bold fonts">
+            <br>
+            <p class="text-center">Welcome to the best FMB World Tour Database</p>
+        </div>
+        <div style="margin-top: 50px">
+            <form class="d-flex" method="GET" action="{% url 'wiki:search' %}">
+                <div class="input-group">
+                    <input type="text" name="q" class="search-bar form-control text-center" placeholder="Search for any Rider or Event" autocomplete="off"
+                            {% if request.GET.q %} value="{{ request.GET.q }}" {% endif %}>
+                    <button class="btn btn-outline-light btn-search" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div style="margin-top: 50px">
+            <h2 class="lead">Riders to watch</h2>
+        </div>
+        <div style="margin-top: 50px">
+            <h2 class="lead">Upcoming events</h2>
+        </div>
+        <div style="margin-top: 50px">
+            <span class="text-center text-muted">Last data update: {{ appData.lastUpdate }}</span>
+        </div>
     </div>
 
 {% endblock %}

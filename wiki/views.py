@@ -8,6 +8,29 @@ def index(request):
     return render(request, 'wiki/index.html', {'appData': data})
 
 
+def search(request):
+    query = request.GET.get('q')
+    if query:
+        riders_html = Rider.objects.filter(name__icontains=query)
+        events_html = Event.objects.filter(name__icontains=query).order_by('-date')
+    else:
+        riders_html = False
+        events_html = False
+    return render(request, 'wiki/search.html', {'riders': riders_html, 'events': events_html})
+
+
+def schedule(request, year):
+    events_html = Event.objects.filter(date__year=year).order_by('date')
+    return render(request, 'wiki/schedule.html', {'events': events_html, 'year': year})
+
+
+def ranking(request, page_idx):
+    start_idx = (page_idx - 1) * 10
+    last_idx = start_idx + 10
+    riders_html = Rider.objects.filter(active=True).filter(rank__gt=0).order_by('rank')[start_idx:last_idx]
+    return render(request, 'wiki/ranking.html', {'riders': riders_html, 'page_index': page_idx})
+
+
 def rider(request, rider_id, slug):
     main_rider = Rider.objects.get(id=rider_id)
     parts = main_rider.participation_set.all().order_by('-event__date')
@@ -22,15 +45,19 @@ def rider(request, rider_id, slug):
                    'sources': sources, 'years': years})
 
 
-def search(request):
-    query = request.GET.get('q')
-    if query:
-        riders_html = Rider.objects.filter(name__icontains=query)
-        events_html = Event.objects.filter(name__icontains=query).order_by('-date')
-    else:
-        riders_html = False
-        events_html = False
-    return render(request, 'wiki/search.html', {'riders': riders_html, 'events': events_html})
+def event(request, event_id, slug):
+    main_event = Event.objects.get(id=event_id)
+    partnerships = main_event.partnership_set.all()
+    parts = main_event.participation_set.all().order_by('rank')
+    parts_women = main_event.participation_set.filter(rider__sex='Female').order_by('rank')
+    parts_men = main_event.participation_set.filter(~Q(rider__sex='Female')).order_by('rank')
+    try:
+        series = main_event.series.event_set.all().order_by('-date')
+    except AttributeError:
+        series = [main_event]
+    return render(request, 'wiki/events/event.html', {'event': main_event, 'participations': parts, 'series': series,
+                                                      'partnerships': partnerships, "parts_men": parts_men,
+                                                      "parts_women": parts_women})
 
 
 def riders(request):
@@ -94,21 +121,6 @@ def riders(request):
                                                        'pages_count': pages_count, 'sortOptions': sort_options,
                                                        'filterLabels': filter_labels, 'url_params': url_params,
                                                        'medals': medals, 'countries': countries, 'sponsors': sponsors})
-
-
-def event(request, event_id, slug):
-    main_event = Event.objects.get(id=event_id)
-    partnerships = main_event.partnership_set.all()
-    parts = main_event.participation_set.all().order_by('rank')
-    parts_women = main_event.participation_set.filter(rider__sex='Female').order_by('rank')
-    parts_men = main_event.participation_set.filter(~Q(rider__sex='Female')).order_by('rank')
-    try:
-        series = main_event.series.event_set.all().order_by('-date')
-    except AttributeError:
-        series = [main_event]
-    return render(request, 'wiki/events/event.html', {'event': main_event, 'participations': parts, 'series': series,
-                                                      'partnerships': partnerships, "parts_men": parts_men,
-                                                      "parts_women": parts_women})
 
 
 def events(request):
@@ -180,13 +192,4 @@ def events(request):
                                                        'countries': countries, 'partners': partners})
 
 
-def schedule(request, year):
-    events_html = Event.objects.filter(date__year=year).order_by('date')
-    return render(request, 'wiki/schedule.html', {'events': events_html, 'year': year})
 
-
-def ranking(request, page_idx):
-    start_idx = (page_idx - 1) * 10
-    last_idx = start_idx + 10
-    riders_html = Rider.objects.filter(active=True).filter(rank__gt=0).order_by('rank')[start_idx:last_idx]
-    return render(request, 'wiki/ranking.html', {'riders': riders_html, 'page_index': page_idx})
