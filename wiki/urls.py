@@ -11,5 +11,8 @@ urlpatterns = [
     path('riders', views.riders, name='riders'),
     path('events', views.events, name='events'),
     path('schedule/<int:year>', views.schedule, name='schedule'),
+    path('help', views.help, name='help'),
+    path('contact', views.contact, name='contact'),
+    path('about', views.about, name='about'),
     path('markdownx/', include('markdownx.urls')),
 ]

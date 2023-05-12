@@ -27,6 +27,18 @@ def index(request):
     return render(request, 'wiki/index.html', {'appData': data, 'events': upcoming_events, 'riders': top_riders})
 
 
+def help(request):
+    return render(request, 'wiki/help.html')
+
+
+def contact(request):
+    return render(request, 'wiki/contact.html')
+
+
+def about(request):
+    return render(request, 'wiki/about.html')
+
+
 def search(request):
     query = request.GET.get('q')
     if query:
@@ -213,3 +225,7 @@ def events(request):
 
 def handler_404(request, exception=None, template_name='wiki/404.html'):
     return render(request, template_name, status=404)
+
+
+def handler_500(request, exception=None, template_name='wiki/505.html'):
+    return render(request, template_name, status=500)

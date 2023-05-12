@@ -24,3 +24,4 @@ urlpatterns = [
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 handler404 = "wiki.views.handler_404"
+handler500 = "wiki.views.handler_500"
