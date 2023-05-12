@@ -1,13 +1,7 @@
 from django.shortcuts import render
 from wiki.models import *
-from django.db.models import F, Count, Q, Subquery, OuterRef, Avg, Max
+from django.db.models import F, Count, Q, Subquery, OuterRef, Avg
 from django.utils.timezone import datetime
-
-
-def getRidersToWatch():
-    riders = Rider.objects.all()
-    for rider in riders:
-        parts = rider.participation_set.all()
 
 
 def index(request):
@@ -214,3 +208,7 @@ def events(request):
                                                        'pages_count': pages_count, 'sortOptions': sort_options,
                                                        'seriess': seriess, 'url_params': url_params,
                                                        'countries': countries, 'partners': partners})
+
+
+def page_not_found(request, exception):
+    return render(request, '404.html', status=404)

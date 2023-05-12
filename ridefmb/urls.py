@@ -22,3 +22,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('wiki.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+handler404 = "wiki.views.page_not_found"
