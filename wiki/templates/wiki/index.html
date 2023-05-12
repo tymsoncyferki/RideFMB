@@ -6,21 +6,23 @@
     {% load wiki_extras %}
     {% load static %}
     <link href="{% static 'wiki/stylesheets/index.css' %}" rel="stylesheet">
+    <link href="{% static 'wiki/stylesheets/ranking.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
     <div class="container-lg">
-        <div style="margin-top: 50px">
-            <img class="d-block m-auto" style="max-width:100%; max-height:100%;"
+        <div class="section">
+            <img class="d-block m-auto logo-image"
                  src="https://see.fontimg.com/api/renderfont4/jEr99/eyJyIjoiZnMiLCJoIjo2NSwidyI6MTAwMCwiZnMiOjY1LCJmZ2MiOiIjRkZGRkZGIiwiYmdjIjoiIzAzMDAwMCIsInQiOjF9/UmlkZUZNQg/excludeditalic.png"
                  alt="Bold fonts">
             <br>
-            <p class="text-center">Welcome to the best FMB World Tour Database</p>
+            <p class="text-center m-auto subtitle">Welcome to the best FMB World Tour Database</p>
         </div>
-        <div style="margin-top: 50px">
+        <div class="section d-none d-md-block">
             <form class="d-flex" method="GET" action="{% url 'wiki:search' %}">
                 <div class="input-group">
-                    <input type="text" name="q" class="search-bar form-control text-center" placeholder="Search for any Rider or Event" autocomplete="off"
+                    <input type="text" name="q" class="search-bar form-control text-center"
+                           placeholder="Search for any Rider or Event" autocomplete="off"
                             {% if request.GET.q %} value="{{ request.GET.q }}" {% endif %}>
                     <button class="btn btn-outline-light btn-search" type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -31,13 +33,104 @@
                 </div>
             </form>
         </div>
-        <div style="margin-top: 50px">
-            <h2 class="lead">Riders to watch</h2>
+        <div class="section">
+            <h2 class="lead section-header">Riders to watch</h2>
+            <table class="table table-borderless rf-table rounded-4 overflow-hidden text-white">
+            <thead class="rf-table-header rounded-3">
+            <tr>
+                <th class="text-center d-none d-sm-block" scope="col">Rank</th>
+                <th class="d-sm-none" colspan="2">Rank</th>
+                <th class="d-none d-sm-table-cell" scope="col"></th>
+                <th scope="col">Name</th>
+                <th class="d-none d-sm-table-cell" scope="col">Sponsor</th>
+                <th class="text-center" scope="col">Points</th>
+            <tr>
+            </thead>
+            <tbody>
+            {% for rider in riders %}
+                <tr class="rf-table-item" onclick="window.location='{% url 'wiki:rider' rider.id rider.slug %}';">
+                    <!-- Rank -->
+                    <td>
+                        <h6 class="text-center">{{ rider.rank }}</h6>
+                    </td>
+                    <!-- Photo -->
+                    <td class="d-none d-sm-block">
+                        <img alt="Rider photo" src="{{ rider.photo }}"
+                             class="rounded-circle border border-2 border-white" width="70" height="70">
+                    </td>
+                    <td class="d-sm-none rf-table-rider-photo">
+                        <img alt="Rider photo" src="{{ rider.photo }}"
+                             class="rounded-circle border border-2 border-white" width="50" height="50">
+                    </td>
+                    <!-- Name -->
+                    <td>
+                        <h6 class="rf-table-item-name">
+                            <a class="rf-table-item-link"
+                               href="{% url 'wiki:rider' rider.id rider.slug %}">{{ rider.name }}</a>
+                        </h6>
+                        <img alt="Rider country flag" src="{{ rider.country.photo }}">
+                    </td>
+                    <!-- Sponsor -->
+                    <td class="d-none d-sm-block">
+                        {{ rider.getMainSponsor }}
+                    </td>
+                    <!-- Points -->
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <h6 class="rf-table-item-points rounded-2">{{ rider.points }}</h6>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
         </div>
-        <div style="margin-top: 50px">
-            <h2 class="lead">Upcoming events</h2>
+        <div class="section">
+            <h2 class="lead section-header">Upcoming events</h2>
+            <table class="table table-borderless rf-table rounded-4 overflow-hidden text-white">
+                <thead class="rf-table-header rounded-3">
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col" style="width: 400px">Name</th>
+                    <th class="d-none d-sm-table-cell" scope="col">Country</th>
+                    <th class="d-sm-none d-table-cell" scope="col">Ctry</th>
+                    <th class="d-none d-sm-table-cell" scope="col">Category</th>
+                    <th class="d-sm-none d-table-cell" scope="col">Cat.</th>
+                <tr>
+                </thead>
+                <tbody>
+                {% for event in events %}
+                    <tr class="rf-table-item" onclick="window.location='{% url 'wiki:event' event.id event.slug %}';">
+                        <!-- Date -->
+                        <td class="d-none d-md-table-cell">
+                            {{ event.date|date:"d F" }}
+                        </td>
+                        <td class="d-md-none">
+                            {{ event.date|date:"d.m" }}
+                        </td>
+                        <!-- Name -->
+                        <td>
+                            <h6 class="rf-table-item-name">
+                                <a class="rf-table-item-link"
+                                   href="{% url 'wiki:event' event.id event.slug %}">{{ event.displayName }}
+                                </a>
+                            </h6>
+                        </td>
+                        <!-- Country -->
+                        <td>
+                            <img alt="Country flag" src={{ event.country.photo }}>
+                        </td>
+                        <!-- Category -->
+{#                        <td class="d-none d-sm-table-cell">#}
+                        <td>
+                            {{ event.category }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div style="margin-top: 50px">
+        <div class="section">
             <span class="text-center text-muted">Last data update: {{ appData.lastUpdate }}</span>
         </div>
     </div>

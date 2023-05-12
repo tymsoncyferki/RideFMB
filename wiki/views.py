@@ -1,11 +1,35 @@
 from django.shortcuts import render
 from wiki.models import *
-from django.db.models import F, Count, Q
+from django.db.models import F, Count, Q, Subquery, OuterRef, Avg, Max
+from django.utils.timezone import datetime
+
+
+def getRidersToWatch():
+    riders = Rider.objects.all()
+    for rider in riders:
+        parts = rider.participation_set.all()
 
 
 def index(request):
     data = AppData.objects.get(id=1)
-    return render(request, 'wiki/index.html', {'appData': data})
+    upcoming_events = Event.objects.all().filter(date__year=datetime.now().year).filter(status='Upcoming').order_by(
+        'date')[:5]
+    top_riders = Rider.objects.filter(active=True).annotate(
+        avg_rank=Subquery(
+            Participation.objects.filter(
+                rider__pk=OuterRef('pk')
+            ).order_by('-event__date').values('rank')[:3].annotate(
+                avg=Avg('rank')).values('avg')
+        )
+    ).annotate(
+        part_count=Subquery(
+            Participation.objects.filter(
+                rider__pk=OuterRef('pk')
+            ).values('rank').annotate(count=Count('*')).values('count')
+        )
+    ).filter(part_count__gt=2).order_by('avg_rank')[:5]
+
+    return render(request, 'wiki/index.html', {'appData': data, 'events': upcoming_events, 'riders': top_riders})
 
 
 def search(request):
@@ -190,6 +214,3 @@ def events(request):
                                                        'pages_count': pages_count, 'sortOptions': sort_options,
                                                        'seriess': seriess, 'url_params': url_params,
                                                        'countries': countries, 'partners': partners})
-
-
-
