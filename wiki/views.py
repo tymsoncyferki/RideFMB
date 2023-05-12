@@ -2,6 +2,7 @@ from django.shortcuts import render
 from wiki.models import *
 from django.db.models import F, Count, Q, Subquery, OuterRef, Avg
 from django.utils.timezone import datetime
+from django.shortcuts import get_object_or_404
 
 
 def index(request):
@@ -50,7 +51,7 @@ def ranking(request, page_idx):
 
 
 def rider(request, rider_id, slug):
-    main_rider = Rider.objects.get(id=rider_id)
+    main_rider = get_object_or_404(Rider, id=rider_id)
     parts = main_rider.participation_set.all().order_by('-event__date')
     spons = main_rider.sponsorship_set.all()
     sources = main_rider.source_set.all()
@@ -64,7 +65,7 @@ def rider(request, rider_id, slug):
 
 
 def event(request, event_id, slug):
-    main_event = Event.objects.get(id=event_id)
+    main_event = get_object_or_404(Event, id=event_id)
     partnerships = main_event.partnership_set.all()
     parts = main_event.participation_set.all().order_by('rank')
     parts_women = main_event.participation_set.filter(rider__sex='Female').order_by('rank')
@@ -210,5 +211,5 @@ def events(request):
                                                        'countries': countries, 'partners': partners})
 
 
-def page_not_found(request, exception):
-    return render(request, '404.html', status=404)
+def error_404(request, exception=None, template_name='404.html'):
+    return render(request, template_name, status=404)
