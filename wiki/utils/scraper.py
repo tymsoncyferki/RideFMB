@@ -56,7 +56,7 @@ def scrapeRiderInfo(rider_url=None, new_id=None, content=None):
         rider_soup = BeautifulSoup(rider_page.text, 'html.parser')
     else:
         rider_soup = content
-    rider_info = rider_soup.find('div', {'class': 'athelte-profile'})
+    rider_info = rider_soup.find('div', {'class': 'athelte-profile'}) # not a mistake (athelte)
     # scraping basic info
     name = rider_info.find('h1').text.strip()
     namelist = name.split(' ')
