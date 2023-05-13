@@ -14,14 +14,14 @@ def index(request):
         avg_rank=Subquery(
             Participation.objects.filter(
                 rider__pk=OuterRef('pk')
-            ).order_by('-event__date').values('rank')[:3].annotate(
+            ).filter(event__date__gt='2021-01-01').order_by('-event__date').values('rank')[:3].annotate(
                 avg=Avg('rank')).values('avg')
         )
     ).annotate(
         part_count=Subquery(
             Participation.objects.filter(
                 rider__pk=OuterRef('pk')
-            ).values('rank').annotate(count=Count('*')).values('count')
+            ).filter(event__date__gt='2021-01-01').values('rank').annotate(count=Count('*')).values('count')
         )
     ).filter(part_count__gt=2).order_by('avg_rank')[:5]
 
