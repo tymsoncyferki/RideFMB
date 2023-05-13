@@ -5,10 +5,32 @@
 {% block head %}
     {% load wiki_extras %}
     {% load static %}
+    <link href="{% static 'wiki/stylesheets/footer.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
     <div class="container-lg">
-        <p class="text-center">Welcome to the help section. There is more to come here!</p>
+        <div class="container-md">
+            <h1 class="text-center">Help</h1>
+            <h2 class="lead">Ranking</h2>
+            <p>
+                Top 300 riders (men and women). Rank is based on points from best 3 results from the last year.
+            </p>
+            <h2 class="lead">Schedule</h2>
+            <p>
+                All events from each year. Status legend: green - completed, yellow - upcoming, red - canceled.
+            </p>
+            <h2 class="lead">Riders</h2>
+            <p>
+                All riders from database.
+            </p>
+            <h2 class="lead">Events</h2>
+            <p>
+                All events from database.
+            </p>
+        </div>
+        <div class="text-center">
+            Go back to the <a href="{% url 'wiki:index' %}">main page</a>
+        </div>
     </div>
 {% endblock %}

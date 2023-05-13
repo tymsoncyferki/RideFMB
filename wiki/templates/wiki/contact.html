@@ -5,10 +5,29 @@
 {% block head %}
     {% load wiki_extras %}
     {% load static %}
+    <link href="{% static 'wiki/stylesheets/footer.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
     <div class="container-lg">
-        <p class="text-center">Welcome to the contact section. There is more to come here!</p>
+        <div class="form container-md">
+            <h1>Contact form</h1>
+            <form method="POST" id="contact" action="{% url 'wiki:contact' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" name="subject" id="subject" placeholder="Request" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea form="contact" class="form-control" name="message" id="message" rows="5" placeholder="Type your message" required></textarea>
+                </div>
+                <button type="submit" form="contact" class="btn btn-primary">Send</button>
+            </form>
+        </div>
     </div>
 {% endblock %}

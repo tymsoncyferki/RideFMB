@@ -1,0 +1,32 @@
+.btn-primary,
+.btn-primary:visited
+ {
+    background-color: var(--rf-primary);
+    border-color: var(--rf-primary);
+}
+.btn-primary:focus,
+.btn-primary:hover,
+.btn-primary:active
+{
+    background-color: var(--rf-primary-dark);
+    border-color: var(--rf-primary-dark);
+}
+
+a {
+    color: var(--rf-primary);
+    text-decoration: none;
+}
+
+a:hover,
+a:focus {
+    color: var(--rf-primary);
+    text-decoration: underline;
+}
+
+.paragraph {
+    text-align: justify;
+}
+
+.section-header {
+    border-bottom: 1px solid var(--rf-border-2);
+}

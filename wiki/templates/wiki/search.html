@@ -11,8 +11,10 @@
 {% block content %}
     <div class="container-lg">
         {% if not riders and not events %}
-            <h4>No results found :(</h4>
-            <p>Type at least one letter, avoid using national characters and watch out for whitespaces</p>
+            <div class="text-center">
+                <h4>No results found :(</h4>
+                <p>Type at least one letter, avoid using national characters and watch out for whitespaces</p>
+            </div>
         {% endif %}
 
         {% if riders %}
@@ -23,10 +25,12 @@
                 {% for rider in riders %}
                     <tr class="search-item">
                         <td class="rf-table-rider-photo">
-                            <img src="{{ rider.photo }}" class="rounded-circle border border-2 border-white" width="50" height="50">
+                            <img src="{{ rider.photo }}" class="rounded-circle border border-2 border-white" width="50"
+                                 height="50">
                         </td>
                         <td>
-                            <a class="search-link lead" href="{% url 'wiki:rider' rider.id rider.slug %}">{{ rider.name }}</a>
+                            <a class="search-link lead"
+                               href="{% url 'wiki:rider' rider.id rider.slug %}">{{ rider.name }}</a>
                             <br>
                             <span class="search-item-desc">{{ rider.country.name }}</span>
                         </td>
@@ -43,7 +47,8 @@
                 {% for event in events %}
                     <tr class="search-item">
                         <td>
-                            <a class="search-link lead" href="{% url 'wiki:event' event.id event.slug %}">{{ event.name }} {{ event.year }}</a>
+                            <a class="search-link lead"
+                               href="{% url 'wiki:event' event.id event.slug %}">{{ event.name }} {{ event.year }}</a>
                             <br>
                             <span class="search-item-desc">{{ event.city }}, {{ event.country.name }}</span>
                         </td>

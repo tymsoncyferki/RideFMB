@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from wiki.models import *
 from django.db.models import F, Count, Q, Subquery, OuterRef, Avg
 from django.utils.timezone import datetime
-from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def index(request):
@@ -32,7 +33,27 @@ def help(request):
 
 
 def contact(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        title = 'Contact form: ' + subject
+        content = f'Email:\n{email}\n\n' \
+                  f'Message:\n{message}'
+        send_mail(title, content, settings.EMAIL_HOST_USER, [settings.EMAIL_HOST_USER])
+        send_mail(
+            'Contact request - RideFMB',
+            f"Thanks for reaching out! We will try to respond to you as fast as possible.\n\n"
+            f"RideFMB Team 2023\n\n",
+            settings.EMAIL_HOST_USER,
+            [email]
+        )
+        return redirect('wiki:success')
     return render(request, 'wiki/contact.html')
+
+
+def success(request):
+    return render(request, 'wiki/utils/success.html')
 
 
 def about(request):
@@ -52,14 +73,14 @@ def search(request):
 
 def schedule(request, year):
     events_html = Event.objects.filter(date__year=year).order_by('date')
-    return render(request, 'wiki/schedule.html', {'events': events_html, 'year': year})
+    return render(request, 'wiki/events/schedule.html', {'events': events_html, 'year': year})
 
 
 def ranking(request, page_idx):
     start_idx = (page_idx - 1) * 10
     last_idx = start_idx + 10
     riders_html = Rider.objects.filter(active=True).filter(rank__gt=0).order_by('rank')[start_idx:last_idx]
-    return render(request, 'wiki/ranking.html', {'riders': riders_html, 'page_index': page_idx})
+    return render(request, 'wiki/riders/ranking.html', {'riders': riders_html, 'page_index': page_idx})
 
 
 def rider(request, rider_id, slug):

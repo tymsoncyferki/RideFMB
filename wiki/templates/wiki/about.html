@@ -5,10 +5,34 @@
 {% block head %}
     {% load wiki_extras %}
     {% load static %}
+    <link href="{% static 'wiki/stylesheets/footer.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
     <div class="container-lg">
-        <p class="text-center">Welcome to the about section. There is more to come here!</p>
+        <div class="container-md">
+            <h1 class="text-center">About</h1>
+            <p class="paragraph">
+                This website was created to allow easy access to statistics and data about
+                riders, events and standings. There are multiple filtering and sorting options for browsing data as well
+                as search bar for fast and precise searching.
+            </p>
+            <p class="paragraph">
+                Most of the data is dependent on official <a href="https://www.fmbworldtour.com">FMB World Tour</a>
+                website.
+                However on this website you will also be able to find riders age, sex, personal descriptions and points
+                for
+                the runs in particular events. On every rider or event page there is sources section with listed
+                references.
+            </p>
+            <p class="paragraph">
+                RideFMB is a non-profit project. It was coded with <a href="https://www.djangoproject.com">Django</a>.
+                If you spot any bugs or you believe that we violate any copyright or you just see some space for
+                development feel free to contact us using our <a href="{% url 'wiki:contact' %}">contact form</a>.
+            </p>
+        </div>
+        <div class="text-center">
+            Go back to the <a href="{% url 'wiki:index' %}">main page</a>
+        </div>
     </div>
 {% endblock %}

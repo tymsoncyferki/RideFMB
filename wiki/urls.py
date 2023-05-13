@@ -13,6 +13,7 @@ urlpatterns = [
     path('schedule/<int:year>', views.schedule, name='schedule'),
     path('help', views.help, name='help'),
     path('contact', views.contact, name='contact'),
+    path('contact/success', views.success, name='success'),
     path('about', views.about, name='about'),
     path('markdownx/', include('markdownx.urls')),
 ]
