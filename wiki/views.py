@@ -244,9 +244,9 @@ def events(request):
                                                        'countries': countries, 'partners': partners})
 
 
-def handler_404(request, exception=None, template_name='wiki/404.html'):
+def handler_404(request, exception=None, template_name='wiki/utils/404.html'):
     return render(request, template_name, status=404)
 
 
-def handler_500(request, exception=None, template_name='wiki/505.html'):
+def handler_500(request, exception=None, template_name='wiki/utils/505.html'):
     return render(request, template_name, status=500)
