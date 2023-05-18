@@ -74,6 +74,22 @@ class Rider(models.Model):
             print(i, 'counting', rider.name)
             rider.updateMedals()
 
+    def fixInstagram(self):
+        """ Fixes link to instagram """
+        if self.instagram is None or self.instagram == '':
+            return
+        elif self.instagram[0] == '@':
+            ig_nickname = self.instagram[1:].strip().replace(' ', '')
+            ig_link = 'https://www.instagram.com/' + ig_nickname + '/'
+        elif self.instagram.lower().find('instagram') == -1:
+            ig_nickname = self.instagram.strip().replace(' ', '')
+            ig_link = 'https://www.instagram.com/' + ig_nickname + '/'
+        else:
+            ig_link = self.instagram
+        self.instagram = ig_link
+        print('Instagram link:', self.instagram)
+        self.save()
+
 
 class Source(models.Model):
     link = models.CharField(max_length=255, default='#')
@@ -347,4 +363,3 @@ def changeSex(riders_list, male=False):
         else:
             rider.sex = 'Female'
         rider.save()
-

@@ -95,6 +95,7 @@ def scrapeRiderInfo(rider_url=None, new_id=None, content=None):
         rider = Rider(id=new_id, firstname=firstname, lastname=lastname, name=name, slug=slug, country=country,
                       photo=photo, instagram=instagram, active=active, rank=rank)
     rider.save()
+    rider.fixInstagram()
     return rider
 
 

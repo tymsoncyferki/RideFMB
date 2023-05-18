@@ -52,7 +52,7 @@
                     <th>Sex</th>
                     <td class="data">{{ rider.sex }}</td>
                 </tr>
-                {% if rider.instagram %}
+                {% if rider.instagram and rider.instagram != '' %}
                 <tr class="rf-info-item">
                     <th>Socials</th>
                     <td class="data">
