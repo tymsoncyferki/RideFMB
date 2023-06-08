@@ -230,8 +230,8 @@ class Series(models.Model):
         return self.event_set.count() > 1
 
     @staticmethod
-    def fixSeries(arg, new_name=None):
-        if not new_name:
+    def fixSeriesDeprecated(arg, new_name=None):
+        if new_name is None:
             new_name = arg
         arg_series = Series.objects.filter(name__icontains=arg)
         s = Series(name=new_name)
@@ -244,6 +244,21 @@ class Series(models.Model):
                 event.series = s
                 event.save()
             series.delete()
+
+    @staticmethod
+    def fixSeries(arg, new_name=None):
+        if new_name is None:
+            new_name = arg
+        arg_events = Event.objects.filter(name__icontains=arg)
+        s = Series(name=new_name)
+        s.save()
+        for event in arg_events:
+            print('Event:', event)
+            olds = event.series
+            event.series = s
+            event.save()
+            if olds is not None:
+                olds.delete()
 
     @staticmethod
     def seriesNames(pattern, name):
