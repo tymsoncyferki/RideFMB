@@ -8,7 +8,7 @@ Currently under development but you can find it here: https://tymsoncyferki.eu.p
 
 ## Data
 
-All data is 100% dependant on official [FMB World Tour](https://www.fmbworldtour.com) website. However on my web page you will be able to also find riders age, personal description or points for the runs in particular events.
+The timeliness and correctness of data is 90% dependant on official [FMB World Tour](https://www.fmbworldtour.com) website. However on my web page you will be able to also find riders age, personal description or points for the runs in particular events.
 
 ## Features
 

@@ -1,10 +1,10 @@
 import pycountry
 from django.core.exceptions import *
 from django.db import models
+from django.db.models import Q
 from markdownx.models import MarkdownxField
 import re
 import shutil
-
 from wiki.utils.countries import country_codes
 from wiki.utils.patterns import series_args, series_names, partners_args
 
@@ -233,9 +233,14 @@ class Series(models.Model):
     def fixSeriesDeprecated(arg, new_name=None):
         if new_name is None:
             new_name = arg
-        arg_series = Series.objects.filter(name__icontains=arg)
-        s = Series(name=new_name)
-        s.save()
+        arg_series = Series.objects.filter(name__icontains=arg).filter(~Q(name=new_name))
+        try:
+            s = Series.objects.get(name=new_name)
+        except MultipleObjectsReturned:
+            s = Series.objects.get(name=new_name)[0]
+        except ObjectDoesNotExist:
+            s = Series(name=new_name)
+            s.save()
         for series in arg_series:
             print('Series:', series)
             series_events = series.event_set.all()
@@ -378,3 +383,13 @@ def changeSex(riders_list, male=False):
         else:
             rider.sex = 'Female'
         rider.save()
+
+
+def fixSeries2(arg):
+    arg_events = Event.objects.filter(name__icontains=arg)
+    s = Series(name=arg)
+    s.save()
+    for event in arg_events:
+        print('Event:', event)
+        event.series = s
+        event.save()
