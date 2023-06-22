@@ -259,7 +259,10 @@ class Series(models.Model):
         s.save()
         for event in arg_events:
             print('Event:', event)
-            olds = event.series
+            try:
+                olds = event.series
+            except ObjectDoesNotExist:
+                olds = None
             event.series = s
             event.save()
             if olds is not None:
