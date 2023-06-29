@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pycountry
 from django.core.exceptions import *
 from django.db import models
@@ -141,6 +143,13 @@ class Event(models.Model):
 
     def year(self):
         return self.date.year
+
+    def fixStatus(self):
+        if self.date.year >= datetime.now().year:
+            return
+        if self.status == 'Upcoming':
+            self.status = 'Canceled'
+            self.save()
 
     @staticmethod
     def fixEventWebsite():
@@ -349,6 +358,9 @@ def cleanDatabase():
         p.delete()
     except IndexError:
         pass
+    # Fix status
+    for event in Event.objects.all():
+        event.fixStatus()
 
 
 def allocateSex():
