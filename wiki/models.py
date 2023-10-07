@@ -122,6 +122,12 @@ class Event(models.Model):
         else:
             return False
 
+    def upcoming(self):
+        if self.status == 'Upcoming':
+            return True
+        else:
+            return False
+
     def cleanName(self):
         """ Drops brackets and dates"""
         string = self.name
