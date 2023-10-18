@@ -215,7 +215,7 @@ class Country(models.Model):
             country.isocode = isocode
             c = pycountry.countries.get(alpha_2=isocode)
             country.name = c.name
-            photo = "https://www.countryflagicons.com/FLAT/24/" + isocode + ".png"
+            photo = "https://flagsapi.com/" + isocode + "/flat/24.png"
             country.photo = photo
             print(country)
             country.save()
