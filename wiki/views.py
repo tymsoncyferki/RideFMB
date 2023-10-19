@@ -86,7 +86,10 @@ def account(request):
     if request.user.is_authenticated:
         username = request.user.username
         email = request.user.email
-        return render(request, 'wiki/registration/account.html', {"username": username, "email": email})
+        riders_set = request.user.usersriders_set.all()
+        events_set = request.user.usersevents_set.all()
+        return render(request, 'wiki/registration/account.html', {"username": username, "email": email,
+                                                                  "riders": riders_set, "events": events_set})
     else:
         return redirect('wiki:login')
 

@@ -30,40 +30,36 @@
             <h4 class="rider-header">Favourite riders</h4>
             <table class="standings table table-borderless overflow-hidden">
                 <tbody>
-                {#                    {% for part in parts_women %}#}
-                {#                        <tr class="participation">#}
-                {#                            <td class="standings-item">{{ part.rank }}.</td>#}
-                {#                            <td class="standings-item"><a#}
-                {#                                    href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>#}
-                {#                            </td>#}
-                {#                            <td class="standings-item">{{ part.points }} Pts</td>#}
-                {#                        </tr>#}
-                {#                    {% endfor %}#}
-                {#                    {% if not participations %}#}
-                {#                        <span class="lead">#}
-                {#                        Coming soon#}
-                {#                    </span>#}
-                {#                    {% endif %}#}
+                {% if riders %}
+                    {% for rider in riders %}
+                    <tr class="participation"></tr>
+                    <td class="standings-item">
+                        <a href="{% url 'wiki:rider' rider.rider.id rider.rider.slug %}">{{ rider.rider.name }}</a>
+                    </td>
+                    {% endfor %}
+                {% else %}
+                    <span class="lead">
+                    No saved riders
+                    </span>
+                {% endif %}
                 </tbody>
             </table>
 
             <h4 class="rider-header">Favourite events</h4>
             <table class="standings table table-borderless overflow-hidden">
                 <tbody>
-                {#                    {% for part in parts_women %}#}
-                {#                        <tr class="participation">#}
-                {#                            <td class="standings-item">{{ part.rank }}.</td>#}
-                {#                            <td class="standings-item"><a#}
-                {#                                    href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>#}
-                {#                            </td>#}
-                {#                            <td class="standings-item">{{ part.points }} Pts</td>#}
-                {#                        </tr>#}
-                {#                    {% endfor %}#}
-                {#                    {% if not participations %}#}
-                {#                        <span class="lead">#}
-                {#                        Coming soon#}
-                {#                    </span>#}
-                {#                    {% endif %}#}
+                {% if events %}
+                    {% for event in events %}
+                    <tr class="participation"></tr>
+                    <td class="standings-item">
+                        <a href="{% url 'wiki:event' event.event.id event.event.slug %}">{{ event.event.name }}</a>
+                    </td>
+                    {% endfor %}
+                {% else %}
+                    <span class="lead">
+                    No saved events
+                    </span>
+                {% endif %}
                 </tbody>
             </table>
 

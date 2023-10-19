@@ -341,9 +341,14 @@ class AppData(models.Model):
         return super(AppData, self).save(*args, **kwargs)
 
 
-class Favourites(models.Model):
-    rider = models.ForeignKey('Rider', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class UsersRiders(models.Model):
+    rider = models.ForeignKey('Rider', on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+
+
+class UsersEvents(models.Model):
+    event = models.ForeignKey('Event', on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
 
 def getID(url):
