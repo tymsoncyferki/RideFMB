@@ -1,0 +1,78 @@
+{% extends 'wiki/base.html' %}
+
+{% block title %}Login | RideFMB{% endblock %}
+
+{% block head %}
+    {% load wiki_extras %}
+    {% load static %}
+    <link href="{% static 'wiki/stylesheets/footer.css' %}" rel="stylesheet">
+    <link href="{% static 'wiki/stylesheets/rider.css' %}" rel="stylesheet">
+    <link href="{% static 'wiki/stylesheets/event.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container-lg">
+        <div class="form container-sm">
+            <h2>Welcome, {{ username }}</h2>
+            <table class="table table-borderless rf-table rounded-3 overflow-hidden text-white">
+                <tbody>
+                <tr class="rf-info-item">
+                    <th>Email</th>
+                    <td class="data">{{ email }}</td>
+                </tr>
+                <tr class="rf-info-item">
+                    <th>Password</th>
+                    <td class="data">Change password</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h4 class="rider-header">Favourite riders</h4>
+            <table class="standings table table-borderless overflow-hidden">
+                <tbody>
+                {#                    {% for part in parts_women %}#}
+                {#                        <tr class="participation">#}
+                {#                            <td class="standings-item">{{ part.rank }}.</td>#}
+                {#                            <td class="standings-item"><a#}
+                {#                                    href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>#}
+                {#                            </td>#}
+                {#                            <td class="standings-item">{{ part.points }} Pts</td>#}
+                {#                        </tr>#}
+                {#                    {% endfor %}#}
+                {#                    {% if not participations %}#}
+                {#                        <span class="lead">#}
+                {#                        Coming soon#}
+                {#                    </span>#}
+                {#                    {% endif %}#}
+                </tbody>
+            </table>
+
+            <h4 class="rider-header">Favourite events</h4>
+            <table class="standings table table-borderless overflow-hidden">
+                <tbody>
+                {#                    {% for part in parts_women %}#}
+                {#                        <tr class="participation">#}
+                {#                            <td class="standings-item">{{ part.rank }}.</td>#}
+                {#                            <td class="standings-item"><a#}
+                {#                                    href="{% url 'wiki:rider' part.rider.id part.rider.slug %}">{{ part.rider.name }}</a>#}
+                {#                            </td>#}
+                {#                            <td class="standings-item">{{ part.points }} Pts</td>#}
+                {#                        </tr>#}
+                {#                    {% endfor %}#}
+                {#                    {% if not participations %}#}
+                {#                        <span class="lead">#}
+                {#                        Coming soon#}
+                {#                    </span>#}
+                {#                    {% endif %}#}
+                </tbody>
+            </table>
+
+            <form method="post" action="{% url 'wiki:logout' %}">
+                {% csrf_token %}
+                <input type="hidden" name="logout" value="yes">
+                <button type="submit" class="btn btn-primary">Logout</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

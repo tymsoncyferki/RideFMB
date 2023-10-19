@@ -43,6 +43,9 @@ body {
 .container-md {
     max-width: 768px;
 }
+.container-sm {
+    max-width: 576px;
+}
 
 /*Navigation bar*/
 .navbar {

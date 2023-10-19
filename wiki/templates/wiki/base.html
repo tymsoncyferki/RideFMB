@@ -63,6 +63,10 @@
                     <a class="nav-link active" href="{% url 'wiki:events' %}?sort=-date"
                        {% if request.path|path == 'events' %}style="color: #727af7;"{% endif %}><strong>Events</strong></a>
                 </li>
+                          <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'wiki:login' %}"
+                       {% if request.path|path == 'login' %}style="color: #727af7;"{% endif %}><strong>Account</strong></a>
+                </li>
             </ul>
         </div>
         <div class="col-auto d-none d-md-block">

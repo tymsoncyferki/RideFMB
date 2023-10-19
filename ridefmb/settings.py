@@ -34,6 +34,8 @@ ALLOWED_HOSTS = ['*']
 CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE")
 SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE")
 
+CSRF_TRUSTED_ORIGINS=["http://127.0.0.1:8000/"]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -107,6 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_REDIRECT_URL = "/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

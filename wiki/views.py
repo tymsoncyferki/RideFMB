@@ -4,6 +4,7 @@ from django.db.models import F, Count, Q, Subquery, OuterRef, Avg
 from django.utils.timezone import datetime
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth import authenticate, login, logout
 
 
 def index(request):
@@ -28,7 +29,7 @@ def index(request):
     return render(request, 'wiki/index.html', {'appData': data, 'events': upcoming_events, 'riders': top_riders})
 
 
-def help(request):
+def help_view(request):
     return render(request, 'wiki/help.html')
 
 
@@ -58,6 +59,36 @@ def success(request):
 
 def about(request):
     return render(request, 'wiki/about.html')
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST["uname"]
+        password = request.POST["psw"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('wiki:account')
+        else:
+            return redirect('wiki:login')
+    if request.user.is_authenticated:
+        return redirect('wiki:account')
+    else:
+        return render(request, 'wiki/registration/login.html')
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('wiki:login')
+
+
+def account(request):
+    if request.user.is_authenticated:
+        username = request.user.username
+        email = request.user.email
+        return render(request, 'wiki/registration/account.html', {"username": username, "email": email})
+    else:
+        return redirect('wiki:login')
 
 
 def search(request):

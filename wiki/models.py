@@ -4,6 +4,7 @@ import pycountry
 from django.core.exceptions import *
 from django.db import models
 from django.db.models import Q
+from django.contrib.auth.models import User
 from markdownx.models import MarkdownxField
 import re
 import shutil
@@ -338,6 +339,11 @@ class AppData(models.Model):
             # then error will also be raised in update of exists model
             raise ValidationError('There can be only one AppData instance')
         return super(AppData, self).save(*args, **kwargs)
+
+
+class Favourites(models.Model):
+    rider = models.ForeignKey('Rider', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 def getID(url):
