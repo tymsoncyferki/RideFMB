@@ -70,7 +70,8 @@ def login_view(request):
             login(request, user)
             return redirect('wiki:account')
         else:
-            return redirect('wiki:login')
+            message = "Wrong username or password"
+            return render(request, 'wiki/registration/login.html', {"message": message})
     if request.user.is_authenticated:
         return redirect('wiki:account')
     else:
@@ -80,6 +81,72 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('wiki:login')
+
+
+def delete_view(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            if request.POST["check"] == "yes":
+                user = request.user
+                logout(request)
+                user.delete()
+                return redirect('wiki:login')
+        else:
+            return render(request, 'wiki/registration/delete.html')
+    else:
+        return redirect('wiki:login')
+
+
+def password_view(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            user = request.user
+            password = request.POST["psw"]
+            newpassword = request.POST["npsw"]
+            if user.check_password(password):
+                user.set_password(newpassword)
+                user.save()
+                login(request, user)
+            return redirect('wiki:success')
+        else:
+            return render(request, 'wiki/registration/password.html')
+    else:
+        return redirect('wiki:login')
+
+
+def register_view(request):
+    if request.method == 'POST':
+        email = request.POST["email"]
+        username = request.POST["uname"]
+        password = request.POST["psw"]
+        password2 = request.POST["psw2"]
+        try:
+            u = User.objects.get(email=email)
+            message = "There is already an account associated with this email address"
+            return render(request, 'wiki/registration/register.html', {"message": message})
+        except ObjectDoesNotExist:
+            pass
+        try:
+            u = User.objects.get(username=username)
+            message = "This username is already taken"
+            return render(request, 'wiki/registration/register.html', {"message": message})
+        except ObjectDoesNotExist:
+            pass
+        try:
+            assert password == password2
+        except AssertionError:
+            message = "Passwords do not match"
+            return render(request, 'wiki/registration/register.html', {"message": message})
+
+        user = User(email=email, username=username)
+        user.set_password(password)
+        user.save()
+        login(request, user)
+
+    if request.user.is_authenticated:
+        return redirect('wiki:account')
+    else:
+        return render(request, 'wiki/registration/register.html')
 
 
 def account(request):

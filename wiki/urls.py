@@ -18,5 +18,8 @@ urlpatterns = [
     path('markdownx/', include('markdownx.urls')),
     path('registration/login', views.login_view, name='login'),
     path('registration/logout', views.logout_view, name='logout'),
+    path('registration/register', views.register_view, name='register'),
+    path('account/delete', views.delete_view, name='delete'),
+    path('account/password', views.password_view, name='password'),
     path('account', views.account, name='account')
 ]

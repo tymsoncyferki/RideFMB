@@ -12,6 +12,9 @@
     <div class="container-lg">
         <div class="form container-sm">
             <h1>Login</h1>
+            {% if message %}
+                <span style="color: red">{{ message }}</span>
+            {% endif %}
             <form method="POST" id="login" action="{% url 'wiki:login' %}">
                 {% csrf_token %}
                 <div class="mb-3">
@@ -25,6 +28,8 @@
                 </div>
                 <button type="submit" form="login" class="btn btn-primary">Log in</button>
             </form>
+            <br>
+            Do not have an account yet? Sign up <a href="{% url 'wiki:register' %}">here</a>
         </div>
     </div>
 

@@ -1,0 +1,47 @@
+{% extends 'wiki/base.html' %}
+
+{% block title %}Register | RideFMB{% endblock %}
+
+{% block head %}
+    {% load wiki_extras %}
+    {% load static %}
+    <link href="{% static 'wiki/stylesheets/footer.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container-lg">
+        <div class="form container-sm">
+            <h1>Create account</h1>
+            {% if message %}
+                <span style="color: red">{{ message }}</span>
+            {% endif %}
+            <form method="POST" id="register" action="{% url 'wiki:register' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" name="email" id="email"
+                           placeholder="Enter your email address"
+                           required>
+                </div>
+                <div class="mb-3">
+                    <label for="uname" class="form-label">Username</label>
+                    <input type="text" class="form-control" name="uname" id="username" placeholder="Enter username"
+                           pattern="[A-Za-z0-9]+" required>
+                </div>
+                <div class="mb-3">
+                    <label for="psw" class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="Minimum 8 characters" name="psw"
+                           pattern="^.{8,}$" required>
+                </div>
+                <div class="mb-3">
+                    <label for="psw2" class="form-label">Repeat password</label>
+                    <input type="password" class="form-control" placeholder="Enter password" name="psw2"
+                           pattern="^.{8,}$" required>
+                </div>
+                <button type="submit" form="register" class="btn btn-primary">Sign in</button>
+            </form>
+            <br>
+        </div>
+    </div>
+
+{% endblock %}
