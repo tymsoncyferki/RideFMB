@@ -11,24 +11,36 @@
 {% block content %}
     <div class="container-xxl">
         <div class="container-md">
-            <h1 class="text-center">{{ rider.name }}</h1>
+            <h1 class="text-center">{{ rider.name }}
+                {% if user_authenticated %}
+                    <form style="display: inline">
+                        {% csrf_token %}
+                        <input type="checkbox" id="userRiderCheckbox"
+                               {% if user_associated %}checked{% endif %}>
+                    </form>
+                {% endif %}
+            </h1>
+
             <table class="table table-borderless rf-table rounded-3 overflow-hidden text-white">
                 <tbody>
                 <tr>
                     <td rowspan="8" class="d-none d-sm-table-cell photo-holder">
-                        <img class="rider-photo rounded-circle border border-2 border-white d-block mx-auto my-2 mx-4" alt="Rider photo"
+                        <img class="rider-photo rounded-circle border border-2 border-white d-block mx-auto my-2 mx-4"
+                             alt="Rider photo"
                              src="{{ rider.photo }}">
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2" class="d-sm-none">
-                        <img class="rider-photo rounded-circle border border-2 border-white d-block mx-auto my-2" alt="Rider photo"
+                        <img class="rider-photo rounded-circle border border-2 border-white d-block mx-auto my-2"
+                             alt="Rider photo"
                              src="{{ rider.photo }}">
                     </td>
                 </tr>
                 <tr class="rf-info-item">
                     <th>Nationality</th>
-                    <td class="data">{{ rider.country.name }} <img alt="Rider country flag" src="{{ rider.country.photo }}"></td>
+                    <td class="data">{{ rider.country.name }} <img alt="Rider country flag"
+                                                                   src="{{ rider.country.photo }}"></td>
                 </tr>
                 <tr class="rf-info-item">
                     <th>WT Rank</th>
@@ -53,12 +65,12 @@
                     <td class="data">{{ rider.sex }}</td>
                 </tr>
                 {% if rider.instagram and rider.instagram != '' %}
-                <tr class="rf-info-item">
-                    <th>Socials</th>
-                    <td class="data">
-                        <a href={{ rider.instagram }} target="_blank">Instagram</a>
-                    </td>
-                </tr>
+                    <tr class="rf-info-item">
+                        <th>Socials</th>
+                        <td class="data">
+                            <a href={{ rider.instagram }} target="_blank">Instagram</a>
+                        </td>
+                    </tr>
                 {% endif %}
                 </tbody>
             </table>
@@ -94,5 +106,34 @@
             </ol>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            let link = "{% url 'wiki:rider' rider.id rider.slug %}"
+
+            $('#userRiderCheckbox').change(function () {
+
+                const checked = $(this).is(':checked');
+
+                $.ajax({
+                    url: link,
+                    type: 'POST',
+                    data: {
+                        'checked': checked,
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        console.log(data.message);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+
+            });
+        });
+    </script>
 {% endblock %}
 

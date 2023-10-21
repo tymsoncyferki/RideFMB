@@ -11,7 +11,14 @@
 
 {% block content %}
     <div class="container-md">
-        <h1>{{ event.name }} {{ event.year }}</h1>
+        <h1>{{ event.name }} {{ event.year }}
+            {% if user_authenticated %}
+                <form style="display: inline">
+                    {% csrf_token %}
+                    <input type="checkbox" id="userEventCheckbox"
+                           {% if user_associated %}checked{% endif %}>
+                </form>
+            {% endif %}</h1>
         <span class="lead">
             {{ event.city }}, {{ event.country.name }}
             <img alt="Country flag" src={{ event.country.photo }}>
@@ -141,4 +148,32 @@
             </ul>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            let link = "{% url 'wiki:event' event.id event.slug %}"
+
+            $('#userEventCheckbox').change(function () {
+
+                const checked = $(this).is(':checked');
+
+                $.ajax({
+                    url: link,
+                    type: 'POST',
+                    data: {
+                        'checked': checked,
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        console.log(data.message);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

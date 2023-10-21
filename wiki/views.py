@@ -5,6 +5,7 @@ from django.utils.timezone import datetime
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
 
 
 def index(request):
@@ -186,6 +187,21 @@ def ranking(request, page_idx):
 
 def rider(request, rider_id, slug):
     main_rider = get_object_or_404(Rider, id=rider_id)
+
+    user_authenticated = False
+    user_associated = False
+    if request.user.is_authenticated:
+        user_authenticated = True
+        user_associated = UsersRiders.objects.filter(rider=main_rider, user=request.user).exists()
+
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            checked = request.POST.get('checked')
+            if checked == 'true':
+                UsersRiders.objects.get_or_create(rider=main_rider, user=request.user)
+            else:
+                UsersRiders.objects.filter(rider=main_rider, user=request.user).delete()
+
     parts = main_rider.participation_set.all().order_by('-event__date')
     spons = main_rider.sponsorship_set.all()
     sources = main_rider.source_set.all()
@@ -193,13 +209,30 @@ def rider(request, rider_id, slug):
     for part in parts:
         if part.event.date.year not in years:
             years.append(part.event.date.year)
+
     return render(request, 'wiki/riders/rider.html',
                   {'rider': main_rider, 'participations': parts, 'sponsorships': spons,
-                   'sources': sources, 'years': years})
+                   'sources': sources, 'years': years, 'user_associated': user_associated,
+                   "user_authenticated": user_authenticated})
 
 
 def event(request, event_id, slug):
     main_event = get_object_or_404(Event, id=event_id)
+
+    user_authenticated = False
+    user_associated = False
+    if request.user.is_authenticated:
+        user_authenticated = True
+        user_associated = UsersEvents.objects.filter(event=main_event, user=request.user).exists()
+
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            checked = request.POST.get('checked')
+            if checked == 'true':
+                UsersEvents.objects.get_or_create(event=main_event, user=request.user)
+            else:
+                UsersEvents.objects.filter(event=main_event, user=request.user).delete()
+
     partnerships = main_event.partnership_set.all()
     parts = main_event.participation_set.all().order_by('rank')
     parts_women = main_event.participation_set.filter(rider__sex='Female').order_by('rank')
@@ -210,7 +243,8 @@ def event(request, event_id, slug):
         series = [main_event]
     return render(request, 'wiki/events/event.html', {'event': main_event, 'participations': parts, 'series': series,
                                                       'partnerships': partnerships, "parts_men": parts_men,
-                                                      "parts_women": parts_women})
+                                                      "parts_women": parts_women, 'user_associated': user_associated,
+                                                      "user_authenticated": user_authenticated})
 
 
 def riders(request):
