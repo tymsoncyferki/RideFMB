@@ -1,7 +1,9 @@
 beautifulsoup4==4.12.2
-Django==4.1
+Django==4.1.5
 django_markdownx==4.0.2
 inflect==6.0.4
 pycountry==22.3.5
 python-dotenv==1.0.0
 requests==2.28.2
+pytest==7.4.3
+pytest-django==4.5.2

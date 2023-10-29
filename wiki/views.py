@@ -5,7 +5,6 @@ from django.utils.timezone import datetime
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
 
 
 def index(request):
