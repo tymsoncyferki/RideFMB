@@ -87,6 +87,10 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.getenv('DB_PATH'),
+    },
+    'test': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'wiki/static/wiki/testdb.sqlite3',
     }
 }
 

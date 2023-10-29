@@ -247,6 +247,7 @@ class Series(models.Model):
 
     @staticmethod
     def fixSeriesDeprecated(arg, new_name=None):
+        """ This method doesn't work anymore (or perhaps it never worked in the first place) """
         if new_name is None:
             new_name = arg
         arg_series = Series.objects.filter(name__icontains=arg).filter(~Q(name=new_name))
@@ -268,6 +269,9 @@ class Series(models.Model):
 
     @staticmethod
     def fixSeries(arg, new_name=None):
+        """ Updates the "series" attribute of events based on a match of the event names with the provided arg.
+        Creates a new "Series" object with the specified name and associates all matching events with this new Series.
+        Deletes old "series" object. """
         if new_name is None:
             new_name = arg
         arg_events = Event.objects.filter(name__icontains=arg)
