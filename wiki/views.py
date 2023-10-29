@@ -91,7 +91,7 @@ def delete_view(request):
                 user = request.user
                 logout(request)
                 user.delete()
-                return redirect('wiki:login')
+            return redirect('wiki:login')
         else:
             return render(request, 'wiki/registration/delete.html')
     else:
@@ -108,9 +108,8 @@ def password_view(request):
                 user.set_password(newpassword)
                 user.save()
                 login(request, user)
-            return redirect('wiki:success')
-        else:
-            return render(request, 'wiki/registration/password.html')
+                return redirect('wiki:success')
+        return render(request, 'wiki/registration/password.html')
     else:
         return redirect('wiki:login')
 

@@ -301,6 +301,16 @@ class Series(models.Model):
         s.name = name
         s.save()
 
+    @staticmethod
+    def fixSeriesShort(arg):
+        arg_events = Event.objects.filter(name__icontains=arg)
+        s = Series(name=arg)
+        s.save()
+        for event in arg_events:
+            print('Event:', event)
+            event.series = s
+            event.save()
+
 
 class Partner(models.Model):
     name = models.CharField(max_length=150)
@@ -419,13 +429,3 @@ def changeSex(riders_list, male=False):
         else:
             rider.sex = 'Female'
         rider.save()
-
-
-def fixSeries2(arg):
-    arg_events = Event.objects.filter(name__icontains=arg)
-    s = Series(name=arg)
-    s.save()
-    for event in arg_events:
-        print('Event:', event)
-        event.series = s
-        event.save()
