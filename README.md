@@ -4,7 +4,7 @@ A web page where you can easily access all information about FMB World Tour ride
 
 ## Website
 
-Currently under development but you can find it here: https://tymsoncyferki.eu.pythonanywhere.com
+You can find it here: https://tymsoncyferki.eu.pythonanywhere.com
 
 ## Data
 
