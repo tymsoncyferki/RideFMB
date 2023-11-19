@@ -43,6 +43,9 @@ body {
 .container-md {
     max-width: 768px;
 }
+.container-sm {
+    max-width: 576px;
+}
 
 /*Navigation bar*/
 .navbar {
@@ -103,6 +106,14 @@ a.nav-link:hover {
     background-color: var(--rf-table);
     border-color: transparent;
 }
+#desktop-btn-search {
+    margin-right: 15px;
+}
+.search-account {
+    display: flex;
+    align-items: center;
+}
+
 /*Settings*/
 .btn-settings-menu {
     width: 100%;

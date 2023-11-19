@@ -4,6 +4,7 @@ from django.db.models import F, Count, Q, Subquery, OuterRef, Avg
 from django.utils.timezone import datetime
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth import authenticate, login, logout
 
 
 def index(request):
@@ -28,7 +29,7 @@ def index(request):
     return render(request, 'wiki/index.html', {'appData': data, 'events': upcoming_events, 'riders': top_riders})
 
 
-def help(request):
+def help_view(request):
     return render(request, 'wiki/help.html')
 
 
@@ -60,6 +61,105 @@ def about(request):
     return render(request, 'wiki/about.html')
 
 
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST["uname"]
+        password = request.POST["psw"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('wiki:account')
+        else:
+            message = "Wrong username or password"
+            return render(request, 'wiki/registration/login.html', {"message": message})
+    if request.user.is_authenticated:
+        return redirect('wiki:account')
+    else:
+        return render(request, 'wiki/registration/login.html')
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('wiki:login')
+
+
+def delete_view(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            if request.POST["check"] == "yes":
+                user = request.user
+                logout(request)
+                user.delete()
+            return redirect('wiki:login')
+        else:
+            return render(request, 'wiki/registration/delete.html')
+    else:
+        return redirect('wiki:login')
+
+
+def password_view(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            user = request.user
+            password = request.POST["psw"]
+            newpassword = request.POST["npsw"]
+            if user.check_password(password):
+                user.set_password(newpassword)
+                user.save()
+                login(request, user)
+                return redirect('wiki:success')
+        return render(request, 'wiki/registration/password.html')
+    else:
+        return redirect('wiki:login')
+
+
+def register_view(request):
+    if request.method == 'POST':
+        email = request.POST["email"]
+        username = request.POST["uname"]
+        password = request.POST["psw"]
+        password2 = request.POST["psw2"]
+        try:
+            u = User.objects.get(email=email)
+            message = "There is already an account associated with this email address"
+            return render(request, 'wiki/registration/register.html', {"message": message})
+        except ObjectDoesNotExist:
+            pass
+        try:
+            u = User.objects.get(username=username)
+            message = "This username is already taken"
+            return render(request, 'wiki/registration/register.html', {"message": message})
+        except ObjectDoesNotExist:
+            pass
+        try:
+            assert password == password2
+        except AssertionError:
+            message = "Passwords do not match"
+            return render(request, 'wiki/registration/register.html', {"message": message})
+
+        user = User(email=email, username=username)
+        user.set_password(password)
+        user.save()
+        login(request, user)
+
+    if request.user.is_authenticated:
+        return redirect('wiki:account')
+    else:
+        return render(request, 'wiki/registration/register.html')
+
+
+def account(request):
+    if request.user.is_authenticated:
+        username = request.user.username
+        email = request.user.email
+        riders_set = request.user.usersriders_set.all()
+        events_set = request.user.usersevents_set.all()
+        return render(request, 'wiki/registration/account.html', {"username": username, "email": email,
+                                                                  "riders": riders_set, "events": events_set})
+    else:
+        return redirect('wiki:login')
+
+
 def search(request):
     query = request.GET.get('q')
     if query:
@@ -85,6 +185,21 @@ def ranking(request, page_idx):
 
 def rider(request, rider_id, slug):
     main_rider = get_object_or_404(Rider, id=rider_id)
+
+    user_authenticated = False
+    user_associated = False
+    if request.user.is_authenticated:
+        user_authenticated = True
+        user_associated = UsersRiders.objects.filter(rider=main_rider, user=request.user).exists()
+
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            checked = request.POST.get('checked')
+            if checked == 'true':
+                UsersRiders.objects.get_or_create(rider=main_rider, user=request.user)
+            else:
+                UsersRiders.objects.filter(rider=main_rider, user=request.user).delete()
+
     parts = main_rider.participation_set.all().order_by('-event__date')
     spons = main_rider.sponsorship_set.all()
     sources = main_rider.source_set.all()
@@ -92,13 +207,30 @@ def rider(request, rider_id, slug):
     for part in parts:
         if part.event.date.year not in years:
             years.append(part.event.date.year)
+
     return render(request, 'wiki/riders/rider.html',
                   {'rider': main_rider, 'participations': parts, 'sponsorships': spons,
-                   'sources': sources, 'years': years})
+                   'sources': sources, 'years': years, 'user_associated': user_associated,
+                   "user_authenticated": user_authenticated})
 
 
 def event(request, event_id, slug):
     main_event = get_object_or_404(Event, id=event_id)
+
+    user_authenticated = False
+    user_associated = False
+    if request.user.is_authenticated:
+        user_authenticated = True
+        user_associated = UsersEvents.objects.filter(event=main_event, user=request.user).exists()
+
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            checked = request.POST.get('checked')
+            if checked == 'true':
+                UsersEvents.objects.get_or_create(event=main_event, user=request.user)
+            else:
+                UsersEvents.objects.filter(event=main_event, user=request.user).delete()
+
     partnerships = main_event.partnership_set.all()
     parts = main_event.participation_set.all().order_by('rank')
     parts_women = main_event.participation_set.filter(rider__sex='Female').order_by('rank')
@@ -109,7 +241,8 @@ def event(request, event_id, slug):
         series = [main_event]
     return render(request, 'wiki/events/event.html', {'event': main_event, 'participations': parts, 'series': series,
                                                       'partnerships': partnerships, "parts_men": parts_men,
-                                                      "parts_women": parts_women})
+                                                      "parts_women": parts_women, 'user_associated': user_associated,
+                                                      "user_authenticated": user_authenticated})
 
 
 def riders(request):

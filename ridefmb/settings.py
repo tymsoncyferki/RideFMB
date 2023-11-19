@@ -34,6 +34,8 @@ ALLOWED_HOSTS = ['*']
 CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE")
 SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE")
 
+CSRF_TRUSTED_ORIGINS=["http://127.0.0.1:8000/"]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -85,6 +87,10 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.getenv('DB_PATH'),
+    },
+    'test': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.getenv('TEST_DB_PATH'),
     }
 }
 
@@ -107,6 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_REDIRECT_URL = "/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -141,3 +148,21 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER")
+
+# JS
+
+import logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',  # Adjust the log level as needed
+    },
+}

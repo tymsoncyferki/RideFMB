@@ -4,6 +4,7 @@ import pycountry
 from django.core.exceptions import *
 from django.db import models
 from django.db.models import Q
+from django.contrib.auth.models import User
 from markdownx.models import MarkdownxField
 import re
 import shutil
@@ -246,6 +247,7 @@ class Series(models.Model):
 
     @staticmethod
     def fixSeriesDeprecated(arg, new_name=None):
+        """ This method doesn't work anymore (or perhaps it never worked in the first place) """
         if new_name is None:
             new_name = arg
         arg_series = Series.objects.filter(name__icontains=arg).filter(~Q(name=new_name))
@@ -267,6 +269,9 @@ class Series(models.Model):
 
     @staticmethod
     def fixSeries(arg, new_name=None):
+        """ Updates the "series" attribute of events based on a match of the event names with the provided arg.
+        Creates a new "Series" object with the specified name and associates all matching events with this new Series.
+        Deletes old "series" object. """
         if new_name is None:
             new_name = arg
         arg_events = Event.objects.filter(name__icontains=arg)
@@ -295,6 +300,16 @@ class Series(models.Model):
         print(s.name)
         s.name = name
         s.save()
+
+    @staticmethod
+    def fixSeriesShort(arg):
+        arg_events = Event.objects.filter(name__icontains=arg)
+        s = Series(name=arg)
+        s.save()
+        for event in arg_events:
+            print('Event:', event)
+            event.series = s
+            event.save()
 
 
 class Partner(models.Model):
@@ -338,6 +353,16 @@ class AppData(models.Model):
             # then error will also be raised in update of exists model
             raise ValidationError('There can be only one AppData instance')
         return super(AppData, self).save(*args, **kwargs)
+
+
+class UsersRiders(models.Model):
+    rider = models.ForeignKey('Rider', on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+
+
+class UsersEvents(models.Model):
+    event = models.ForeignKey('Event', on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
 
 def getID(url):
@@ -404,13 +429,3 @@ def changeSex(riders_list, male=False):
         else:
             rider.sex = 'Female'
         rider.save()
-
-
-def fixSeries2(arg):
-    arg_events = Event.objects.filter(name__icontains=arg)
-    s = Series(name=arg)
-    s.save()
-    for event in arg_events:
-        print('Event:', event)
-        event.series = s
-        event.save()

@@ -1,0 +1,93 @@
+{% extends 'wiki/base.html' %}
+
+{% block title %}{{ username }} account | RideFMB{% endblock %}
+
+{% block head %}
+    {% load wiki_extras %}
+    {% load static %}
+    <link href="{% static 'wiki/stylesheets/footer.css' %}" rel="stylesheet">
+    <link href="{% static 'wiki/stylesheets/rider.css' %}" rel="stylesheet">
+    <link href="{% static 'wiki/stylesheets/event.css' %}" rel="stylesheet">
+    <link href="{% static 'wiki/stylesheets/search.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container-lg">
+        <div class="form container-sm">
+            <h2>Welcome, {{ username }}</h2>
+            <table class="table table-borderless rf-table rounded-3 overflow-hidden text-white">
+                <tbody>
+                <tr class="rf-info-item">
+                    <th>Email</th>
+                    <td class="data">{{ email }}</td>
+                </tr>
+                <tr class="rf-info-item">
+                    <th>Password</th>
+                    <td class="data"><a href="{% url 'wiki:password' %}">Change password</a></td>
+                </tr>
+                <tr class="rf-info-item">
+                    <th>Account</th>
+                    <td class="data"><a href="{% url 'wiki:delete' %}">Delete account</a></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h4 class="rider-header">Saved riders</h4>
+            <table class="standings table table-borderless overflow-hidden">
+                <tbody>
+                {% if riders %}
+                    {% for rider in riders %}
+                        <tr class="search-item">
+                            <td class="rf-table-rider-photo">
+                                <img src="{{ rider.rider.photo }}" class="rounded-circle border border-2 border-white"
+                                     width="50"
+                                     height="50">
+                            </td>
+                            <td>
+                                <a class="search-link lead"
+                                   href="{% url 'wiki:rider' rider.rider.id rider.rider.slug %}">{{ rider.rider.name }}</a>
+                                <br>
+                                <span class="search-item-desc">{{ rider.rider.country.name }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <span class="lead">
+                    No saved riders
+                    </span>
+                {% endif %}
+                </tbody>
+            </table>
+
+            <h4 class="rider-header">Saved events</h4>
+            <table class="standings table table-borderless overflow-hidden">
+                <tbody>
+                {% if events %}
+                    {% for event in events %}
+
+                        <tr class="search-item">
+                            <td>
+                                <a class="search-link lead"
+                                   href="{% url 'wiki:event' event.event.id event.event.slug %}">{{ event.event.name }} {{ event.event.year }}</a>
+                                <br>
+                                <span class="search-item-desc">{{ event.event.city }}, {{ event.event.country.name }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <span class="lead">
+                    No saved events
+                    </span>
+                {% endif %}
+                </tbody>
+            </table>
+
+            <form method="post" action="{% url 'wiki:logout' %}">
+                {% csrf_token %}
+                <input type="hidden" name="logout" value="yes">
+                <button type="submit" class="btn btn-primary">Log out</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
