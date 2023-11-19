@@ -16,10 +16,10 @@ urlpatterns = [
     path('contact/success', views.success, name='success'),
     path('about', views.about, name='about'),
     path('markdownx/', include('markdownx.urls')),
-    path('registration/login', views.login_view, name='login'),
-    path('registration/logout', views.logout_view, name='logout'),
-    path('registration/register', views.register_view, name='register'),
-    path('account/delete', views.delete_view, name='delete'),
-    path('account/password', views.password_view, name='password'),
-    path('account', views.account, name='account')
+    # path('registration/login', views.login_view, name='login'),
+    # path('registration/logout', views.logout_view, name='logout'),
+    # path('registration/register', views.register_view, name='register'),
+    # path('account/delete', views.delete_view, name='delete'),
+    # path('account/password', views.password_view, name='password'),
+    # path('account', views.account, name='account')
 ]
