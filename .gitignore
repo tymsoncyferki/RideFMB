@@ -1,3 +1,4 @@
+.venv
 ridefmb/.env
 database
 /wiki/static/wiki/backup.sqlite3
