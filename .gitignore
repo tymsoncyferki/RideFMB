@@ -2,3 +2,4 @@
 ridefmb/.env
 database
 /wiki/static/wiki/backup.sqlite3
+**/__pycache__/
