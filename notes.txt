@@ -1,0 +1,66 @@
+zdjecia
+
+https://wyldata-bkt-public.s3.amazonaws.com/media/athletes/public-{image_id}-avatar.png
+
+godziek (id 2933) https://wyldata-bkt-public.s3.amazonaws.com/media/athletes/public-43122-avatar.png
+fedko (id 655): https://wyldata-bkt-public.s3.amazonaws.com/media/athletes/public-42784-avatar.png
+johansson (id 1411) https://wyldata-bkt-public.s3.amazonaws.com/media/athletes/public-42782-avatar.png
+
+opis:
+
+Aplikacja webowa RideFMB (od freeride mountain biking) jest swego rodzaju bazą
+danych, gdzie można znaleźć informacje o zawodnikach i zawodach FMB World Tour. Jest
+to oficjalna międzynarodowa trasa profesjonalnych zawodów rowerowych w dyscyplinach
+Dirt Jumping i Slopestyle. Niestety oficjalna strona (https://www.fmbworldtour.com/) jest
+bardzo źle zrobiona. Trudno znaleźć tam interesujące użytkownika informacje, nie ma opcji
+wyszukiwania ani filtrowania obiektów. Stąd motywacja żeby stworzyć przystępną stronę do
+szybkiego wyszukiwania informacji o FMBWT, która będzie także zoptymalizowana na
+urządzenia mobilne. Wszystkie dane są uzależnione od oficjalnej strony. Nie ma niestety
+żadnego API, dlatego baza danych (sqlite) została stworzona i jest aktualizowana przy
+użyciu web scrapingu. Cała aplikacja została postawiona w Django, a do frontendu został
+użyty Bootstrap.
+Po odpaleniu aplikacji wyświetli się strona tytułowa na której możemy znaleźć pasek
+do wyszukiwania zawodników i zawodów, tabelę “Riders to watch” gdzie wyświetlają się
+zawodnicy w najlepszej formie, a także pięć najbliższych nadchodzących wydarzeń. U góry
+strony znajduje się pasek do nawigacji z czterema zakładkami: Ranking, Schedule, Riders,
+Events. W prawym górnym rogu znajduje się pasek to wyszukiwania i ikonka
+przekierowująca do konta użytkownka (lub logowania). Na samym dole w stopce znajdują
+się odnośniki do pomocy czy formularza kontaktowego.
+Na stronie można założyć konto. Rejestracja jest szybka i łatwa. Można zmienić
+hasło, usunąć konto i oczywiście się wylogować. Posiadanie konta umożliwia dodawanie
+zawodników i zawodów do ulubionych. Proces jest bardzo łatwy - wystarczy wejść na stronę
+konkretnego zawodnika i kliknąć w serduszko obok jego imienia (analogicznie dla
+wydarzenia). Po tym zawodnik pojawia się w zakładce ‘Saved riders’, którą możemy
+zobaczyć po wejściu w konto użytkownika. Żeby usunąć zawodnika z ulubionych trzeba
+ponownie kliknąć w serduszko.
+Zakładki Ranking i Schedule są do siebie bardzo podobne. Przechodząc do rankingu
+zobaczymy aktualny ranking 300 zawodników (po 10 zawodników na widok) w formie tabeli
+(znajdziemy tam pozycję, zdjęcie zawodnika, imię i nazwisko, kraj, głównego sponsora i
+liczbę punktów na podstawie której ustawiany jest ranking). W Schedule z kolei znajdziemy
+zawody z danego roku posortowane po dacie. W każdym wierszu tabelki znajdziemy datę,
+nazwę wydarzenia, kraj, kategorię i status (zielone - ukończone, żółte - nadchodzące,
+czerwone - odwołane). Dzięki temu możemy łatwo się zorientować w wydarzeniach z
+obecnego sezonu. Oczywiście wszędzie znajdują się hiperłącza przekierowujące do stron
+konkretnych zawodników czy wydarzeń.
+W zakładce Riders znajdziemy wszystkich rowerzystów znajdujących się w bazie
+danych (czyli zarówno tych aktywnych jak i emerytowanych). Możemy ich dowolnie filtrować
+(po państwie, płci czy sponsorze) a także sortować (alfabetycznie, po sumarycznej liczbie
+zdobytych punktów, obecnej pozycji w rankingu czy liczbie zdobytych medali). Analogicznie
+w zakłade Events znajdziemy wszystkie wydarzenia, przy czym opcje filtrowania (kraj,
+status, partnerzy, rok, seria, kategoria, dyscyplina) i sortowania (po dacie i nazwie) są inne
+niż te dla rowerzystów. Wszystkie wymienione opcje są schowane w elemencie ‘Modal’ a w
+nim w rozwijanych listach, więc wszystko jest bardzo przejrzyste i nie zabiera miejsca na
+stronie.
+Oczywiście najwięcej informacji o konkretnym zawodniku znajdziemy na
+odpowiadającej mu stronie, gdzie można znaleźć dodatkowo informaje o wieku, mediach
+społecznościowych czy wszystkich sponsorch. Ponadto znajduje się tam także podzielona
+na sezony lista zawodów, w których uczestniczył dany zawodnik. Analogicznie na stronie
+danego wydarzenia dowiemy się m.in. o dokładnej lokalizacji, partnerach wydarzenia,
+wynikach zawodów, a także znajdziemy odnośniki do innych eventów z tej samej serii (tzn.
+np. tych samych zawodów z poprzednich lay).
+Aplikacja została zoptymalizowana pod urządzenia mobilne tak, by korzystane z niej
+było jak najmniej problematyczne. Na przykład w tabelach znajduje się mniej szczegółów niż
+dla komputerów i tabletów, dzięku czemu tabele mieszczą się na szerokość w ekranie
+telefonu, a same tabele zachowują swoją przejrzystość. U góry zamiast zakładek jest
+przycisk do nawigacji na stronie, a także pasek do wyszukiwania. Wszystkie funkcjonalności
+aplikacji są bardzo intuicyjne, a kolorostyka jest spójna i przyjemna dla oka.

@@ -1,4 +1,4 @@
-> **Update 2024:** the website is down.
+> **Update 2024:** the website is down. [Read more](#update)
 
 # RideFMB
 
@@ -10,7 +10,7 @@ The [official FMB World Tour website](https://www.fmbworldtour.com/) is difficul
 
 You can find it here: https://tymsoncyferki.eu.pythonanywhere.com
 
-<kbd>![Home page](./readme_files/index_desktop.png)<kbd>
+<kbd>![Home page](./readme_files/index_desktop.png)</kbd>
 
 ## Data
 
@@ -38,11 +38,11 @@ Both tabs list everything in the database - active *and* retired riders; past, c
 
 Filters and sort options live inside a `Modal` with collapsible dropdowns, so the interface stays clean and uncluttered.
 
-<kbd>![Events page on desktop](./readme_files/events_desktop.png)<kbd>
+<kbd>![Events page on desktop](./readme_files/events_desktop.png)</kbd>
 
 ### Rider & event detail pages
 
-Each rider page shows age, social media, all sponsors, and a per-season list of events the rider competed in. Each event page shows the precise location, partners, results, and links to other events in the same series (e.g. previous editions of the same competition).
+Each rider page shows nationality, rank, social media, all sponsors, and a per-season list of events the rider competed in. Each event page shows the category, precise location, prize, partners, results, and links to other events in the same series (e.g. previous editions of the same competition).
 
 ### Mobile-first
 
@@ -54,10 +54,22 @@ The whole app is optimized for mobile devices: tables are trimmed to fit phone w
   <kbd> <img src="readme_files/rider_mobile.png" width="305" alt="RideFMB rider page on mobile"> </kbd>
 </p>
 
-## Why use RideFMB instead of the official site?
+### Why use RideFMB instead of the official site?
 
 - Mobile responsiveness
 - Easy search for riders and events
 - Rich filtering and sorting
 - More natural site navigation
 - Better SEO (hopefully!)
+
+<br>
+
+---
+
+### Update 2024
+
+One year after launching my app, the official website was rebuilt. They added the same set of features my app offered.
+
+<kbd>![Official FMBWT home page](./readme_files/index_offical.png)</kbd>
+
+Since then, it no longer made sense to keep my app alive. My scraping algorithm would also have to be rewritten, as the whole layout and routes had changed.
