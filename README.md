@@ -49,9 +49,9 @@ Each rider page shows age, social media, all sponsors, and a per-season list of 
 The whole app is optimized for mobile devices: tables are trimmed to fit phone widths without losing readability, the top navbar collapses to a menu button and a search field, and the color palette and interactions stay consistent across breakpoints.
 
 <p align="center">
-<kbd>  <img src="readme_files/index_mobile.png" width="100%" alt="RideFMB home page on mobile"> </kbd>
+<kbd>  <img src="readme_files/index_mobile.png" width="45%" alt="RideFMB home page on mobile"> </kbd>
   &nbsp;&nbsp;
-  <kbd> <img src="readme_files/rider_mobile.png" width="100%" alt="RideFMB rider page on mobile"> </kbd>
+  <kbd> <img src="readme_files/rider_mobile.png" width="45%" alt="RideFMB rider page on mobile"> </kbd>
   
 </p>
 
