@@ -1,4 +1,4 @@
-> **Update 2024:** the website is down. [Read more](#update)
+> **Update 2024:** the website is down. [Read more](#update-2024)
 
 # RideFMB
 
@@ -66,7 +66,7 @@ The whole app is optimized for mobile devices: tables are trimmed to fit phone w
 
 ---
 
-### Update 2024
+## Update 2024
 
 One year after launching my app, the official website was rebuilt. They added the same set of features my app offered.
 
