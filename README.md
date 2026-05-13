@@ -10,7 +10,7 @@ The [official FMB World Tour website](https://www.fmbworldtour.com/) is difficul
 
 You can find it here: https://tymsoncyferki.eu.pythonanywhere.com
 
-![Home page](./readme_files/index_desktop.png)
+<kbd>![Home page](./readme_files/index_desktop.png)<kbd>
 
 ## Data
 
@@ -38,7 +38,7 @@ Both tabs list everything in the database - active *and* retired riders; past, c
 
 Filters and sort options live inside a `Modal` with collapsible dropdowns, so the interface stays clean and uncluttered.
 
-![Events page on desktop](./readme_files/events_desktop.png)
+<kbd>![Events page on desktop](./readme_files/events_desktop.png)<kbd>
 
 ### Rider & event detail pages
 
@@ -49,9 +49,10 @@ Each rider page shows age, social media, all sponsors, and a per-season list of 
 The whole app is optimized for mobile devices: tables are trimmed to fit phone widths without losing readability, the top navbar collapses to a menu button and a search field, and the color palette and interactions stay consistent across breakpoints.
 
 <p align="center">
-  <img src="readme_files/index_mobile.png" width="45%" alt="RideFMB home page on mobile" />
+<kbd>  <img src="readme_files/index_mobile.png" width="100%" alt="RideFMB home page on mobile"> </kbd>
   &nbsp;&nbsp;
-  <img src="readme_files/rider_mobile.png" width="45%" alt="RideFMB rider page on mobile" />
+  <kbd> <img src="readme_files/rider_mobile.png" width="100%" alt="RideFMB rider page on mobile"> </kbd>
+  
 </p>
 
 ## Why use RideFMB instead of the official site?
